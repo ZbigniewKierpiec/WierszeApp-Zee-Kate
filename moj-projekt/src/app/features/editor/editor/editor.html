@@ -1,0 +1,76 @@
+<div (click)="clearActive()" class="box">
+  <div class="toolbar">
+    <!-- font -->
+    <select
+      [ngModel]="active === 'title' ? titleFont : textFont"
+      (ngModelChange)="updateFont($event)"
+    >
+      <option value="Playfair Display">Playfair</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Arial">Arial</option>
+    </select>
+
+    <!-- size -->
+    <input
+      type="number"
+      [ngModel]="active === 'title' ? titleFontSize : textFontSize"
+      (ngModelChange)="updateFontSize($event)"
+      min="12"
+      max="60"
+    />
+
+    <!-- kolor -->
+    <input
+      type="color"
+      [ngModel]="active === 'title' ? titleColor : textColor"
+      (ngModelChange)="updateColor($event)"
+    />
+
+    <!-- align -->
+    <select
+      [ngModel]="active === 'title' ? titleAlign : textAlign"
+      (ngModelChange)="updateAlign($event)"
+    >
+      <option value="left">Left</option>
+      <option value="center">Center</option>
+      <option value="right">Right</option>
+    </select>
+
+    <!-- background (tylko dla tekstu) -->
+    <select [(ngModel)]="background">
+      <option value="#ffffff">White</option>
+      <option value="#fdf6e3">Paper</option>
+      <option value="#f5f5f5">Light Grey</option>
+      <option value="#1f2937">Dark</option>
+    </select>
+
+    <!-- akcje -->
+    <div class="actions">
+      <button (click)="save()" class="primary">💾</button>
+      <button (click)="clear()" class="danger">🗑</button>
+    </div>
+  </div>
+  <!-- 🔥 TYTUŁ -->
+  <input
+    type="text"
+    [(ngModel)]="title"
+    (focus)="active = 'title'"
+    placeholder="Tytuł wiersza..."
+    (click)="$event.stopPropagation()"
+    class="title-input"
+    [ngStyle]="getTitleStyles()"
+  />
+  <textarea
+    [(ngModel)]="text"
+    (focus)="active = 'text'"
+    (click)="$event.stopPropagation()"
+    [ngStyle]="getTextStyles()"
+    placeholder="Napisz swój wiersz..."
+  ></textarea>
+
+  <button routerLink="/" class="back-btn">← Wróć do Home</button>
+
+  @if (savedMessage) {
+    <div class="toast">✅ Zapisano!</div>
+  }
+</div>

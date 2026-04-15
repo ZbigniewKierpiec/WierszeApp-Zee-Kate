@@ -1,0 +1,191 @@
+
+
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+
+
+
+
+.toast {
+  position: fixed;
+  
+  bottom: 20px;
+  right: 20px;
+
+  padding: 12px 18px;
+  border-radius: 10px;
+
+  color: white;
+  font-weight: 500;
+
+  animation: fadeIn 0.3s ease;
+}
+
+.toast.success {
+  background: #16a34a;
+}
+
+.toast.danger {
+  background: #dc2626;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.editor-area {
+  padding: 24px;
+  background: #f9fafb;
+}
+
+/* TOOLBAR */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  padding: 12px;
+  background: white;
+  border-radius: 12px;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+
+.template-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+   padding: 1.2rem 0;
+}
+
+.template-label .icon {
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+}
+
+
+
+
+
+/* POEM */
+.poem-container {
+  max-width: 900px;
+  margin: auto;
+
+  padding: 30px;
+  border-radius: 16px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+
+
+/* 🔥 KLUCZOWE — textarea dziedziczy styl template */
+.poem-container textarea,
+.poem-container input {
+  background: transparent;
+  color: inherit;
+}
+
+
+
+
+
+
+
+/* INPUT */
+.title {
+  width: 100%;
+  font-size: 26px;
+  border: none;
+  outline: none;
+  background: transparent;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* TEXT */
+textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  min-height: 200px;
+  line-height: 1.6;
+}
+
+/* BOTTOM BAR */
+.bottom-bar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.bottom-bar button {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #1f2937;
+  color: white;
+  cursor: pointer;
+}
+
+.bottom-bar button:hover {
+  background: #374151;
+}
+
+
+
+/* 🌸 Floral */
+.Floral {
+  border: 4px solid pink;
+  border-radius: 16px;
+}
+
+/* 📜 Vintage */
+.Vintage {
+  border: 3px solid #d4af37;
+  background: #fffdf5 !important;
+}
+
+/* ❀ Romantic */
+.Romantic::before,
+.Romantic::after {
+  content: '❀ ❀ ❀';
+  display: block;
+  text-align: center;
+}
+
+/* 🌙 Dark */
+.Dark {
+  background: #111827 !important;
+  color: white;
+}
+
+/* 🔳 Minimal */
+.Minimal {
+  border-left: 3px solid #000;
+  padding-left: 16px;
+}

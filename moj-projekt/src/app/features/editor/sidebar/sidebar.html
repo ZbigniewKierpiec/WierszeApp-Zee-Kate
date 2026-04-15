@@ -1,0 +1,52 @@
+<aside class="sidebar">
+
+  <div class="section">
+    <h3>🎨 Style</h3>
+
+    <div
+      class="card"
+      *ngFor="let t of themes"
+      [class.active]="selectedTheme === t.name"
+      (click)="onThemeClick(t.name)"
+    >
+      {{ t.name }}
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>📐 Template</h3>
+
+    <div *ngFor="let t of templates" class="template-group">
+
+      <div
+        class="card"
+        [class.active]="selectedTemplate === t.name"
+        (click)="onTemplateClick(t)"
+      >
+        <span>{{ t.icon }} {{ t.name }}</span>
+        <span *ngIf="t.variants?.length" class="arrow">
+          {{ openTemplate === t.name ? '▾' : '▸' }}
+        </span>
+      </div>
+
+      <div class="variants" [class.open]="openTemplate === t.name">
+        <div
+          class="variant"
+          *ngFor="let v of t.variants"
+          (click)="onVariantClick(v); $event.stopPropagation()"
+        >
+          • {{ v.name }}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section actions">
+    <button type="button" (click)="onSave()">💾 Save</button>
+    <button type="button" (click)="onClear()">🧹 Clear</button>
+    <button type="button" (click)="onPreview()">📖 Preview</button>
+    <button type="button" (click)="onExport()">📥 Export</button>
+  </div>
+
+</aside>

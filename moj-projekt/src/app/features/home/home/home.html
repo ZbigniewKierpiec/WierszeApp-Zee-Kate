@@ -1,0 +1,21 @@
+<section class="hero">
+  <audio #introAudio src="assets/audio/zee.wav" autoplay muted></audio>
+  
+
+  <div class="hero-content">
+    <!-- <h1 class="shine">Stwórz swoją książkę z wierszami</h1> -->
+
+    <h1 class="wave">
+      <span *ngFor="let l of text.split(''); let i = index" [style.animationDelay]="i * 0.08 + 's'">
+        {{ l === ' ' ? '\u00A0' : l }}
+      </span>
+    </h1>
+
+    <p>Twórz piękne wiersze, wybierz styl i zamów swoją własną książkę.</p>
+
+    <div class="buttons">
+      <button routerLink="/editor" class="primary">Zacznij tworzyć</button>
+      <button class="secondary">Zobacz przykłady</button>
+    </div>
+  </div>
+</section>

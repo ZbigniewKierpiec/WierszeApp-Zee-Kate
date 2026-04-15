@@ -1,0 +1,134 @@
+.box {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+
+  select,
+  input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+  }
+
+  .actions {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+  }
+
+  button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    
+  }
+
+  .primary {
+    background: skyblue;
+    color: white;
+  }
+
+  .danger {
+    background: red;
+    color: white;
+  }
+}
+
+textarea {
+  width: 100%;
+  min-height: 200px;
+  max-height: 400px;
+
+  resize: none;
+  overflow-y: auto;
+
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+
+  box-sizing: border-box;
+}
+
+.back-btn {
+  margin-top: 20px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 16px;
+  border-radius: 999px;
+
+  background: white;
+  border: 1px solid #e5e7eb;
+
+  cursor: pointer;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+
+  label {
+    margin-bottom: 4px;
+    color: #666;
+  }
+}
+
+.title-input {
+  width: 100%;
+  margin-bottom: 10px;
+
+  font-size: 24px;
+  font-weight: 600;
+
+  padding: 10px;
+  border: none;
+  border-bottom: 2px solid #ddd;
+
+  outline: none;
+
+  &:focus {
+    border-color: #4f46e5;
+  }
+}
+
+
+
+
+.toast {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 20px;
+  border-radius: 14px;
+
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+  animation: slideIn 0.3s ease, fadeOut 0.3s ease 1.7s;
+
+}
+
+
+

@@ -1,0 +1,99 @@
+<app-topbar (save)="save()" (clear)="clear()"></app-topbar>
+
+<div class="layout">
+  <!-- <app-sidebar
+    (themeChange)="applyTheme($event)"
+    (templateChange)="applyTemplate($event)"
+    (save)="save()"
+    (clear)="clear()"
+  ></app-sidebar> -->
+<app-sidebar
+  [selectedTemplate]="selectedTemplate"
+  [selectedTheme]="selectedTheme"
+  (themeChange)="applyTheme($event)"
+  (templateChange)="applyTemplate($event)"
+  (variantChange)="applyVariant($event)"
+  (save)="save()"
+  (clear)="clear()"
+></app-sidebar>
+  <div class="editor-area">
+    <!-- 🔧 TOOLBAR -->
+    <div class="toolbar">
+      <select [(ngModel)]="textFont">
+        <option>Playfair Display</option>
+        <option>Georgia</option>
+        <option>Arial</option>
+      </select>
+
+      <input type="number" [(ngModel)]="textFontSize" min="12" max="60" />
+
+      <input type="color" [(ngModel)]="textColor" />
+
+      <select [(ngModel)]="textAlign">
+        <option value="left">Left</option>
+        <option value="center">Center</option>
+        <option value="right">Right</option>
+      </select>
+
+      <select [(ngModel)]="background">
+        <option value="#ffffff">White</option>
+        <option value="#fdf6e3">Paper</option>
+        <option value="#1f2937">Dark</option>
+      </select>
+    </div>
+
+    <!-- ✨ TEMPLATE PREVIEW -->
+
+    <div class="template-label">
+      <span class="icon">
+        {{ templateIcons[selectedTemplate] || '📄' }}
+      </span>
+
+      <span> Template: {{ selectedTemplate }} </span>
+    </div>
+
+    <!-- 📖 POEM -->
+    <div
+      class="poem-container"
+      [ngClass]="selectedTemplate !== 'Default' ? selectedTemplate : ''"
+      [ngStyle]="{ background: background }"
+    >
+      <input
+        [(ngModel)]="title"
+        placeholder="Tytuł wiersza..."
+        class="title"
+        [ngStyle]="{
+          'text-align': textAlign,
+
+          'font-family': textFont,
+        }"
+      />
+
+      <textarea
+        [(ngModel)]="text"
+        placeholder="Napisz swój wiersz..."
+        [ngStyle]="{
+          'text-align': textAlign,
+
+          'font-family': textFont,
+          'font-size.px': textFontSize,
+        }"
+      ></textarea>
+    </div>
+
+    <!-- ⬇️ BOTTOM ACTIONS -->
+    <div class="bottom-bar">
+      <button (click)="goBack()">← Back</button>
+      <button (click)="preview()">👁 Preview</button>
+      <button (click)="newPoem()">➕ New</button>
+    </div>
+  </div>
+</div>
+
+@if (savedMessage) {
+  <div class="toast success">💾 Zapisano!</div>
+}
+
+@if (clearMessage) {
+  <div class="toast danger">🧹 Wyczyszczone</div>
+}
