@@ -1,18 +1,11 @@
-
-
-
 .layout {
   display: grid;
   grid-template-columns: 260px 1fr;
 }
 
-
-
-
-
 .toast {
   position: fixed;
-  
+
   bottom: 20px;
   right: 20px;
 
@@ -44,7 +37,6 @@
   }
 }
 
-
 .editor-area {
   padding: 24px;
   background: #f9fafb;
@@ -60,7 +52,7 @@
   background: white;
   border-radius: 12px;
 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
 }
 
@@ -69,7 +61,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-   padding: 1.2rem 0;
+  padding: 1.2rem 0;
 }
 
 .template-label .icon {
@@ -83,10 +75,6 @@
   font-size: 18px;
 }
 
-
-
-
-
 /* POEM */
 .poem-container {
   max-width: 900px;
@@ -95,10 +83,8 @@
   padding: 30px;
   border-radius: 16px;
 
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
-
-
 
 /* 🔥 KLUCZOWE — textarea dziedziczy styl template */
 .poem-container textarea,
@@ -106,12 +92,6 @@
   background: transparent;
   color: inherit;
 }
-
-
-
-
-
-
 
 /* INPUT */
 .title {
@@ -156,8 +136,6 @@ textarea {
   background: #374151;
 }
 
-
-
 /* 🌸 Floral */
 .Floral {
   border: 4px solid pink;
@@ -188,4 +166,39 @@ textarea {
 .Minimal {
   border-left: 3px solid #000;
   padding-left: 16px;
+}
+
+.page-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+
+  margin-top: 20px;
+  padding: 10px 16px;
+
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+
+  backdrop-filter: blur(6px);
+}
+
+.page-controls button {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #1f2937;
+  color: white;
+  cursor: pointer;
+}
+
+.page-id {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.page-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

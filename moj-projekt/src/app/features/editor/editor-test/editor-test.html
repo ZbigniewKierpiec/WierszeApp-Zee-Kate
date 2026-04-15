@@ -1,6 +1,7 @@
 <app-topbar (save)="save()" (clear)="clear()"></app-topbar>
 
 <div class="layout">
+  <!-- SIDEBAR -->
   <app-sidebar
     [selectedTemplate]="selectedTemplate"
     [selectedTheme]="selectedTheme"
@@ -12,7 +13,9 @@
     (clear)="clear()"
   ></app-sidebar>
 
+  <!-- EDITOR -->
   <div class="editor-area">
+    <!-- 🔧 TOOLBAR -->
     <div class="toolbar">
       <select [(ngModel)]="textFont">
         <option>Playfair Display</option>
@@ -29,37 +32,29 @@
         <option value="center">Center</option>
         <option value="right">Right</option>
       </select>
-
-      <select [(ngModel)]="background">
-        <option value="#ffffff">White</option>
-        <option value="#fdf6e3">Paper</option>
-        <option value="#1f2937">Dark</option>
-      </select>
     </div>
 
+    <!-- ✨ TEMPLATE LABEL -->
     <div class="template-label">
       <span class="icon">
         {{ templateIcons[selectedTemplate] || '📄' }}
       </span>
+
       <span>
         Template: {{ selectedTemplate }}
-        <ng-container *ngIf="selectedVariant">
-          • {{ selectedVariant.name }}
-        </ng-container>
+        <ng-container *ngIf="selectedVariant"> • {{ selectedVariant.name }} </ng-container>
       </span>
     </div>
 
-    <div
-      class="poem-container"
-      [ngStyle]="getVariantStyles()"
-    >
+    <!-- 📖 POEM -->
+    <div class="poem-container" [ngStyle]="getVariantStyles()">
       <input
         [(ngModel)]="title"
         placeholder="Tytuł wiersza..."
         class="title"
         [ngStyle]="{
           'text-align': textAlign,
-          'font-family': textFont
+          'font-family': textFont,
         }"
       />
 
@@ -69,19 +64,35 @@
         [ngStyle]="{
           'text-align': textAlign,
           'font-family': textFont,
-          'font-size.px': textFontSize
+          'font-size.px': textFontSize,
         }"
       ></textarea>
     </div>
 
+    <!-- 🎛 NAVIGATION -->
     <div class="bottom-bar">
       <button (click)="goBack()">← Back</button>
       <button (click)="preview()">👁 Preview</button>
-      <button (click)="newPoem()">➕ New</button>
     </div>
+
+    <!-- 📄 PAGE CONTROLS -->
+    <div class="page-controls">
+      <button (click)="prevPage()">⬅</button>
+
+      <span> Page {{ currentPageIndex + 1 }} / {{ pages.length }} </span>
+
+      <button (click)="nextPage()">➡</button>
+
+      <button (click)="newPage()">➕ New Page</button>
+      <button (click)="deletePage()" [disabled]="pages.length === 1">🗑 Delete</button>
+    </div>
+
+    <!-- 🧠 DEBUG (opcjonalne) -->
+    <div class="page-id">ID: {{ pages[currentPageIndex]?.id }}</div>
   </div>
 </div>
 
+<!-- 🔔 TOASTS -->
 @if (savedMessage) {
   <div class="toast success">💾 Zapisano!</div>
 }
