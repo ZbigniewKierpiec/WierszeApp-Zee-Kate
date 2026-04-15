@@ -21,6 +21,54 @@ export class Sidebar {
 
   themes = [{ name: 'Romantic' }, { name: 'Minimal' }, { name: 'Dark Poetry' }];
 
+  // templates = [
+  //   {
+  //     name: 'Default',
+  //     icon: '📄',
+  //     variants: [{ name: 'Clean' }, { name: 'Paper' }, { name: 'Soft' }, { name: 'Classic' }],
+  //   },
+  //   {
+  //     name: 'Floral',
+  //     icon: '🌸',
+  //     variants: [{ name: 'Soft' }, { name: 'Elegant' }, { name: 'Frame' }, { name: 'Garden' }],
+  //   },
+  //   {
+  //     name: 'Vintage',
+  //     icon: '📜',
+  //     variants: [
+  //       { name: 'Old Paper' },
+  //       { name: 'Gold Frame' },
+  //       { name: 'Classic Ink' },
+  //       { name: 'Retro' },
+  //     ],
+  //   },
+  //   {
+  //     name: 'Romantic',
+  //     icon: '❀',
+  //     variants: [{ name: 'Hearts' }, { name: 'Soft Love' }, { name: 'Poetry' }, { name: 'Rose' }],
+  //   },
+  //   {
+  //     name: 'Dark',
+  //     icon: '🌙',
+  //     variants: [
+  //       { name: 'Deep Night' },
+  //       { name: 'Soft Dark' },
+  //       { name: 'Neon' },
+  //       { name: 'Midnight' },
+  //     ],
+  //   },
+  //   {
+  //     name: 'Minimal',
+  //     icon: '▫️',
+  //     variants: [
+  //       { name: 'Line' },
+  //       { name: 'Soft Line' },
+  //       { name: 'Clean Space' },
+  //       { name: 'Mono' },
+  //     ],
+  //   },
+  // ];
+
   templates = [
     {
       name: 'Default',

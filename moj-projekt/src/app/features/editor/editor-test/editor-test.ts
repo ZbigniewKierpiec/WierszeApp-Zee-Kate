@@ -23,6 +23,11 @@ export class EditorTest {
   textAlign = 'left';
   textColor = '#000000';
 
+  titleFont = 'Playfair Display';
+  titleSize = 28;
+  titleColor = '#000000';
+  titleAlign = 'center';
+  activeField: 'title' | 'text' = 'text';
   templateIcons: Record<string, string> = {
     Default: '📄',
     Floral: '🌸',
@@ -163,6 +168,7 @@ export class EditorTest {
   }
 
   // 🔥 STYLES
+
   getVariantStyles() {
     if (!this.selectedTemplate) return {};
 
