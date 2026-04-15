@@ -148,19 +148,15 @@
   <div class="toast danger">🧹 Wyczyszczone</div>
 }
 
-
-
-
 <!-- 🔥 PREVIEW MUSI BYĆ POZA layout -->
 <!-- 🔥 PREVIEW POZA layout -->
 @if (isPreviewOpen) {
   <div class="preview-overlay" (click)="isPreviewOpen = false">
-
     <div class="preview-a3" (click)="$event.stopPropagation()">
-
       <!-- POEM -->
       <div
         class="poem-container"
+      
         [ngStyle]="getVariantStyles()"
       >
         <!-- TITLE -->
@@ -170,7 +166,7 @@
             'text-align': titleAlign,
             'font-family': titleFont,
             'font-size.px': titleSize,
-            color: titleColor
+            color: titleColor,
           }"
         >
           {{ pages[currentPageIndex]?.title }}
@@ -184,17 +180,25 @@
             'font-family': textFont,
             'font-size.px': textFontSize,
             color: textColor,
-            'white-space': 'pre-wrap'
+            'white-space': 'pre-wrap',
           }"
         >
           {{ pages[currentPageIndex]?.text }}
         </div>
       </div>
 
-      <button class="close-btn" (click)="isPreviewOpen = false">
-        Close
-      </button>
+      <!-- 🔥 NAVIGATION -->
+      <div class="nav-buttons">
+        <button (click)="prevPage()" [disabled]="currentPageIndex === 0">← Prev</button>
 
+        <span class="page-indicator"> {{ currentPageIndex + 1 }} / {{ pages.length }} </span>
+
+        <button (click)="nextPage()" [disabled]="currentPageIndex === pages.length - 1">
+          Next →
+        </button>
+      </div>
+
+      <button class="close-btn" (click)="isPreviewOpen = false">Close</button>
     </div>
   </div>
 }

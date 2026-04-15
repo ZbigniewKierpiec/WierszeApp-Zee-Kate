@@ -3,12 +3,16 @@ import { Topbar } from '../topbar/topbar';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
+import { animate, style, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-editor-test',
   imports: [Topbar, CommonModule, Sidebar, FormsModule],
   templateUrl: './editor-test.html',
   styleUrl: './editor-test.scss',
+
+
+
 })
 export class EditorTest {
   // 🔥 UI fields (edytor)
@@ -290,6 +294,25 @@ export class EditorTest {
     this.isPreviewOpen = true;
   }
 
+
+
+// nextPage() {
+//   if (this.currentPageIndex < this.pages.length - 1) {
+//     this.currentPageIndex++;
+//   }
+// }
+
+// prevPage() {
+//   if (this.currentPageIndex > 0) {
+//     this.currentPageIndex--;
+//   }
+// }
+
+
+
+
+
+
   goBack() {
     window.history.back();
   }
@@ -330,3 +353,7 @@ export class EditorTest {
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   }
 }
+function trigger(arg0: string, arg1: any[]): any {
+  throw new Error('Function not implemented.');
+}
+

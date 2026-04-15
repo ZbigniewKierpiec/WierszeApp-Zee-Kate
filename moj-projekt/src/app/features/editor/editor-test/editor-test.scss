@@ -281,3 +281,37 @@ textarea {
 .close-btn:hover {
   background: #374151;
 }
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+
+  margin-top: 20px;
+}
+
+.nav-buttons button {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+
+  background: #111827;
+  color: white;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.nav-buttons button:hover:not(:disabled) {
+  background: #374151;
+}
+
+.nav-buttons button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-indicator {
+  font-size: 14px;
+  color: #6b7280;
+}
