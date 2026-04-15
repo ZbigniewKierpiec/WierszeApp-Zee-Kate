@@ -1,23 +1,18 @@
 <app-topbar (save)="save()" (clear)="clear()"></app-topbar>
 
 <div class="layout">
-  <!-- <app-sidebar
+  <app-sidebar
+    [selectedTemplate]="selectedTemplate"
+    [selectedTheme]="selectedTheme"
+    [selectedVariant]="selectedVariant"
     (themeChange)="applyTheme($event)"
     (templateChange)="applyTemplate($event)"
+    (variantChange)="applyVariant($event)"
     (save)="save()"
     (clear)="clear()"
-  ></app-sidebar> -->
-<app-sidebar
-  [selectedTemplate]="selectedTemplate"
-  [selectedTheme]="selectedTheme"
-  (themeChange)="applyTheme($event)"
-  (templateChange)="applyTemplate($event)"
-  (variantChange)="applyVariant($event)"
-  (save)="save()"
-  (clear)="clear()"
-></app-sidebar>
+  ></app-sidebar>
+
   <div class="editor-area">
-    <!-- 🔧 TOOLBAR -->
     <div class="toolbar">
       <select [(ngModel)]="textFont">
         <option>Playfair Display</option>
@@ -42,21 +37,21 @@
       </select>
     </div>
 
-    <!-- ✨ TEMPLATE PREVIEW -->
-
     <div class="template-label">
       <span class="icon">
         {{ templateIcons[selectedTemplate] || '📄' }}
       </span>
-
-      <span> Template: {{ selectedTemplate }} </span>
+      <span>
+        Template: {{ selectedTemplate }}
+        <ng-container *ngIf="selectedVariant">
+          • {{ selectedVariant.name }}
+        </ng-container>
+      </span>
     </div>
 
-    <!-- 📖 POEM -->
     <div
       class="poem-container"
-      [ngClass]="selectedTemplate !== 'Default' ? selectedTemplate : ''"
-      [ngStyle]="{ background: background }"
+      [ngStyle]="getVariantStyles()"
     >
       <input
         [(ngModel)]="title"
@@ -64,8 +59,7 @@
         class="title"
         [ngStyle]="{
           'text-align': textAlign,
-
-          'font-family': textFont,
+          'font-family': textFont
         }"
       />
 
@@ -74,14 +68,12 @@
         placeholder="Napisz swój wiersz..."
         [ngStyle]="{
           'text-align': textAlign,
-
           'font-family': textFont,
-          'font-size.px': textFontSize,
+          'font-size.px': textFontSize
         }"
       ></textarea>
     </div>
 
-    <!-- ⬇️ BOTTOM ACTIONS -->
     <div class="bottom-bar">
       <button (click)="goBack()">← Back</button>
       <button (click)="preview()">👁 Preview</button>

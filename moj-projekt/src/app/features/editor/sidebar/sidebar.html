@@ -1,5 +1,4 @@
 <aside class="sidebar">
-
   <div class="section">
     <h3>🎨 Style</h3>
 
@@ -17,12 +16,7 @@
     <h3>📐 Template</h3>
 
     <div *ngFor="let t of templates" class="template-group">
-
-      <div
-        class="card"
-        [class.active]="selectedTemplate === t.name"
-        (click)="onTemplateClick(t)"
-      >
+      <div class="card" [class.active]="selectedTemplate === t.name" (click)="onTemplateClick(t)">
         <span>{{ t.icon }} {{ t.name }}</span>
         <span *ngIf="t.variants?.length" class="arrow">
           {{ openTemplate === t.name ? '▾' : '▸' }}
@@ -38,7 +32,6 @@
           • {{ v.name }}
         </div>
       </div>
-
     </div>
   </div>
 
@@ -48,5 +41,4 @@
     <button type="button" (click)="onPreview()">📖 Preview</button>
     <button type="button" (click)="onExport()">📥 Export</button>
   </div>
-
 </aside>

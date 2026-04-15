@@ -7,11 +7,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
 })
-export class Sidebar{
-
-   @Input() selectedTemplate = '';
+export class Sidebar {
+  @Input() selectedTemplate = '';
   @Input() selectedTheme = '';
-
+  @Input() selectedVariant: any = null;
   @Output() themeChange = new EventEmitter<string>();
   @Output() templateChange = new EventEmitter<string>();
   @Output() variantChange = new EventEmitter<any>();
@@ -20,32 +19,18 @@ export class Sidebar{
 
   openTemplate: string | null = null;
 
-  themes = [
-    { name: 'Romantic' },
-    { name: 'Minimal' },
-    { name: 'Dark Poetry' }
-  ];
+  themes = [{ name: 'Romantic' }, { name: 'Minimal' }, { name: 'Dark Poetry' }];
 
   templates = [
     {
       name: 'Default',
       icon: '📄',
-      variants: [
-        { name: 'Clean' },
-        { name: 'Paper' },
-        { name: 'Soft' },
-        { name: 'Classic' }
-      ]
+      variants: [{ name: 'Clean' }, { name: 'Paper' }, { name: 'Soft' }, { name: 'Classic' }],
     },
     {
       name: 'Floral',
       icon: '🌸',
-      variants: [
-        { name: 'Soft' },
-        { name: 'Elegant' },
-        { name: 'Frame' },
-        { name: 'Garden' }
-      ]
+      variants: [{ name: 'Soft' }, { name: 'Elegant' }, { name: 'Frame' }, { name: 'Garden' }],
     },
     {
       name: 'Vintage',
@@ -54,18 +39,13 @@ export class Sidebar{
         { name: 'Old Paper' },
         { name: 'Gold Frame' },
         { name: 'Classic Ink' },
-        { name: 'Retro' }
-      ]
+        { name: 'Retro' },
+      ],
     },
     {
       name: 'Romantic',
       icon: '❀',
-      variants: [
-        { name: 'Hearts' },
-        { name: 'Soft Love' },
-        { name: 'Poetry' },
-        { name: 'Rose' }
-      ]
+      variants: [{ name: 'Hearts' }, { name: 'Soft Love' }, { name: 'Poetry' }, { name: 'Rose' }],
     },
     {
       name: 'Dark',
@@ -74,8 +54,8 @@ export class Sidebar{
         { name: 'Deep Night' },
         { name: 'Soft Dark' },
         { name: 'Neon' },
-        { name: 'Midnight' }
-      ]
+        { name: 'Midnight' },
+      ],
     },
     {
       name: 'Minimal',
@@ -84,29 +64,25 @@ export class Sidebar{
         { name: 'Line' },
         { name: 'Soft Line' },
         { name: 'Clean Space' },
-        { name: 'Mono' }
-      ]
-    }
+        { name: 'Mono' },
+      ],
+    },
   ];
 
   onThemeClick(name: string) {
     this.themeChange.emit(name);
   }
-onTemplateClick(template: any) {
-  const isAlreadySelected = this.selectedTemplate === template.name;
+  onTemplateClick(template: any) {
+    const isAlreadySelected = this.selectedTemplate === template.name;
 
-  this.templateChange.emit(template.name);
+    this.templateChange.emit(template.name);
 
-  if (isAlreadySelected) {
-    this.openTemplate =
-      this.openTemplate === template.name ? null : template.name;
-  } else {
-    this.openTemplate = null;
+    if (isAlreadySelected) {
+      this.openTemplate = this.openTemplate === template.name ? null : template.name;
+    } else {
+      this.openTemplate = null;
+    }
   }
-}
-
-
-
 
   onVariantClick(variant: any) {
     this.variantChange.emit(variant);
@@ -127,9 +103,4 @@ onTemplateClick(template: any) {
   onExport() {
     console.log('📥 export');
   }
-
-
-
-
-
 }
