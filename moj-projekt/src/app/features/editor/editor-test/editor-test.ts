@@ -42,7 +42,11 @@ export class EditorTest {
   // 🔥 MULTI PAGE
   pages: any[] = [];
   currentPageIndex = 0;
+  /////////////////////////
 
+  isPreviewOpen = false;
+
+  ///////////////////////
   constructor(private cd: ChangeDetectorRef) {}
 
   // 🔥 ID
@@ -281,7 +285,9 @@ export class EditorTest {
   }
 
   preview() {
-    console.log('preview');
+    this.savePage(); // 🔥 NAJWAŻNIEJSZE
+    localStorage.setItem('pages', JSON.stringify(this.pages));
+    this.isPreviewOpen = true;
   }
 
   goBack() {

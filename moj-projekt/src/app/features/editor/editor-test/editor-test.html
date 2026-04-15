@@ -34,67 +34,43 @@
       </select>
     </div> -->
 
-<div class="toolbar">
+    <div class="toolbar">
+      <!-- FONT -->
+      <select
+        [ngModel]="activeField === 'title' ? titleFont : textFont"
+        (ngModelChange)="activeField === 'title' ? (titleFont = $event) : (textFont = $event)"
+      >
+        <option>Playfair Display</option>
+        <option>Georgia</option>
+        <option>Arial</option>
+      </select>
 
-  <!-- FONT -->
-  <select
-    [ngModel]="activeField === 'title' ? titleFont : textFont"
-    (ngModelChange)="
-      activeField === 'title'
-        ? titleFont = $event
-        : textFont = $event
-    "
-  >
-    <option>Playfair Display</option>
-    <option>Georgia</option>
-    <option>Arial</option>
-  </select>
+      <!-- SIZE -->
+      <input
+        type="number"
+        [ngModel]="activeField === 'title' ? titleSize : textFontSize"
+        (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
+        min="12"
+        max="60"
+      />
 
-  <!-- SIZE -->
-  <input
-    type="number"
-    [ngModel]="activeField === 'title' ? titleSize : textFontSize"
-    (ngModelChange)="
-      activeField === 'title'
-        ? titleSize = $event
-        : textFontSize = $event
-    "
-    min="12"
-    max="60"
-  />
+      <!-- COLOR -->
+      <input
+        type="color"
+        [ngModel]="activeField === 'title' ? titleColor : textColor"
+        (ngModelChange)="activeField === 'title' ? (titleColor = $event) : (textColor = $event)"
+      />
 
-  <!-- COLOR -->
-  <input
-    type="color"
-    [ngModel]="activeField === 'title' ? titleColor : textColor"
-    (ngModelChange)="
-      activeField === 'title'
-        ? titleColor = $event
-        : textColor = $event
-    "
-  />
-
-  <!-- ALIGN -->
-  <select
-    [ngModel]="activeField === 'title' ? titleAlign : textAlign"
-    (ngModelChange)="
-      activeField === 'title'
-        ? titleAlign = $event
-        : textAlign = $event
-    "
-  >
-    <option value="left">Left</option>
-    <option value="center">Center</option>
-    <option value="right">Right</option>
-  </select>
-
-</div>
-
-
-
-
-
-
+      <!-- ALIGN -->
+      <select
+        [ngModel]="activeField === 'title' ? titleAlign : textAlign"
+        (ngModelChange)="activeField === 'title' ? (titleAlign = $event) : (textAlign = $event)"
+      >
+        <option value="left">Left</option>
+        <option value="center">Center</option>
+        <option value="right">Right</option>
+      </select>
+    </div>
 
     <!-- ✨ TEMPLATE LABEL -->
     <div class="template-label">
@@ -104,7 +80,9 @@
 
       <span>
         Template: {{ selectedTemplate }}
-        <ng-container *ngIf="selectedVariant"> • {{ selectedVariant.name }} </ng-container>
+        @if (selectedVariant) {
+          <span class="variant"> • {{ selectedVariant.name }}</span>
+        }
       </span>
     </div>
 
@@ -168,4 +146,55 @@
 
 @if (clearMessage) {
   <div class="toast danger">🧹 Wyczyszczone</div>
+}
+
+
+
+
+<!-- 🔥 PREVIEW MUSI BYĆ POZA layout -->
+<!-- 🔥 PREVIEW POZA layout -->
+@if (isPreviewOpen) {
+  <div class="preview-overlay" (click)="isPreviewOpen = false">
+
+    <div class="preview-a3" (click)="$event.stopPropagation()">
+
+      <!-- POEM -->
+      <div
+        class="poem-container"
+        [ngStyle]="getVariantStyles()"
+      >
+        <!-- TITLE -->
+        <div
+          class="title-preview"
+          [ngStyle]="{
+            'text-align': titleAlign,
+            'font-family': titleFont,
+            'font-size.px': titleSize,
+            color: titleColor
+          }"
+        >
+          {{ pages[currentPageIndex]?.title }}
+        </div>
+
+        <!-- TEXT -->
+        <div
+          class="text-preview"
+          [ngStyle]="{
+            'text-align': textAlign,
+            'font-family': textFont,
+            'font-size.px': textFontSize,
+            color: textColor,
+            'white-space': 'pre-wrap'
+          }"
+        >
+          {{ pages[currentPageIndex]?.text }}
+        </div>
+      </div>
+
+      <button class="close-btn" (click)="isPreviewOpen = false">
+        Close
+      </button>
+
+    </div>
+  </div>
 }
