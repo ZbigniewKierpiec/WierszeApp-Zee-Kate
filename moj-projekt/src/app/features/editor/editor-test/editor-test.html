@@ -27,85 +27,73 @@
         <option>Arial</option>
       </select> -->
 
-<button (click)="fillLorem()">🧪 Lorem</button>
+      <button (click)="fillLorem()">🧪 Lorem</button>
 
-<button type="button" (click)="formatAdvanced()">
-  ✨ Format Advanced
-</button>
+      <button type="button" (click)="formatAdvanced()">✨ Format Advanced</button>
 
-<button (click)="formatAI()">✨ AI Format</button>
+      <button (click)="formatAI()">✨ AI Format</button>
 
-<select
-  [ngModel]="activeField === 'title' ? titleFont : textFont"
-  (ngModelChange)="onFontChange($event)"
->
-  <optgroup label="Serif (Book)">
-    <option value="'Playfair Display', serif" style="font-family: 'Playfair Display', serif">
-      Playfair Display
-    </option>
-    <option value="'Cormorant Garamond', serif" style="font-family: 'Cormorant Garamond', serif">
-      Cormorant Garamond
-    </option>
-    <option value="'Cormorant', serif" style="font-family: 'Cormorant', serif">
-      Cormorant
-    </option>
-    <option value="'EB Garamond', serif" style="font-family: 'EB Garamond', serif">
-      EB Garamond
-    </option>
-    <option value="'Libre Baskerville', serif" style="font-family: 'Libre Baskerville', serif">
-      Libre Baskerville
-    </option>
-    <option value="'Crimson Text', serif" style="font-family: 'Crimson Text', serif">
-      Crimson Text
-    </option>
-    <option value="'Merriweather', serif" style="font-family: 'Merriweather', serif">
-      Merriweather
-    </option>
-    <option value="'Lora', serif" style="font-family: 'Lora', serif">
-      Lora
-    </option>
-    <option value="'Spectral', serif" style="font-family: 'Spectral', serif">
-      Spectral
-    </option>
-    <option value="'Alegreya', serif" style="font-family: 'Alegreya', serif">
-      Alegreya
-    </option>
-    <option value="'Source Serif 4', serif" style="font-family: 'Source Serif 4', serif">
-      Source Serif 4
-    </option>
-    <option value="Georgia, serif" style="font-family: Georgia, serif">
-      Georgia
-    </option>
-  </optgroup>
+      <select
+        [ngModel]="activeField === 'title' ? titleFont : textFont"
+        (ngModelChange)="onFontChange($event)"
+      >
+        <optgroup label="Serif (Book)">
+          <option value="'Playfair Display', serif" style="font-family: 'Playfair Display', serif">
+            Playfair Display
+          </option>
+          <option
+            value="'Cormorant Garamond', serif"
+            style="font-family: 'Cormorant Garamond', serif"
+          >
+            Cormorant Garamond
+          </option>
+          <option value="'Cormorant', serif" style="font-family: 'Cormorant', serif">
+            Cormorant
+          </option>
+          <option value="'EB Garamond', serif" style="font-family: 'EB Garamond', serif">
+            EB Garamond
+          </option>
+          <option
+            value="'Libre Baskerville', serif"
+            style="font-family: 'Libre Baskerville', serif"
+          >
+            Libre Baskerville
+          </option>
+          <option value="'Crimson Text', serif" style="font-family: 'Crimson Text', serif">
+            Crimson Text
+          </option>
+          <option value="'Merriweather', serif" style="font-family: 'Merriweather', serif">
+            Merriweather
+          </option>
+          <option value="'Lora', serif" style="font-family: 'Lora', serif">Lora</option>
+          <option value="'Spectral', serif" style="font-family: 'Spectral', serif">Spectral</option>
+          <option value="'Alegreya', serif" style="font-family: 'Alegreya', serif">Alegreya</option>
+          <option value="'Source Serif 4', serif" style="font-family: 'Source Serif 4', serif">
+            Source Serif 4
+          </option>
+          <option value="Georgia, serif" style="font-family: Georgia, serif">Georgia</option>
+        </optgroup>
 
-  <optgroup label="Display (Titles)">
-    <option value="'Cinzel', serif" style="font-family: 'Cinzel', serif">
-      Cinzel
-    </option>
-    <option value="'DM Serif Display', serif" style="font-family: 'DM Serif Display', serif">
-      DM Serif Display
-    </option>
-  </optgroup>
+        <optgroup label="Display (Titles)">
+          <option value="'Cinzel', serif" style="font-family: 'Cinzel', serif">Cinzel</option>
+          <option value="'DM Serif Display', serif" style="font-family: 'DM Serif Display', serif">
+            DM Serif Display
+          </option>
+        </optgroup>
 
-  <optgroup label="Sans-serif (UI)">
-    <option value="'Work Sans', sans-serif" style="font-family: 'Work Sans', sans-serif">
-      Work Sans
-    </option>
-    <option value="'Montserrat', sans-serif" style="font-family: 'Montserrat', sans-serif">
-      Montserrat
-    </option>
-    <option value="'Raleway', sans-serif" style="font-family: 'Raleway', sans-serif">
-      Raleway
-    </option>
-    <option value="Arial, sans-serif" style="font-family: Arial, sans-serif">
-      Arial
-    </option>
-  </optgroup>
-</select>
-
-
-
-
+        <optgroup label="Sans-serif (UI)">
+          <option value="'Work Sans', sans-serif" style="font-family: 'Work Sans', sans-serif">
+            Work Sans
+          </option>
+          <option value="'Montserrat', sans-serif" style="font-family: 'Montserrat', sans-serif">
+            Montserrat
+          </option>
+          <option value="'Raleway', sans-serif" style="font-family: 'Raleway', sans-serif">
+            Raleway
+          </option>
+          <option value="Arial, sans-serif" style="font-family: Arial, sans-serif">Arial</option>
+        </optgroup>
+      </select>
 
       <!-- SIZE -->
       <input
@@ -171,7 +159,7 @@
           'text-align': textAlign,
           'font-family': textFont,
           'font-size.px': textFontSize,
-           'color': textColor
+          color: textColor,
         }"
       ></textarea>
     </div>
