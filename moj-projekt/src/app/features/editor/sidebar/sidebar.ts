@@ -112,6 +112,7 @@ presets = [
     titleFont: "'Playfair Display', serif",
     textFont: "'Crimson Text', serif",
     textColor: '#7f1d1d',
+    titleColor: '#7f1d1d', // 🔥 DODAJ
     autoFormat: 'poetry'
   },
   {
@@ -133,6 +134,7 @@ presets = [
     titleFont: "'Work Sans', sans-serif",
     textFont: "'Work Sans', sans-serif",
     textColor: '#222222',
+    titleColor: '#111111', // 🔥 DODAJ
     autoFormat: 'compact'
   },
   {
@@ -143,6 +145,7 @@ presets = [
     titleFont: "'EB Garamond', serif",
     textFont: "'EB Garamond', serif",
     textColor: '#3b2f2f',
+    titleColor: '#3b2f2f', // 🔥 DODAJ
     autoFormat: 'poetry'
   },
   {
@@ -153,10 +156,10 @@ presets = [
     titleFont: "'Playfair Display', serif",
     textFont: "'Libre Baskerville', serif",
     textColor: '#be185d',
+    titleColor: '#be185d', // 🔥 DODAJ
     autoFormat: 'poetry'
   },
 
-  // 🔥 BONUSY
   {
     name: 'Classic Poetry',
     icon: '✒️',
@@ -165,6 +168,7 @@ presets = [
     titleFont: "'Cormorant Garamond', serif",
     textFont: "'Libre Baskerville', serif",
     textColor: '#1f2937',
+    titleColor: '#1f2937', // 🔥 DODAJ
     autoFormat: 'poetry'
   },
   {
@@ -175,6 +179,7 @@ presets = [
     titleFont: "'Playfair Display', serif",
     textFont: "'Lora', serif",
     textColor: '#111111',
+    titleColor: '#111111', // 🔥 DODAJ
     autoFormat: 'poetry'
   },
   {
@@ -185,13 +190,10 @@ presets = [
     titleFont: "'Cormorant Garamond', serif",
     textFont: "'Crimson Text', serif",
     textColor: '#374151',
+    titleColor: '#374151', // 🔥 DODAJ
     autoFormat: 'compact'
   }
 ];
-
-
-
-
 
 
 
