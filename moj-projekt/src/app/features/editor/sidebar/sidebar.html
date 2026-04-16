@@ -1,16 +1,16 @@
 <aside class="sidebar">
-  <div class="section">
-    <h3>🎨 Style</h3>
+ <div class="section">
+  <h3>✨ Presets</h3>
 
-    <div
-      class="card"
-      *ngFor="let t of themes"
-      [class.active]="selectedTheme === t.name"
-      (click)="onThemeClick(t.name)"
-    >
-      {{ t.name }}
-    </div>
+  <div
+    class="card"
+    *ngFor="let p of presets"
+    [class.active]="selectedPreset === p.name"
+    (click)="onPresetClick(p)"
+  >
+    {{ p.icon }} {{ p.name }}
   </div>
+</div>
 
   <div class="section">
     <h3>📐 Template</h3>

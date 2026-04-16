@@ -46,6 +46,16 @@ export class EditorTest {
   currentPageIndex = 0;
   isCoverEditorOpen = false;
   isPreviewOpen = false;
+
+
+
+
+
+
+
+
+
+
   //////////////////////////////////////
 
   cover = {
@@ -76,6 +86,221 @@ export class EditorTest {
   localStorage.setItem('cover', JSON.stringify(this.cover));
 }
 
+/////////////////////////////////////
+
+
+// applyPreset(p: any) {
+//   const applyToAll = true;
+
+//   if (applyToAll) {
+//     this.pages.forEach(page => {
+//       page.template = p.template;
+//       page.variant = p.variant;
+//     });
+//   }
+
+//   this.selectedTemplate = p.template;
+//   this.selectedVariant = p.variant;
+
+//   if (p.titleFont) this.titleFont = p.titleFont;
+//   if (p.textFont) this.textFont = p.textFont;
+//   if (p.textColor) this.textColor = p.textColor;
+//   if (p.titleColor) this.titleColor = p.titleColor;
+
+//   this.savePage();
+//   localStorage.setItem('pages', JSON.stringify(this.pages));
+// }
+formatAdvanced() {
+  this.text = this.formatPoemAdvanced(this.text);
+  this.savePage();
+  localStorage.setItem('pages', JSON.stringify(this.pages));
+}
+
+applyPreset(p: any) {
+  const applyToAll = true;
+
+  if (applyToAll) {
+    this.pages.forEach(page => {
+      page.template = p.template;
+      page.variant = p.variant;
+    });
+  }
+
+  this.selectedTemplate = p.template;
+  this.selectedVariant = p.variant;
+
+  if (p.titleFont) this.titleFont = p.titleFont;
+  if (p.textFont) this.textFont = p.textFont;
+  if (p.textColor) this.textColor = p.textColor;
+  if (p.titleColor) this.titleColor = p.titleColor;
+
+  // 🔥 NAJWAŻNIEJSZE — AUTO FORMAT
+  if (p.autoFormat) {
+    this.text = this.formatText(this.text, p.autoFormat);
+  }
+
+ if (p.autoFormat === 'advanced') {
+    this.text = this.formatPoemAdvanced(this.text);
+  }
+
+
+
+  this.savePage();
+  localStorage.setItem('pages', JSON.stringify(this.pages));
+}
+
+
+
+
+formatPoemAdvanced(text: string): string {
+  if (!text) return text;
+
+  // 🔥 1. RESET (kluczowe)
+  text = text
+    .replace(/\n+/g, '\n') // max 1 enter
+    .replace(/\s+/g, ' ') // usuń dziwne spacje
+    .trim();
+
+  // 🔥 2. podziel na zdania
+  const sentences = text.split(/(?<=[.!?])/);
+
+  const lines: string[] = [];
+
+  sentences.forEach(sentence => {
+    const words = sentence.trim().split(' ');
+    let current = '';
+
+    words.forEach(word => {
+      if ((current + ' ' + word).length > 35) {
+        lines.push(current.trim());
+        current = word;
+      } else {
+        current += ' ' + word;
+      }
+    });
+
+    if (current) lines.push(current.trim());
+
+    // 🔥 pauza między zdaniami
+    lines.push('');
+  });
+
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n');
+}
+
+
+
+
+
+
+formatPoemAI(text: string): string {
+  if (!text) return text;
+
+  // 🔥 normalize
+  text = text
+    .replace(/\s+/g, ' ')
+    .replace(/\s([.,!?])/g, '$1')
+    .trim();
+
+  // 🔥 podziel na zdania (pauzy)
+  const sentences = text.split(/(?<=[.!?])/);
+
+  const lines: string[] = [];
+
+  sentences.forEach(sentence => {
+    const words = sentence.trim().split(' ');
+
+    let currentLine = '';
+
+    words.forEach(word => {
+      // 🔥 krótsze wersy = bardziej poetycko
+      if ((currentLine + ' ' + word).length > 35) {
+        lines.push(currentLine.trim());
+        currentLine = word;
+      } else {
+        currentLine += ' ' + word;
+      }
+    });
+
+    if (currentLine) {
+      lines.push(currentLine.trim());
+    }
+
+    // 🔥 pauza po zdaniu = przerwa strofy
+    lines.push('');
+  });
+
+  // 🔥 dodatkowy rytm (co 3 wersy)
+  const final: string[] = [];
+
+  lines.forEach((line, i) => {
+    final.push(line);
+
+    if ((i + 1) % 4 === 0) {
+      final.push('');
+    }
+  });
+
+  return final.join('\n').replace(/\n{3,}/g, '\n\n');
+}
+
+formatAI() {
+  this.text = this.formatPoemAI(this.text);
+
+  this.savePage();
+  localStorage.setItem('pages', JSON.stringify(this.pages));
+}
+
+formatText(text: string, mode: string): string {
+  if (!text) return text;
+
+  // 📝 POETRY (ładne wersy + odstępy)
+  if (mode === 'poetry') {
+    const lines = text.split('\n').map(l => l.trim());
+
+    const result: string[] = [];
+
+    for (let line of lines) {
+      if (!line) continue;
+
+      result.push(line);
+
+      // 🔥 odstęp między wersami
+      if (line.length < 60) {
+        result.push('');
+      }
+    }
+
+    return result.join('\n');
+  }
+
+  // 📄 COMPACT (usuwa puste linie)
+  if (mode === 'compact') {
+    return text
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l)
+      .join('\n');
+  }
+
+  return text;
+}
+
+
+
+fillLorem() {
+  this.text = `Lorem ipsum dolor sit amet,
+consectetur adipiscing elit,
+sed do eiusmod tempor incididunt.
+
+Ut enim ad minim veniam,
+quis nostrud exercitation ullamco.`;
+
+  this.title = 'Testowy wiersz';
+
+  this.savePage();
+}
+
 
 
 
@@ -88,20 +313,6 @@ export class EditorTest {
     return crypto.randomUUID();
   }
 
-  // 🔥 INIT
-  // ngOnInit() {
-  //   const saved = localStorage.getItem('pages');
-
-  //   if (saved) {
-  //     this.pages = JSON.parse(saved);
-  //   }
-
-  //   if (this.pages.length === 0) {
-  //     this.newPage();
-  //   } else {
-  //     this.loadPage();
-  //   }
-  // }
 
 
 ngOnInit() {
@@ -132,7 +343,24 @@ ngOnInit() {
 
 
 
-  // 🔥 PAGE SYSTEM
+//   // 🔥 PAGE SYSTEM
+// newPage() {
+//   const page = {
+//     id: this.generateId(),
+//     title: '',
+//     text: '',
+//     template: 'Default',
+//     variant: null,
+//   };
+
+//   this.pages.push(page);
+//   this.currentPageIndex = this.pages.length - 1;
+//   this.loadPage();
+
+//   // 🔥 DODAJ TO
+//   localStorage.setItem('pages', JSON.stringify(this.pages));
+// }
+
 newPage() {
   const page = {
     id: this.generateId(),
@@ -140,33 +368,83 @@ newPage() {
     text: '',
     template: 'Default',
     variant: null,
+
+    // 🔥 DODAJ TO
+    titleFont: this.titleFont,
+    textFont: this.textFont,
+    titleColor: this.titleColor,
+    textColor: this.textColor,
   };
 
   this.pages.push(page);
   this.currentPageIndex = this.pages.length - 1;
   this.loadPage();
 
-  // 🔥 DODAJ TO
   localStorage.setItem('pages', JSON.stringify(this.pages));
 }
-  loadPage() {
-    const p = this.pages[this.currentPageIndex];
 
-    this.title = p.title;
-    this.text = p.text;
-    this.selectedTemplate = p.template;
-    this.selectedVariant = p.variant;
+onFontChange(value: string) {
+  if (this.activeField === 'title') {
+    this.titleFont = value;
+  } else {
+    this.textFont = value;
   }
 
-  savePage() {
-    const p = this.pages[this.currentPageIndex];
+  this.savePage();
+  localStorage.setItem('pages', JSON.stringify(this.pages));
+}
 
-    p.title = this.title;
-    p.text = this.text;
-    p.template = this.selectedTemplate;
-    p.variant = this.selectedVariant;
-  }
 
+
+
+loadPage() {
+  const p = this.pages[this.currentPageIndex];
+
+  this.title = p.title;
+  this.text = p.text;
+  this.selectedTemplate = p.template;
+  this.selectedVariant = p.variant;
+
+  // 🔥 KLUCZOWE
+  this.titleFont = p.titleFont || "'Playfair Display', serif";
+  this.textFont = p.textFont || "Georgia, serif";
+  this.titleColor = p.titleColor || '#000';
+  this.textColor = p.textColor || '#000';
+}
+
+
+
+  // loadPage() {
+  //   const p = this.pages[this.currentPageIndex];
+
+  //   this.title = p.title;
+  //   this.text = p.text;
+  //   this.selectedTemplate = p.template;
+  //   this.selectedVariant = p.variant;
+  // }
+
+  // savePage() {
+  //   const p = this.pages[this.currentPageIndex];
+
+  //   p.title = this.title;
+  //   p.text = this.text;
+  //   p.template = this.selectedTemplate;
+  //   p.variant = this.selectedVariant;
+  // }
+savePage() {
+  const p = this.pages[this.currentPageIndex];
+
+  p.title = this.title;
+  p.text = this.text;
+  p.template = this.selectedTemplate;
+  p.variant = this.selectedVariant;
+
+  // 🔥 KLUCZOWE
+  p.titleFont = this.titleFont;
+  p.textFont = this.textFont;
+  p.titleColor = this.titleColor;
+  p.textColor = this.textColor;
+}
 
 nextPage() {
   if (this.currentPageIndex < this.pages.length - 1) {

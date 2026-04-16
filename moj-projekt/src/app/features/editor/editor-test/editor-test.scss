@@ -87,6 +87,15 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
+
+
+
+
+
+
+
+
+
 /* 🔥 KLUCZOWE — textarea dziedziczy styl template */
 .poem-container textarea,
 .poem-container input {
@@ -106,15 +115,27 @@
 }
 
 /* TEXT */
+// textarea {
+//   width: 100%;
+//   border: none;
+//   outline: none;
+//   resize: none;
+//   background: transparent;
+//   min-height: 700px;
+//   line-height: 1.6;
+// }
+
 textarea {
   width: 100%;
+  flex: 1; // 🔥 klucz
   border: none;
   outline: none;
   resize: none;
   background: transparent;
-  min-height: 200px;
   line-height: 1.6;
 }
+
+
 
 /* BOTTOM BAR */
 .bottom-bar {

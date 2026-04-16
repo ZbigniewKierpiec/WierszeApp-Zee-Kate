@@ -1,4 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+@import '@fontsource/playfair-display/400.css';
+@import '@fontsource/playfair-display/700.css';
+@import '@fontsource/cormorant-garamond/400.css';
+@import '@fontsource/libre-baskerville/400.css';
+@import '@fontsource/lora/400.css';
+@import '@fontsource/montserrat/400.css';
+@import '@fontsource/crimson-text/400.css';
+@import '@fontsource/eb-garamond/400.css';
+@import '@fontsource/merriweather/400.css';
+@import '@fontsource/cinzel/400.css';
+@import '@fontsource/work-sans/400.css';
+@import '@fontsource/spectral/400.css';
+@import '@fontsource/alegreya/400.css';
+@import '@fontsource/source-serif-4/400.css';
+@import '@fontsource/dm-serif-display/400.css';
+@import '@fontsource/raleway/400.css';
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -9,11 +25,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    to bottom,
-    #9ca3af,
-    #6b7280
-  );
+  background: linear-gradient(to bottom, #9ca3af, #6b7280);
 
   border-radius: 20px;
 
@@ -22,9 +34,5 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    to bottom,
-    #6b7280,
-    #4b5563
-  );
+  background: linear-gradient(to bottom, #6b7280, #4b5563);
 }
