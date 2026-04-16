@@ -150,16 +150,16 @@
 
 <!-- 🔥 PREVIEW MUSI BYĆ POZA layout -->
 <!-- 🔥 PREVIEW POZA layout -->
-@if (isPreviewOpen) {
+<!-- @if (isPreviewOpen) {
   <div class="preview-overlay" (click)="isPreviewOpen = false">
     <div class="preview-a3" (click)="$event.stopPropagation()">
-      <!-- POEM -->
+   
       <div
         class="poem-container"
       
         [ngStyle]="getVariantStyles()"
       >
-        <!-- TITLE -->
+  
         <div
           class="title-preview"
           [ngStyle]="{
@@ -172,7 +172,7 @@
           {{ pages[currentPageIndex]?.title }}
         </div>
 
-        <!-- TEXT -->
+  
         <div
           class="text-preview"
           [ngStyle]="{
@@ -187,7 +187,7 @@
         </div>
       </div>
 
-      <!-- 🔥 NAVIGATION -->
+    
       <div class="nav-buttons">
         <button (click)="prevPage()" [disabled]="currentPageIndex === 0">← Prev</button>
 
@@ -201,4 +201,85 @@
       <button class="close-btn" (click)="isPreviewOpen = false">Close</button>
     </div>
   </div>
+} -->
+@if (isPreviewOpen) {
+  <div class="preview-overlay" (click)="closePreview($event)">
+    <button type="button" class="close-btn" (click)="closePreview($event)">
+      Close
+    </button>
+
+    <div class="preview-book" (click)="$event.stopPropagation()">
+      <div id="paged-preview-host"></div>
+       
+
+      <div class="nav-buttons">
+        <button type="button" (click)="prevPreviewPage(); $event.stopPropagation()">
+          ← Prev
+        </button>
+
+        <span>{{ currentPreviewPage + 1 }}</span>
+
+        <button type="button" (click)="nextPreviewPage(); $event.stopPropagation()">
+          Next →
+        </button>
+      </div>
+    </div>
+  </div>
 }
+
+<!-- UKRYTE ŹRÓDŁO DLA Paged.js -->
+<div id="paged-source" style="display: none">
+  <div class="book">
+    <section
+      class="cover"
+      [ngStyle]="{
+        background: cover.bgColor,
+        color: cover.textColor
+      }"
+    >
+      <div
+        class="cover-image"
+        *ngIf="cover.image"
+        [ngStyle]="{
+          'background-image': 'url(' + cover.image + ')'
+        }"
+      ></div>
+
+      <div class="cover-content">
+        <h1>{{ cover.title }}</h1>
+        <p>{{ cover.author }}</p>
+      </div>
+    </section>
+
+    <section
+      class="poem"
+      *ngFor="let p of pages"
+      [ngStyle]="getVariantStyles()"
+    >
+      <div
+        class="title-preview"
+        [ngStyle]="{
+          'text-align': titleAlign,
+          'font-family': titleFont,
+          'font-size.px': titleSize,
+          color: titleColor
+        }"
+      >
+        {{ p.title }}
+      </div>
+
+      <div
+        class="text-preview"
+        [ngStyle]="{
+          'text-align': textAlign,
+          'font-family': textFont,
+          'font-size.px': textFontSize,
+          color: textColor,
+          'white-space': 'pre-wrap'
+        }"
+      >
+        {{ p.text }}
+      </div>
+    </section>
+  </div>
+</div>

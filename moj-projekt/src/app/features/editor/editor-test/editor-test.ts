@@ -10,9 +10,6 @@ import { animate, style, transition } from '@angular/animations';
   imports: [Topbar, CommonModule, Sidebar, FormsModule],
   templateUrl: './editor-test.html',
   styleUrl: './editor-test.scss',
-
-
-
 })
 export class EditorTest {
   // 🔥 UI fields (edytor)
@@ -46,11 +43,32 @@ export class EditorTest {
   // 🔥 MULTI PAGE
   pages: any[] = [];
   currentPageIndex = 0;
-  /////////////////////////
 
   isPreviewOpen = false;
+  //////////////////////////////////////
 
-  ///////////////////////
+  cover = {
+    title: 'Mój tomik',
+    author: '',
+    image: '',
+    bgColor: '#000000',
+    textColor: '#ffffff',
+  };
+
+  onCoverImageUpload(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.cover.image = reader.result as string;
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  ///////////////////////////////////////////
   constructor(private cd: ChangeDetectorRef) {}
 
   // 🔥 ID
@@ -288,30 +306,141 @@ export class EditorTest {
     return {};
   }
 
-  preview() {
-    this.savePage(); // 🔥 NAJWAŻNIEJSZE
-    localStorage.setItem('pages', JSON.stringify(this.pages));
-    this.isPreviewOpen = true;
+  // preview() {
+  //   this.savePage(); // 🔥 NAJWAŻNIEJSZE
+  //   localStorage.setItem('pages', JSON.stringify(this.pages));
+  //   this.isPreviewOpen = true;
+  // }
+/////////////////////////////////////////
+ 
+
+
+currentPreviewPage = 0;
+private pagedPreviewer: any;
+
+preview() {
+  this.savePage();
+  this.isPreviewOpen = true;
+  this.currentPreviewPage = 0;
+
+  setTimeout(async () => {
+    const source = document.querySelector('#paged-source .book') as HTMLElement | null;
+    const host = document.getElementById('paged-preview-host');
+
+    if (!source || !host) return;
+
+    host.innerHTML = '';
+
+    const clonedSource = source.cloneNode(true) as HTMLElement;
+
+    // @ts-ignore
+    this.pagedPreviewer = new window.Paged.Previewer();
+
+    await this.pagedPreviewer.preview(clonedSource, [], host);
+
+    this.fixLayout();
+  }, 100);
+}
+
+
+
+
+
+
+
+
+fixLayout() {
+  const host = document.getElementById('paged-preview-host');
+  if (!host) return;
+
+  const pages = host.querySelectorAll('.pagedjs_page');
+  if (!pages.length) return;
+
+  pages.forEach((p: any, index: number) => {
+    p.style.display = index === this.currentPreviewPage ? 'block' : 'none';
+    p.style.margin = '0 auto';
+  });
+}
+
+nextPreviewPage() {
+  const host = document.getElementById('paged-preview-host');
+  if (!host) return;
+
+  const pages = host.querySelectorAll('.pagedjs_page');
+
+  if (this.currentPreviewPage < pages.length - 1) {
+    this.currentPreviewPage++;
+    this.fixLayout();
   }
+}
 
-
-
-// nextPage() {
-//   if (this.currentPageIndex < this.pages.length - 1) {
-//     this.currentPageIndex++;
-//   }
-// }
-
-// prevPage() {
-//   if (this.currentPageIndex > 0) {
-//     this.currentPageIndex--;
-//   }
-// }
+prevPreviewPage() {
+  if (this.currentPreviewPage > 0) {
+    this.currentPreviewPage--;
+    this.fixLayout();
+  }
+}
 
 
 
 
 
+
+
+
+
+
+closePreview(event?: Event) {
+  event?.stopPropagation();
+
+  this.isPreviewOpen = false;
+  this.currentPreviewPage = 0;
+
+  const host = document.getElementById('paged-preview-host');
+  if (host) {
+    host.innerHTML = '';
+  }
+}
+
+
+animatePage(direction: 'next' | 'prev') {
+  const pages = document.querySelectorAll('#paged-preview-host .pagedjs_page');
+
+  pages.forEach((p: any, i: number) => {
+    p.classList.remove('active', 'enter-left', 'enter-right', 'exit-left', 'exit-right');
+
+    if (i === this.currentPreviewPage) {
+      p.classList.add('active');
+    }
+  });
+
+  const current = pages[this.currentPreviewPage];
+
+  if (direction === 'next') {
+    current.classList.add('enter-right');
+  } else {
+    current.classList.add('enter-left');
+  }
+}
+
+
+
+
+///////////////////////////////////////////////
+
+
+
+  // nextPage() {
+  //   if (this.currentPageIndex < this.pages.length - 1) {
+  //     this.currentPageIndex++;
+  //   }
+  // }
+
+  // prevPage() {
+  //   if (this.currentPageIndex > 0) {
+  //     this.currentPageIndex--;
+  //   }
+  // }
 
   goBack() {
     window.history.back();
@@ -352,8 +481,16 @@ export class EditorTest {
 
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   }
+
+
+
+
+
+
+
+
 }
+
 function trigger(arg0: string, arg1: any[]): any {
   throw new Error('Function not implemented.');
 }
-
