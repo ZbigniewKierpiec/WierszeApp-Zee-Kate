@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { Sidebar } from '../sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { animate, style, transition } from '@angular/animations';
+import { CoverEditor } from "../../cover-editor/cover-editor";
 
 @Component({
   selector: 'app-editor-test',
-  imports: [Topbar, CommonModule, Sidebar, FormsModule],
+  imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor],
   templateUrl: './editor-test.html',
   styleUrl: './editor-test.scss',
 })
@@ -43,7 +44,7 @@ export class EditorTest {
   // 🔥 MULTI PAGE
   pages: any[] = [];
   currentPageIndex = 0;
-
+  isCoverEditorOpen = false;
   isPreviewOpen = false;
   //////////////////////////////////////
 
@@ -68,6 +69,17 @@ export class EditorTest {
     reader.readAsDataURL(file);
   }
 
+
+
+  saveCover(updatedCover: any) {
+  Object.assign(this.cover, updatedCover); // 🔥 zamiast =
+  localStorage.setItem('cover', JSON.stringify(this.cover));
+}
+
+
+
+
+
   ///////////////////////////////////////////
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -77,36 +89,66 @@ export class EditorTest {
   }
 
   // 🔥 INIT
-  ngOnInit() {
-    const saved = localStorage.getItem('pages');
+  // ngOnInit() {
+  //   const saved = localStorage.getItem('pages');
 
-    if (saved) {
-      this.pages = JSON.parse(saved);
-    }
+  //   if (saved) {
+  //     this.pages = JSON.parse(saved);
+  //   }
 
-    if (this.pages.length === 0) {
-      this.newPage();
-    } else {
-      this.loadPage();
-    }
+  //   if (this.pages.length === 0) {
+  //     this.newPage();
+  //   } else {
+  //     this.loadPage();
+  //   }
+  // }
+
+
+ngOnInit() {
+  const savedPages = localStorage.getItem('pages');
+
+  if (savedPages) {
+    this.pages = JSON.parse(savedPages);
   }
 
-  // 🔥 PAGE SYSTEM
-
-  newPage() {
-    const page = {
-      id: this.generateId(),
-      title: '',
-      text: '',
-      template: 'Default',
-      variant: null,
-    };
-
-    this.pages.push(page);
-    this.currentPageIndex = this.pages.length - 1;
+  if (this.pages.length === 0) {
+    this.newPage();
+  } else {
     this.loadPage();
   }
 
+  // 🔥 COVER FIX
+  const savedCover = localStorage.getItem('cover');
+
+  if (savedCover) {
+    Object.assign(this.cover, JSON.parse(savedCover));
+  }
+}
+
+
+
+
+
+
+
+
+  // 🔥 PAGE SYSTEM
+newPage() {
+  const page = {
+    id: this.generateId(),
+    title: '',
+    text: '',
+    template: 'Default',
+    variant: null,
+  };
+
+  this.pages.push(page);
+  this.currentPageIndex = this.pages.length - 1;
+  this.loadPage();
+
+  // 🔥 DODAJ TO
+  localStorage.setItem('pages', JSON.stringify(this.pages));
+}
   loadPage() {
     const p = this.pages[this.currentPageIndex];
 
@@ -125,21 +167,33 @@ export class EditorTest {
     p.variant = this.selectedVariant;
   }
 
-  nextPage() {
-    if (this.currentPageIndex < this.pages.length - 1) {
-      this.savePage();
-      this.currentPageIndex++;
-      this.loadPage();
-    }
-  }
 
-  prevPage() {
-    if (this.currentPageIndex > 0) {
-      this.savePage();
-      this.currentPageIndex--;
-      this.loadPage();
-    }
+nextPage() {
+  if (this.currentPageIndex < this.pages.length - 1) {
+    this.savePage();
+
+    localStorage.setItem('pages', JSON.stringify(this.pages));
+
+    this.currentPageIndex++;
+    this.loadPage();
   }
+}
+
+
+prevPage() {
+  if (this.currentPageIndex > 0) {
+    this.savePage();
+
+    localStorage.setItem('pages', JSON.stringify(this.pages));
+
+    this.currentPageIndex--;
+    this.loadPage();
+  }
+}
+
+
+
+
 
   // 🔥 ACTIONS
 
@@ -311,124 +365,141 @@ export class EditorTest {
   //   localStorage.setItem('pages', JSON.stringify(this.pages));
   //   this.isPreviewOpen = true;
   // }
-/////////////////////////////////////////
- 
+  /////////////////////////////////////////
+
+  currentPreviewPage = 0;
+  private pagedPreviewer: any;
+
+  preview() {
+    this.savePage();
+    this.isPreviewOpen = true;
+    this.currentPreviewPage = 0;
+
+    setTimeout(async () => {
+      const source = document.querySelector('#paged-source .book') as HTMLElement | null;
+      const host = document.getElementById('paged-preview-host');
+
+      if (!source || !host) return;
+
+      host.innerHTML = '';
+
+      const clonedSource = source.cloneNode(true) as HTMLElement;
+
+      // @ts-ignore
+      this.pagedPreviewer = new window.Paged.Previewer();
+
+      await this.pagedPreviewer.preview(clonedSource, [], host);
+
+      this.fixLayout();
+    }, 100);
+  }
 
 
-currentPreviewPage = 0;
-private pagedPreviewer: any;
 
-preview() {
-  this.savePage();
-  this.isPreviewOpen = true;
-  this.currentPreviewPage = 0;
+// preview() {
+//   this.savePage();
+//   this.isPreviewOpen = true;
+//   this.currentPreviewPage = 0;
 
-  setTimeout(async () => {
-    const source = document.querySelector('#paged-source .book') as HTMLElement | null;
+//   setTimeout(async () => {
+//     const source = document.querySelector('#paged-source .book') as HTMLElement | null;
+//     const host = document.getElementById('paged-preview-host');
+
+//     if (!source || !host) return;
+
+//     host.innerHTML = '';
+
+//     const clonedSource = source.cloneNode(true) as HTMLElement;
+
+//     // 🔥 WAŻNE
+//     this.cd.detectChanges();
+
+//     // @ts-ignore
+//     this.pagedPreviewer = new window.Paged.Previewer();
+
+//     await this.pagedPreviewer.preview(clonedSource, [], host);
+
+//     this.fixLayout();
+//   }, 100);
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  fixLayout() {
     const host = document.getElementById('paged-preview-host');
+    if (!host) return;
 
-    if (!source || !host) return;
+    const pages = host.querySelectorAll('.pagedjs_page');
+    if (!pages.length) return;
 
-    host.innerHTML = '';
-
-    const clonedSource = source.cloneNode(true) as HTMLElement;
-
-    // @ts-ignore
-    this.pagedPreviewer = new window.Paged.Previewer();
-
-    await this.pagedPreviewer.preview(clonedSource, [], host);
-
-    this.fixLayout();
-  }, 100);
-}
-
-
-
-
-
-
-
-
-fixLayout() {
-  const host = document.getElementById('paged-preview-host');
-  if (!host) return;
-
-  const pages = host.querySelectorAll('.pagedjs_page');
-  if (!pages.length) return;
-
-  pages.forEach((p: any, index: number) => {
-    p.style.display = index === this.currentPreviewPage ? 'block' : 'none';
-    p.style.margin = '0 auto';
-  });
-}
-
-nextPreviewPage() {
-  const host = document.getElementById('paged-preview-host');
-  if (!host) return;
-
-  const pages = host.querySelectorAll('.pagedjs_page');
-
-  if (this.currentPreviewPage < pages.length - 1) {
-    this.currentPreviewPage++;
-    this.fixLayout();
+    pages.forEach((p: any, index: number) => {
+      p.style.display = index === this.currentPreviewPage ? 'block' : 'none';
+      p.style.margin = '0 auto';
+    });
   }
-}
 
-prevPreviewPage() {
-  if (this.currentPreviewPage > 0) {
-    this.currentPreviewPage--;
-    this.fixLayout();
-  }
-}
+  nextPreviewPage() {
+    const host = document.getElementById('paged-preview-host');
+    if (!host) return;
 
+    const pages = host.querySelectorAll('.pagedjs_page');
 
-
-
-
-
-
-
-
-
-closePreview(event?: Event) {
-  event?.stopPropagation();
-
-  this.isPreviewOpen = false;
-  this.currentPreviewPage = 0;
-
-  const host = document.getElementById('paged-preview-host');
-  if (host) {
-    host.innerHTML = '';
-  }
-}
-
-
-animatePage(direction: 'next' | 'prev') {
-  const pages = document.querySelectorAll('#paged-preview-host .pagedjs_page');
-
-  pages.forEach((p: any, i: number) => {
-    p.classList.remove('active', 'enter-left', 'enter-right', 'exit-left', 'exit-right');
-
-    if (i === this.currentPreviewPage) {
-      p.classList.add('active');
+    if (this.currentPreviewPage < pages.length - 1) {
+      this.currentPreviewPage++;
+      this.fixLayout();
     }
-  });
-
-  const current = pages[this.currentPreviewPage];
-
-  if (direction === 'next') {
-    current.classList.add('enter-right');
-  } else {
-    current.classList.add('enter-left');
   }
-}
 
+  prevPreviewPage() {
+    if (this.currentPreviewPage > 0) {
+      this.currentPreviewPage--;
+      this.fixLayout();
+    }
+  }
 
+  closePreview(event?: Event) {
+    event?.stopPropagation();
 
+    this.isPreviewOpen = false;
+    this.currentPreviewPage = 0;
 
-///////////////////////////////////////////////
+    const host = document.getElementById('paged-preview-host');
+    if (host) {
+      host.innerHTML = '';
+    }
+  }
 
+  animatePage(direction: 'next' | 'prev') {
+    const pages = document.querySelectorAll('#paged-preview-host .pagedjs_page');
 
+    pages.forEach((p: any, i: number) => {
+      p.classList.remove('active', 'enter-left', 'enter-right', 'exit-left', 'exit-right');
+
+      if (i === this.currentPreviewPage) {
+        p.classList.add('active');
+      }
+    });
+
+    const current = pages[this.currentPreviewPage];
+
+    if (direction === 'next') {
+      current.classList.add('enter-right');
+    } else {
+      current.classList.add('enter-left');
+    }
+  }
+
+  ///////////////////////////////////////////////
 
   // nextPage() {
   //   if (this.currentPageIndex < this.pages.length - 1) {
@@ -481,14 +552,6 @@ animatePage(direction: 'next' | 'prev') {
 
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   }
-
-
-
-
-
-
-
-
 }
 
 function trigger(arg0: string, arg1: any[]): any {

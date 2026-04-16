@@ -7,9 +7,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrl: './topbar.scss',
 })
 export class Topbar {
-@Output() save = new EventEmitter<void>();
-@Output() clear = new EventEmitter<void>();
-
-
-
+  @Output() save = new EventEmitter<void>();
+  @Output() clear = new EventEmitter<void>();
+  @Output() coverEdit = new EventEmitter<void>();
 }

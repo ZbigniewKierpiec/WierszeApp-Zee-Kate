@@ -1,4 +1,4 @@
-<app-topbar (save)="save()" (clear)="clear()"></app-topbar>
+<app-topbar (save)="save()" (clear)="clear()" (coverEdit)="isCoverEditorOpen = true"></app-topbar>
 
 <div class="layout">
   <!-- SIDEBAR -->
@@ -149,79 +149,20 @@
 }
 
 <!-- 🔥 PREVIEW MUSI BYĆ POZA layout -->
-<!-- 🔥 PREVIEW POZA layout -->
-<!-- @if (isPreviewOpen) {
-  <div class="preview-overlay" (click)="isPreviewOpen = false">
-    <div class="preview-a3" (click)="$event.stopPropagation()">
-   
-      <div
-        class="poem-container"
-      
-        [ngStyle]="getVariantStyles()"
-      >
-  
-        <div
-          class="title-preview"
-          [ngStyle]="{
-            'text-align': titleAlign,
-            'font-family': titleFont,
-            'font-size.px': titleSize,
-            color: titleColor,
-          }"
-        >
-          {{ pages[currentPageIndex]?.title }}
-        </div>
 
-  
-        <div
-          class="text-preview"
-          [ngStyle]="{
-            'text-align': textAlign,
-            'font-family': textFont,
-            'font-size.px': textFontSize,
-            color: textColor,
-            'white-space': 'pre-wrap',
-          }"
-        >
-          {{ pages[currentPageIndex]?.text }}
-        </div>
-      </div>
-
-    
-      <div class="nav-buttons">
-        <button (click)="prevPage()" [disabled]="currentPageIndex === 0">← Prev</button>
-
-        <span class="page-indicator"> {{ currentPageIndex + 1 }} / {{ pages.length }} </span>
-
-        <button (click)="nextPage()" [disabled]="currentPageIndex === pages.length - 1">
-          Next →
-        </button>
-      </div>
-
-      <button class="close-btn" (click)="isPreviewOpen = false">Close</button>
-    </div>
-  </div>
-} -->
 @if (isPreviewOpen) {
   <div class="preview-overlay" (click)="closePreview($event)">
-    <button type="button" class="close-btn" (click)="closePreview($event)">
-      Close
-    </button>
+    <button type="button" class="close-btn" (click)="closePreview($event)">Close</button>
 
     <div class="preview-book" (click)="$event.stopPropagation()">
       <div id="paged-preview-host"></div>
-       
 
       <div class="nav-buttons">
-        <button type="button" (click)="prevPreviewPage(); $event.stopPropagation()">
-          ← Prev
-        </button>
+        <button type="button" (click)="prevPreviewPage(); $event.stopPropagation()">← Prev</button>
 
         <span>{{ currentPreviewPage + 1 }}</span>
 
-        <button type="button" (click)="nextPreviewPage(); $event.stopPropagation()">
-          Next →
-        </button>
+        <button type="button" (click)="nextPreviewPage(); $event.stopPropagation()">Next →</button>
       </div>
     </div>
   </div>
@@ -234,14 +175,14 @@
       class="cover"
       [ngStyle]="{
         background: cover.bgColor,
-        color: cover.textColor
+        color: cover.textColor,
       }"
     >
       <div
         class="cover-image"
         *ngIf="cover.image"
         [ngStyle]="{
-          'background-image': 'url(' + cover.image + ')'
+          'background-image': 'url(' + cover.image + ')',
         }"
       ></div>
 
@@ -251,18 +192,14 @@
       </div>
     </section>
 
-    <section
-      class="poem"
-      *ngFor="let p of pages"
-      [ngStyle]="getVariantStyles()"
-    >
+    <section class="poem" *ngFor="let p of pages" [ngStyle]="getVariantStyles()">
       <div
         class="title-preview"
         [ngStyle]="{
           'text-align': titleAlign,
           'font-family': titleFont,
           'font-size.px': titleSize,
-          color: titleColor
+          color: titleColor,
         }"
       >
         {{ p.title }}
@@ -275,7 +212,7 @@
           'font-family': textFont,
           'font-size.px': textFontSize,
           color: textColor,
-          'white-space': 'pre-wrap'
+          'white-space': 'pre-wrap',
         }"
       >
         {{ p.text }}
@@ -283,3 +220,7 @@
     </section>
   </div>
 </div>
+
+@if (isCoverEditorOpen) {
+  <app-cover-editor [cover]="cover"   (save)="saveCover($event)"        (close)="isCoverEditorOpen = false"></app-cover-editor>
+}

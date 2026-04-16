@@ -11,16 +11,40 @@
 }
 
 /* LEFT */
+// .left {
+//   display: flex;
+//   align-items: center;
+//   gap: 8px;
+
+//   font-size: 18px;
+// }
+
+// .logo {
+//   font-weight: 600;
+// }
+
 .left {
   display: flex;
   align-items: center;
-  gap: 8px;
-
-  font-size: 18px;
+  gap: 12px;
 }
 
-.logo {
-  font-weight: 600;
+.btn.subtle {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn.subtle:hover {
+  background: #f3f4f6;
+  color: black;
+  border: 1px solid #e5e7eb;
 }
 
 /* RIGHT */

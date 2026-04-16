@@ -1,0 +1,73 @@
+<div class="overlay" (click)="closeEditor()">
+
+  <div class="popup" (click)="$event.stopPropagation()">
+
+    <!-- HEADER -->
+    <div class="header">
+      <h2>📕 Okładka</h2>
+      <button class="close" (click)="closeEditor()">✕</button>
+    </div>
+
+    <!-- 🔥 LIVE PREVIEW -->
+    <div class="cover-preview">
+
+      <div
+        class="preview-bg"
+        [ngStyle]="{
+          'background': cover.bgColor,
+          'background-image': cover.image ? 'url(' + cover.image + ')' : 'none'
+        }"
+      ></div>
+
+      <div class="preview-overlay"></div>
+
+      <div class="preview-content">
+        <h1>{{ cover.title || 'Tytuł książki' }}</h1>
+        <p>{{ cover.author || 'Autor' }}</p>
+      </div>
+
+    </div>
+
+    <!-- 🔧 CONTROLS -->
+    <div class="controls">
+
+      <input
+        type="text"
+        placeholder="Tytuł"
+        [(ngModel)]="cover.title"
+        (ngModelChange)="emitSave()"
+      />
+
+      <input
+        type="text"
+        placeholder="Autor"
+        [(ngModel)]="cover.author"
+        (ngModelChange)="emitSave()"
+      />
+
+      <input
+        type="file"
+        accept="image/*"
+        (change)="onImageUpload($event)"
+      />
+
+      <div class="row">
+        <label>Tło</label>
+        <input type="color" [(ngModel)]="cover.bgColor" (ngModelChange)="emitSave()" />
+      </div>
+
+      <div class="row">
+        <label>Tekst</label>
+        <input type="color" [(ngModel)]="cover.textColor" (ngModelChange)="emitSave()" />
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <button class="done" (click)="closeEditor()">Gotowe</button>
+    </div>
+
+  </div>
+
+</div>
