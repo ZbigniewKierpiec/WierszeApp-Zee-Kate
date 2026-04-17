@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Sidebar } from '../sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { animate, style, transition } from '@angular/animations';
-import { CoverEditor } from "../../cover-editor/cover-editor";
+import { CoverEditor } from '../../cover-editor/cover-editor';
 
 @Component({
   selector: 'app-editor-test',
@@ -47,15 +47,6 @@ export class EditorTest {
   isCoverEditorOpen = false;
   isPreviewOpen = false;
 
-
-
-
-
-
-
-
-
-
   //////////////////////////////////////
 
   cover = {
@@ -79,209 +70,217 @@ export class EditorTest {
     reader.readAsDataURL(file);
   }
 
-
-
   saveCover(updatedCover: any) {
-  Object.assign(this.cover, updatedCover); // 🔥 zamiast =
-  localStorage.setItem('cover', JSON.stringify(this.cover));
-}
-
-/////////////////////////////////////
-
-formatAdvanced() {
-  this.text = this.formatPoemAdvanced(this.text);
-  this.savePage();
-  localStorage.setItem('pages', JSON.stringify(this.pages));
-}
-
-applyPreset(p: any) {
-  const applyToAll = true;
-
-  if (applyToAll) {
-    this.pages.forEach(page => {
-      page.template = p.template;
-      page.variant = p.variant;
-    });
+    Object.assign(this.cover, updatedCover); // 🔥 zamiast =
+    localStorage.setItem('cover', JSON.stringify(this.cover));
   }
 
-  this.selectedTemplate = p.template;
-  this.selectedVariant = p.variant;
+  /////////////////////////////////////
 
-  if (p.titleFont) this.titleFont = p.titleFont;
-  if (p.textFont) this.textFont = p.textFont;
-  if (p.textColor) this.textColor = p.textColor;
-  if (p.titleColor) this.titleColor = p.titleColor;
-
-  // 🔥 NAJWAŻNIEJSZE — AUTO FORMAT
-  if (p.autoFormat) {
-    this.text = this.formatText(this.text, p.autoFormat);
-  }
-
- if (p.autoFormat === 'advanced') {
+  formatAdvanced() {
     this.text = this.formatPoemAdvanced(this.text);
+    this.savePage();
+    localStorage.setItem('pages', JSON.stringify(this.pages));
   }
 
+  // applyPreset(p: any) {
+  //   const applyToAll = true;
 
+  //   if (applyToAll) {
+  //     this.pages.forEach((page) => {
+  //       page.template = p.template;
+  //       page.variant = p.variant;
+  //     });
+  //   }
 
-  this.savePage();
-  localStorage.setItem('pages', JSON.stringify(this.pages));
-}
+  //   this.selectedTemplate = p.template;
+  //   this.selectedVariant = p.variant;
 
+  //   if (p.titleFont) this.titleFont = p.titleFont;
+  //   if (p.textFont) this.textFont = p.textFont;
+  //   if (p.textColor) this.textColor = p.textColor;
+  //   if (p.titleColor) this.titleColor = p.titleColor;
 
+  //   // 🔥 NAJWAŻNIEJSZE — AUTO FORMAT
+  //   if (p.autoFormat) {
+  //     this.text = this.formatText(this.text, p.autoFormat);
+  //   }
 
+  //   if (p.autoFormat === 'advanced') {
+  //     this.text = this.formatPoemAdvanced(this.text);
+  //   }
 
-formatPoemAdvanced(text: string): string {
-  if (!text) return text;
+  //   this.savePage();
+  //   localStorage.setItem('pages', JSON.stringify(this.pages));
+  // }
 
-  // 🔥 1. RESET (kluczowe)
-  text = text
-    .replace(/\n+/g, '\n') // max 1 enter
-    .replace(/\s+/g, ' ') // usuń dziwne spacje
-    .trim();
+  applyPreset(p: any) {
+    const current = this.pages[this.currentPageIndex];
 
-  // 🔥 2. podziel na zdania
-  const sentences = text.split(/(?<=[.!?])/);
+    current.template = p.template;
+    current.variant = p.variant;
 
-  const lines: string[] = [];
+    this.selectedTemplate = p.template;
+    this.selectedVariant = p.variant;
 
-  sentences.forEach(sentence => {
-    const words = sentence.trim().split(' ');
-    let current = '';
+    if (p.titleFont) this.titleFont = p.titleFont;
+    if (p.textFont) this.textFont = p.textFont;
+    if (p.textColor) this.textColor = p.textColor;
+    if (p.titleColor) this.titleColor = p.titleColor;
 
-    words.forEach(word => {
-      if ((current + ' ' + word).length > 35) {
-        lines.push(current.trim());
-        current = word;
-      } else {
-        current += ' ' + word;
-      }
+    if (p.autoFormat) {
+      this.text = this.formatText(this.text, p.autoFormat);
+    }
+
+    if (p.autoFormat === 'advanced') {
+      this.text = this.formatPoemAdvanced(this.text);
+    }
+
+    this.savePage();
+    localStorage.setItem('pages', JSON.stringify(this.pages));
+  }
+
+  formatPoemAdvanced(text: string): string {
+    if (!text) return text;
+
+    // 🔥 1. RESET (kluczowe)
+    text = text
+      .replace(/\n+/g, '\n') // max 1 enter
+      .replace(/\s+/g, ' ') // usuń dziwne spacje
+      .trim();
+
+    // 🔥 2. podziel na zdania
+    const sentences = text.split(/(?<=[.!?])/);
+
+    const lines: string[] = [];
+
+    sentences.forEach((sentence) => {
+      const words = sentence.trim().split(' ');
+      let current = '';
+
+      words.forEach((word) => {
+        if ((current + ' ' + word).length > 35) {
+          lines.push(current.trim());
+          current = word;
+        } else {
+          current += ' ' + word;
+        }
+      });
+
+      if (current) lines.push(current.trim());
+
+      // 🔥 pauza między zdaniami
+      lines.push('');
     });
 
-    if (current) lines.push(current.trim());
+    return lines.join('\n').replace(/\n{3,}/g, '\n\n');
+  }
 
-    // 🔥 pauza między zdaniami
-    lines.push('');
-  });
+  formatPoemAI(text: string): string {
+    if (!text) return text;
 
-  return lines.join('\n').replace(/\n{3,}/g, '\n\n');
-}
+    // 🔥 normalize
+    text = text
+      .replace(/\s+/g, ' ')
+      .replace(/\s([.,!?])/g, '$1')
+      .trim();
 
+    // 🔥 podziel na zdania (pauzy)
+    const sentences = text.split(/(?<=[.!?])/);
 
+    const lines: string[] = [];
 
+    sentences.forEach((sentence) => {
+      const words = sentence.trim().split(' ');
 
+      let currentLine = '';
 
+      words.forEach((word) => {
+        // 🔥 krótsze wersy = bardziej poetycko
+        if ((currentLine + ' ' + word).length > 35) {
+          lines.push(currentLine.trim());
+          currentLine = word;
+        } else {
+          currentLine += ' ' + word;
+        }
+      });
 
-formatPoemAI(text: string): string {
-  if (!text) return text;
-
-  // 🔥 normalize
-  text = text
-    .replace(/\s+/g, ' ')
-    .replace(/\s([.,!?])/g, '$1')
-    .trim();
-
-  // 🔥 podziel na zdania (pauzy)
-  const sentences = text.split(/(?<=[.!?])/);
-
-  const lines: string[] = [];
-
-  sentences.forEach(sentence => {
-    const words = sentence.trim().split(' ');
-
-    let currentLine = '';
-
-    words.forEach(word => {
-      // 🔥 krótsze wersy = bardziej poetycko
-      if ((currentLine + ' ' + word).length > 35) {
+      if (currentLine) {
         lines.push(currentLine.trim());
-        currentLine = word;
-      } else {
-        currentLine += ' ' + word;
+      }
+
+      // 🔥 pauza po zdaniu = przerwa strofy
+      lines.push('');
+    });
+
+    // 🔥 dodatkowy rytm (co 3 wersy)
+    const final: string[] = [];
+
+    lines.forEach((line, i) => {
+      final.push(line);
+
+      if ((i + 1) % 4 === 0) {
+        final.push('');
       }
     });
 
-    if (currentLine) {
-      lines.push(currentLine.trim());
-    }
+    return final.join('\n').replace(/\n{3,}/g, '\n\n');
+  }
 
-    // 🔥 pauza po zdaniu = przerwa strofy
-    lines.push('');
-  });
+  formatAI() {
+    this.text = this.formatPoemAI(this.text);
 
-  // 🔥 dodatkowy rytm (co 3 wersy)
-  const final: string[] = [];
+    this.savePage();
+    localStorage.setItem('pages', JSON.stringify(this.pages));
+  }
 
-  lines.forEach((line, i) => {
-    final.push(line);
+  formatText(text: string, mode: string): string {
+    if (!text) return text;
 
-    if ((i + 1) % 4 === 0) {
-      final.push('');
-    }
-  });
+    // 📝 POETRY (ładne wersy + odstępy)
+    if (mode === 'poetry') {
+      const lines = text.split('\n').map((l) => l.trim());
 
-  return final.join('\n').replace(/\n{3,}/g, '\n\n');
-}
+      const result: string[] = [];
 
-formatAI() {
-  this.text = this.formatPoemAI(this.text);
+      for (let line of lines) {
+        if (!line) continue;
 
-  this.savePage();
-  localStorage.setItem('pages', JSON.stringify(this.pages));
-}
+        result.push(line);
 
-formatText(text: string, mode: string): string {
-  if (!text) return text;
-
-  // 📝 POETRY (ładne wersy + odstępy)
-  if (mode === 'poetry') {
-    const lines = text.split('\n').map(l => l.trim());
-
-    const result: string[] = [];
-
-    for (let line of lines) {
-      if (!line) continue;
-
-      result.push(line);
-
-      // 🔥 odstęp między wersami
-      if (line.length < 60) {
-        result.push('');
+        // 🔥 odstęp między wersami
+        if (line.length < 60) {
+          result.push('');
+        }
       }
+
+      return result.join('\n');
     }
 
-    return result.join('\n');
+    // 📄 COMPACT (usuwa puste linie)
+    if (mode === 'compact') {
+      return text
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l)
+        .join('\n');
+    }
+
+    return text;
   }
 
-  // 📄 COMPACT (usuwa puste linie)
-  if (mode === 'compact') {
-    return text
-      .split('\n')
-      .map(l => l.trim())
-      .filter(l => l)
-      .join('\n');
-  }
-
-  return text;
-}
-
-
-
-fillLorem() {
-  this.text = `Lorem ipsum dolor sit amet,
+  fillLorem() {
+    this.text = `Lorem ipsum dolor sit amet,
 consectetur adipiscing elit,
 sed do eiusmod tempor incididunt.
 
 Ut enim ad minim veniam,
 quis nostrud exercitation ullamco.`;
 
-  this.title = 'Testowy wiersz';
+    this.title = 'Testowy wiersz';
 
-  this.savePage();
-}
-
-
-
-
+    this.savePage();
+  }
 
   ///////////////////////////////////////////
   constructor(private cd: ChangeDetectorRef) {}
@@ -291,165 +290,111 @@ quis nostrud exercitation ullamco.`;
     return crypto.randomUUID();
   }
 
+  ngOnInit() {
+    const savedPages = localStorage.getItem('pages');
 
+    if (savedPages) {
+      this.pages = JSON.parse(savedPages);
+    }
 
-ngOnInit() {
-  const savedPages = localStorage.getItem('pages');
+    if (this.pages.length === 0) {
+      this.newPage();
+    } else {
+      this.loadPage();
+    }
 
-  if (savedPages) {
-    this.pages = JSON.parse(savedPages);
+    // 🔥 COVER FIX
+    const savedCover = localStorage.getItem('cover');
+
+    if (savedCover) {
+      Object.assign(this.cover, JSON.parse(savedCover));
+    }
   }
 
-  if (this.pages.length === 0) {
-    this.newPage();
-  } else {
+  newPage() {
+    const page = {
+      id: this.generateId(),
+      title: '',
+      text: '',
+      template: 'Default',
+      variant: null,
+
+      // 🔥 DODAJ TO
+      titleFont: this.titleFont,
+      textFont: this.textFont,
+      titleColor: this.titleColor,
+      textColor: this.textColor,
+    };
+
+    this.pages.push(page);
+    this.currentPageIndex = this.pages.length - 1;
     this.loadPage();
-  }
-
-  // 🔥 COVER FIX
-  const savedCover = localStorage.getItem('cover');
-
-  if (savedCover) {
-    Object.assign(this.cover, JSON.parse(savedCover));
-  }
-}
-
-
-
-
-
-
-
-
-//   // 🔥 PAGE SYSTEM
-// newPage() {
-//   const page = {
-//     id: this.generateId(),
-//     title: '',
-//     text: '',
-//     template: 'Default',
-//     variant: null,
-//   };
-
-//   this.pages.push(page);
-//   this.currentPageIndex = this.pages.length - 1;
-//   this.loadPage();
-
-//   // 🔥 DODAJ TO
-//   localStorage.setItem('pages', JSON.stringify(this.pages));
-// }
-
-newPage() {
-  const page = {
-    id: this.generateId(),
-    title: '',
-    text: '',
-    template: 'Default',
-    variant: null,
-
-    // 🔥 DODAJ TO
-    titleFont: this.titleFont,
-    textFont: this.textFont,
-    titleColor: this.titleColor,
-    textColor: this.textColor,
-  };
-
-  this.pages.push(page);
-  this.currentPageIndex = this.pages.length - 1;
-  this.loadPage();
-
-  localStorage.setItem('pages', JSON.stringify(this.pages));
-}
-
-onFontChange(value: string) {
-  if (this.activeField === 'title') {
-    this.titleFont = value;
-  } else {
-    this.textFont = value;
-  }
-
-  this.savePage();
-  localStorage.setItem('pages', JSON.stringify(this.pages));
-}
-
-
-
-
-loadPage() {
-  const p = this.pages[this.currentPageIndex];
-
-  this.title = p.title;
-  this.text = p.text;
-  this.selectedTemplate = p.template;
-  this.selectedVariant = p.variant;
-
-  // 🔥 KLUCZOWE
-  this.titleFont = p.titleFont || "'Playfair Display', serif";
-  this.textFont = p.textFont || "Georgia, serif";
-  this.titleColor = p.titleColor || '#000';
-  this.textColor = p.textColor || '#000';
-}
-
-
-
-  // loadPage() {
-  //   const p = this.pages[this.currentPageIndex];
-
-  //   this.title = p.title;
-  //   this.text = p.text;
-  //   this.selectedTemplate = p.template;
-  //   this.selectedVariant = p.variant;
-  // }
-
-  // savePage() {
-  //   const p = this.pages[this.currentPageIndex];
-
-  //   p.title = this.title;
-  //   p.text = this.text;
-  //   p.template = this.selectedTemplate;
-  //   p.variant = this.selectedVariant;
-  // }
-savePage() {
-  const p = this.pages[this.currentPageIndex];
-
-  p.title = this.title;
-  p.text = this.text;
-  p.template = this.selectedTemplate;
-  p.variant = this.selectedVariant;
-
-  // 🔥 KLUCZOWE
-  p.titleFont = this.titleFont;
-  p.textFont = this.textFont;
-  p.titleColor = this.titleColor;
-  p.textColor = this.textColor;
-}
-
-nextPage() {
-  if (this.currentPageIndex < this.pages.length - 1) {
-    this.savePage();
 
     localStorage.setItem('pages', JSON.stringify(this.pages));
-
-    this.currentPageIndex++;
-    this.loadPage();
   }
-}
 
+  onFontChange(value: string) {
+    if (this.activeField === 'title') {
+      this.titleFont = value;
+    } else {
+      this.textFont = value;
+    }
 
-prevPage() {
-  if (this.currentPageIndex > 0) {
     this.savePage();
-
     localStorage.setItem('pages', JSON.stringify(this.pages));
-
-    this.currentPageIndex--;
-    this.loadPage();
   }
-}
 
+  loadPage() {
+    const p = this.pages[this.currentPageIndex];
 
+    this.title = p.title;
+    this.text = p.text;
+    this.selectedTemplate = p.template;
+    this.selectedVariant = p.variant;
 
+    // 🔥 KLUCZOWE
+    this.titleFont = p.titleFont || "'Playfair Display', serif";
+    this.textFont = p.textFont || 'Georgia, serif';
+    this.titleColor = p.titleColor || '#000';
+    this.textColor = p.textColor || '#000';
+  }
 
+  savePage() {
+    const p = this.pages[this.currentPageIndex];
+
+    p.title = this.title;
+    p.text = this.text;
+    p.template = this.selectedTemplate;
+    p.variant = this.selectedVariant;
+
+    // 🔥 KLUCZOWE
+    p.titleFont = this.titleFont;
+    p.textFont = this.textFont;
+    p.titleColor = this.titleColor;
+    p.textColor = this.textColor;
+  }
+
+  nextPage() {
+    if (this.currentPageIndex < this.pages.length - 1) {
+      this.savePage();
+
+      localStorage.setItem('pages', JSON.stringify(this.pages));
+
+      this.currentPageIndex++;
+      this.loadPage();
+    }
+  }
+
+  prevPage() {
+    if (this.currentPageIndex > 0) {
+      this.savePage();
+
+      localStorage.setItem('pages', JSON.stringify(this.pages));
+
+      this.currentPageIndex--;
+      this.loadPage();
+    }
+  }
 
   // 🔥 ACTIONS
 
@@ -458,9 +403,20 @@ prevPage() {
     this.savePage();
   }
 
+  // applyTemplate(template: string) {
+  //   this.selectedTemplate = template;
+  //   this.selectedVariant = null;
+  //   this.savePage();
+  // }
+
   applyTemplate(template: string) {
     this.selectedTemplate = template;
     this.selectedVariant = null;
+
+    const p = this.pages[this.currentPageIndex];
+    p.template = template;
+    p.variant = null;
+
     this.savePage();
   }
 
@@ -616,18 +572,14 @@ prevPage() {
     return {};
   }
 
-  // preview() {
-  //   this.savePage(); // 🔥 NAJWAŻNIEJSZE
-  //   localStorage.setItem('pages', JSON.stringify(this.pages));
-  //   this.isPreviewOpen = true;
-  // }
-  /////////////////////////////////////////
-
   currentPreviewPage = 0;
   private pagedPreviewer: any;
 
   preview() {
     this.savePage();
+
+    localStorage.setItem('pages', JSON.stringify(this.pages));
+    this.cd.detectChanges();
     this.isPreviewOpen = true;
     this.currentPreviewPage = 0;
 
@@ -650,47 +602,6 @@ prevPage() {
     }, 100);
   }
 
-
-
-// preview() {
-//   this.savePage();
-//   this.isPreviewOpen = true;
-//   this.currentPreviewPage = 0;
-
-//   setTimeout(async () => {
-//     const source = document.querySelector('#paged-source .book') as HTMLElement | null;
-//     const host = document.getElementById('paged-preview-host');
-
-//     if (!source || !host) return;
-
-//     host.innerHTML = '';
-
-//     const clonedSource = source.cloneNode(true) as HTMLElement;
-
-//     // 🔥 WAŻNE
-//     this.cd.detectChanges();
-
-//     // @ts-ignore
-//     this.pagedPreviewer = new window.Paged.Previewer();
-
-//     await this.pagedPreviewer.preview(clonedSource, [], host);
-
-//     this.fixLayout();
-//   }, 100);
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
   fixLayout() {
     const host = document.getElementById('paged-preview-host');
     if (!host) return;
@@ -703,13 +614,6 @@ prevPage() {
       p.style.margin = '0 auto';
     });
   }
-
-
-
-
-
-
-
 
   nextPreviewPage() {
     const host = document.getElementById('paged-preview-host');
@@ -762,10 +666,6 @@ prevPage() {
     }
   }
 
-
-
-
-
   goBack() {
     window.history.back();
   }
@@ -806,57 +706,33 @@ prevPage() {
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   }
 
+  getVariantStylesForPage(p: any) {
+    const t = p.template;
+    const v = p.variant?.name;
 
-
-
-getVariantStylesForPage(p: any) {
-  const t = p.template;
-  const v = p.variant?.name;
-
-  // 🌸 FLORAL
-  if (t === 'Floral') {
-    if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
-    if (v === 'Elegant') return { border: '2px dashed hotpink', borderRadius: '20px' };
-    if (v === 'Frame') return { border: '6px double pink' };
-    if (v === 'Garden') return { border: '4px solid green', borderRadius: '12px' };
-  }
-
-  // ❀ ROMANTIC
-  if (t === 'Romantic') {
-    if (!v || v === 'Soft Love') return { background: '#ffe4e6' };
-
-    if (v === 'Hearts') {
-      const heart = this.getHeartPattern();
-
-      return {
-        border: '2px solid #f9a8d4',
-        borderRadius: '20px',
-        backgroundColor: '#fff1f2',
-
-        backgroundImage: `${heart}, ${heart}`,
-        backgroundRepeat: 'no-repeat, no-repeat',
-        backgroundPosition: 'top left, bottom right',
-        backgroundSize: '60px, 60px',
-
-        padding: '30px',
-      };
+    // 🌸 FLORAL
+    if (t === 'Floral') {
+      if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
+      if (v === 'Elegant') return { border: '2px dashed hotpink', borderRadius: '20px' };
+      if (v === 'Frame') return { border: '6px double pink' };
+      if (v === 'Garden') return { border: '4px solid green', borderRadius: '12px' };
     }
+
+    // ❀ ROMANTIC
+    if (t === 'Romantic') {
+      if (!v || v === 'Soft Love') return { background: '#ffe4e6' };
+      if (v === 'Hearts') {
+        return {
+          border: '2px solid #f9a8d4',
+          borderRadius: '20px',
+          backgroundColor: '#fff1f2',
+          position: 'relative',
+        };
+      }
+    }
+
+    return {};
   }
-
-  return {};
-}
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 function trigger(arg0: string, arg1: any[]): any {
