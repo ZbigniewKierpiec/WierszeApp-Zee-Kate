@@ -88,28 +88,6 @@ export class EditorTest {
 
 /////////////////////////////////////
 
-
-// applyPreset(p: any) {
-//   const applyToAll = true;
-
-//   if (applyToAll) {
-//     this.pages.forEach(page => {
-//       page.template = p.template;
-//       page.variant = p.variant;
-//     });
-//   }
-
-//   this.selectedTemplate = p.template;
-//   this.selectedVariant = p.variant;
-
-//   if (p.titleFont) this.titleFont = p.titleFont;
-//   if (p.textFont) this.textFont = p.textFont;
-//   if (p.textColor) this.textColor = p.textColor;
-//   if (p.titleColor) this.titleColor = p.titleColor;
-
-//   this.savePage();
-//   localStorage.setItem('pages', JSON.stringify(this.pages));
-// }
 formatAdvanced() {
   this.text = this.formatPoemAdvanced(this.text);
   this.savePage();
@@ -726,6 +704,13 @@ prevPage() {
     });
   }
 
+
+
+
+
+
+
+
   nextPreviewPage() {
     const host = document.getElementById('paged-preview-host');
     if (!host) return;
@@ -780,21 +765,6 @@ prevPage() {
 
 
 
-
-
-  ///////////////////////////////////////////////
-
-  // nextPage() {
-  //   if (this.currentPageIndex < this.pages.length - 1) {
-  //     this.currentPageIndex++;
-  //   }
-  // }
-
-  // prevPage() {
-  //   if (this.currentPageIndex > 0) {
-  //     this.currentPageIndex--;
-  //   }
-  // }
 
   goBack() {
     window.history.back();

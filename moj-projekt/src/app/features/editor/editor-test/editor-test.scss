@@ -228,7 +228,7 @@ textarea {
 .preview-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.89);
 
   display: flex;
   justify-content: center;
@@ -285,6 +285,8 @@ textarea {
 
 /* 🔥 BUTTON */
 .close-btn {
+  position: absolute;
+  top: 100px;
   align-self: center;
 
   margin-top: auto;
@@ -297,6 +299,7 @@ textarea {
   color: white;
 
   cursor: pointer;
+  z-index: 99999999999999999999 !important;
 }
 
 .close-btn:hover {
@@ -321,6 +324,9 @@ textarea {
 
   cursor: pointer;
   transition: 0.2s;
+  span{
+    color: white;
+  }
 }
 
 .nav-buttons button:hover:not(:disabled) {
@@ -337,270 +343,153 @@ textarea {
   color: #6b7280;
 }
 ////////////////////////////////////////////////
-/* 📄 Paged.js ustawienia strony */
+/* 📄 PAGE SETUP */
 @page {
   size: A4;
   margin: 2cm;
 }
 
-/* 🔥 overlay */
-
-.preview-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 999999 !important; /* 🔥 wyżej niż Paged.js */
+/* 📚 BOOK */
+.book {
+  display: block;
 }
 
+/* 📕 COVER */
+.cover {
+  position: relative;
 
+  /* ❌ było 100vh — usuwamy */
+  /* height: 100vh; */
 
-/* 📦 kontener preview */
-.preview-book {
-  width: 95%;
-  height: 95%;
-  background: #2b2b2b;
+  /* ✅ poprawne dla Paged.js */
+  min-height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  page-break-after: always;
+  break-after: page;
+
   overflow: hidden;
+}
+
+/* 🖼️ obraz */
+.cover-image {
+  position: absolute;
+  inset: 0;
+
+  background-size: cover;
+  background-position: center;
+
+  opacity: 0.85;
+}
+
+/* ✍️ tekst okładki */
+.cover-content {
+  position: relative;
+  z-index: 2;
+
   padding: 20px;
 }
 
-/* 📚 kontener stron — 🔥 POZIOMO */
-.pagedjs_pages {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: flex-start;
-  gap: 40px;
+/* 📖 STRONA WIERSZA */
 
-  overflow-x: auto;
-  overflow-y: hidden;
 
-  height: 100%;
-  padding: 40px;
+.poem {
+  display: block;
+
+  break-before: page;
+  page-break-before: always;
+
+  /* 🔥 pozwól dzielić */
+  break-inside: auto;
+  page-break-inside: auto;
+
+  padding: 60px;
+  box-sizing: border-box;
 }
 
-/* 📄 pojedyncza strona */
+
+
+/* 🧾 TYTUŁ */
+.title-preview {
+  width: 100%;
+  text-align: center;
+
+  margin-bottom: 40px;
+
+  font-weight: 600;
+}
+
+/* ✍️ TEKST */
+.text-preview {
+  width: 100%;
+
+  line-height: 1.8;
+  letter-spacing: 0.3px;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+}
+
+/* ❌ USUŃ WSZYSTKO CO MA HEIGHT % LUB VH */
+/* NIE UŻYWAJ:
+   height: 100vh;
+   height: 70%;
+*/
+
+/* 📄 Paged.js page fix */
 .pagedjs_page {
-  flex: 0 0 auto;
-
-  width: 794px !important;
-  height: 1123px !important;
-
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-
   overflow: hidden;
 }
 
-/* ❌ FIX: usuwa lewy pasek */
+/* 📦 wrapper */
 .pagedjs_pagebox {
   width: 100% !important;
 }
 
-/* 📕 OKŁADKA */
-.cover {
-  position: relative;
-  height: 100vh;
-  page-break-after: always;
+
+.pagedjs_page {
+  width: 794px;   /* A4 width */
+  height: 1123px; /* A4 height */
   overflow: hidden;
 }
 
-/* zdjęcie */
-.cover-image {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.85;
+
+
+.cover {
+  break-after: page;
 }
 
-/* tekst */
-.cover-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 20px;
-}
-
-/* 📖 strony */
 .poem {
-  page-break-after: always;
+  break-after: page;
+}
+
+
+
+section {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
   padding: 40px;
 }
 
-/* tekst */
-.text-preview {
-  white-space: pre-wrap;
-}
 
-/* fallback */
-.book {
-  background: transparent;
-}
-
-
-
-/* 🔥 FORCE HORIZONTAL */
-.pagedjs_pages {
-  display: flex !important;
-  flex-direction: row !important;
-
-  width: max-content !important; /* 🔥 KLUCZ */
-  min-width: 100%;
-
-  gap: 40px;
-
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-
-  padding: 40px;
-}
-
-/* 🔥 każda strona */
-.pagedjs_page {
-  flex: 0 0 auto !important;
-
-  width: 794px !important;
-  height: 1123px !important;
-
-  margin: 0 !important;
-}
-
-/* 🔥 usuwa wrapper ograniczający */
-.pagedjs_area {
-  width: auto !important;
-}
-
-/* 🔥 bardzo ważne — wrapper strony */
-.pagedjs_sheet {
-  display: inline-block !important;
-}
-
-
-.pagedjs_pages,
-.pagedjs_pages * {
-  writing-mode: horizontal-tb !important;
-}
-
-
-
-.nav-buttons {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-
-  display: flex;
-  gap: 20px;
-  background-color: white;
-}
-
-.pagedjs_page {
-  margin: 0 auto !important;
-}
-
-
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 999999 !important;
-}
-
-
-
-.pagedjs_pages {
-  pointer-events: none;
-}
-
-.pagedjs_page {
-  pointer-events: auto;
-}
-
-
-
-.pagedjs_pages {
-  pointer-events: none;
-}
-
-.pagedjs_page {
-  pointer-events: auto;
-}
-
-
-.close-btn {
-  background: red !important;
-}
-
-
-.pagedjs_pages {
-  pointer-events: none !important;
+.poem {
+  height: 100%;
 }
 
 
 .pagedjs_page {
-  pointer-events: auto;
+  overflow: hidden;
 }
 
-
-.close-btn {
-  position: fixed !important;
-  top: 20px;
-  right: 20px;
-
-  z-index: 9999999 !important; /* 🔥 mega ważne */
-}
-
-.preview-overlay {
-  z-index: 999999 !important;
-}
-
-
-/* 🔥 ZABIJ kliknięcia Paged.js */
-.pagedjs_pages,
-.pagedjs_pages * {
-  pointer-events: none !important;
-}
-
-/* 🔥 TOTAL OVERRIDE Paged.js */
-[class*="pagedjs"] {
-  pointer-events: none !important;
-}
-///////////////Animacja/////////////////////
-.page {
-  position: absolute;
-  inset: 0;
-
-  transition: transform 0.4s ease, opacity 0.4s ease;
-}
-
-/* aktywna strona */
-.page.active {
-  transform: translateX(0);
-  opacity: 1;
-  z-index: 2;
-}
-
-/* wchodząca z prawej */
-.page.enter-right {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-/* wychodząca w lewo */
-.page.exit-left {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-
-/* odwrotnie */
-.page.enter-left {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-
-.page.exit-right {
-  transform: translateX(100%);
-  opacity: 0;
+section {
+  break-after: page;
+  height: 100%;
+  box-sizing: border-box;
 }
