@@ -10,4 +10,6 @@ export class Topbar {
   @Output() save = new EventEmitter<void>();
   @Output() clear = new EventEmitter<void>();
   @Output() coverEdit = new EventEmitter<void>();
+  @Output() export = new EventEmitter<void>(); 
+
 }

@@ -425,3 +425,85 @@ textarea {
   bottom: 20px;
   right: 20px;
 }
+
+
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #paged-preview-host,
+  #paged-preview-host * {
+    visibility: visible;
+  }
+
+  #paged-preview-host {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .nav-buttons,
+  .close-btn {
+    display: none;
+  }
+}
+
+
+.pagedjs_page {
+  page-break-after: always;
+  break-after: page;
+}
+
+.pagedjs_page {
+  page-break-after: always;
+  break-after: page;
+  page-break-inside: avoid;
+}
+
+
+
+/* ============================= */
+/* 🔢 NUMERACJA STRON */
+/* ============================= */
+
+.pagedjs_page::after {
+  content: counter(page);
+  
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-size: 12px;
+  color: #555;
+}
+
+
+
+/* ============================= */
+/* 📑 SPIS TREŚCI */
+/* ============================= */
+
+.toc {
+  break-after: page;
+  padding: 60px;
+}
+
+.toc h1 {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.toc-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.toc-item .dots {
+  flex: 1;
+  border-bottom: 1px dotted #999;
+  margin: 0 10px;
+}

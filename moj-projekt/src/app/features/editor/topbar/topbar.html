@@ -1,43 +1,23 @@
-
 <header class="topbar">
-<!-- 
+  <!-- 
   <div class="left">
     ✍️ <span class="logo">Poetry Studio</span>
   </div> -->
 
+  <div class="left">
+    ✍️ <span class="logo">Poetry Studio</span>
 
-<div class="left">
-  ✍️ <span class="logo">Poetry Studio</span>
-
-  <!-- 🔥 NOWY BUTTON -->
-  <button class="btn subtle" (click)="coverEdit.emit()">
-    📕 <span>Cover</span>
-  </button>
-
-
-
-
-
-</div>
-
-
-
-  <div class="right">
-    <button class="btn primary" (click)="save.emit()">
-      💾 <span>Save</span>
-    </button>
-
-    <button class="btn danger" (click)="clear.emit()">
-      🧹 <span>Clear</span>
-    </button>
-
-    <button class="btn">
-      📥 <span>Export</span>
-    </button>
-
-    <button class="btn icon">
-      ⚙️
-    </button>
+    <!-- 🔥 NOWY BUTTON -->
+    <button class="btn subtle" (click)="coverEdit.emit()">📕 <span>Cover</span></button>
   </div>
 
+  <div class="right">
+    <button class="btn primary" (click)="save.emit()">💾 <span>Save</span></button>
+
+    <button class="btn danger" (click)="clear.emit()">🧹 <span>Clear</span></button>
+
+    <button (click)="export.emit()" class="btn">📥 <span>Export</span></button>
+
+    <button class="btn icon">⚙️</button>
+  </div>
 </header>

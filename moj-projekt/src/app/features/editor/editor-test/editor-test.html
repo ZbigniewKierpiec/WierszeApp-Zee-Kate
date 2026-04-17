@@ -1,4 +1,9 @@
-<app-topbar (save)="save()" (clear)="clear()" (coverEdit)="isCoverEditorOpen = true"></app-topbar>
+<app-topbar
+  (save)="save()"
+  (clear)="clear()"
+  (coverEdit)="isCoverEditorOpen = true"
+  (export)="exportPDF()"
+></app-topbar>
 
 <div class="layout">
   <!-- SIDEBAR -->

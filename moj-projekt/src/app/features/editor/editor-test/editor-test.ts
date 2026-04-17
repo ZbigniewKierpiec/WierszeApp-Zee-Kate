@@ -5,7 +5,9 @@ import { Sidebar } from '../sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { animate, style, transition } from '@angular/animations';
 import { CoverEditor } from '../../cover-editor/cover-editor';
-
+import html2pdf from 'html2pdf.js';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 @Component({
   selector: 'app-editor-test',
   imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor],
@@ -646,7 +648,6 @@ quis nostrud exercitation ullamco.`;
     }
   }
 
-
   goBack() {
     window.history.back();
   }
@@ -714,197 +715,322 @@ quis nostrud exercitation ullamco.`;
 
   //   return {};
   // }
-getVariantStyles() {
-  return this.getVariantStylesBase(
-    this.selectedTemplate,
-    this.selectedVariant?.name
-  );
+  getVariantStyles() {
+    return this.getVariantStylesBase(this.selectedTemplate, this.selectedVariant?.name);
+  }
+
+  getVariantStylesForPage(p: any) {
+    return this.getVariantStylesBase(p.template, p.variant?.name);
+  }
+
+  getVariantStylesBase(t: string, v?: string) {
+    // 📄 DEFAULT
+    if (t === 'Default') {
+      if (!v || v === 'Clean') {
+        return {
+          background: '#ffffff',
+          borderRadius: '8px',
+        };
+      }
+
+      if (v === 'Paper') {
+        return {
+          background: '#fdf6e3',
+          border: '1px solid #e5e7eb',
+          borderRadius: '8px',
+        };
+      }
+
+      if (v === 'Soft') {
+        return {
+          background: '#f8fafc',
+          borderRadius: '12px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        };
+      }
+
+      if (v === 'Classic') {
+        return {
+          background: '#ffffff',
+          border: '2px solid #111',
+          borderRadius: '6px',
+        };
+      }
+    }
+
+    // 🌸 FLORAL
+    if (t === 'Floral') {
+      if (!v || v === 'Soft') {
+        return { border: '3px solid pink', borderRadius: '16px' };
+      }
+
+      if (v === 'Elegant') {
+        return { border: '2px dashed hotpink', borderRadius: '20px' };
+      }
+
+      if (v === 'Frame') {
+        return { border: '6px double pink', borderRadius: '16px' };
+      }
+
+      if (v === 'Garden') {
+        return { border: '4px solid green', borderRadius: '12px' };
+      }
+    }
+
+    // 📜 VINTAGE
+    if (t === 'Vintage') {
+      if (!v || v === 'Old Paper') {
+        return {
+          background: '#fdf6e3',
+          border: '2px solid #d4af37',
+          borderRadius: '10px',
+        };
+      }
+
+      if (v === 'Gold Frame') {
+        return {
+          border: '4px solid gold',
+          borderRadius: '12px',
+        };
+      }
+
+      if (v === 'Classic Ink') {
+        return {
+          background: '#fffaf0',
+          borderRadius: '8px',
+        };
+      }
+
+      if (v === 'Retro') {
+        return {
+          border: '2px dashed brown',
+          borderRadius: '10px',
+        };
+      }
+    }
+
+    // ❀ ROMANTIC
+    if (t === 'Romantic') {
+      if (!v || v === 'Soft Love') {
+        return {
+          background: '#ffe4e6',
+          borderRadius: '16px',
+        };
+      }
+
+      if (v === 'Hearts') {
+        return {
+          border: '2px solid #f9a8d4',
+          borderRadius: '20px',
+          backgroundColor: '#fff1f2',
+          position: 'relative', // 🔥 ważne dla pseudo-elementów
+        };
+      }
+
+      if (v === 'Poetry') {
+        return {
+          borderBottom: '2px solid pink',
+        };
+      }
+
+      if (v === 'Rose') {
+        return {
+          border: '3px solid crimson',
+          borderRadius: '12px',
+        };
+      }
+    }
+
+    // 🌙 DARK
+    if (t === 'Dark') {
+      if (!v || v === 'Deep Night') {
+        return {
+          background: '#111827',
+          color: 'white',
+          borderRadius: '10px',
+        };
+      }
+
+      if (v === 'Soft Dark') {
+        return {
+          background: '#1f2937',
+          color: '#ddd',
+          borderRadius: '10px',
+        };
+      }
+
+      if (v === 'Neon') {
+        return {
+          background: '#000',
+          color: '#0ff',
+          borderRadius: '10px',
+        };
+      }
+
+      if (v === 'Midnight') {
+        return {
+          background: '#0f172a',
+          color: '#ccc',
+          borderRadius: '10px',
+        };
+      }
+    }
+
+    // ▫️ MINIMAL
+    if (t === 'Minimal') {
+      if (!v || v === 'Line') {
+        return { borderLeft: '3px solid black' };
+      }
+
+      if (v === 'Soft Line') {
+        return { borderLeft: '2px solid gray' };
+      }
+
+      if (v === 'Clean Space') {
+        return { padding: '20px' };
+      }
+
+      if (v === 'Mono') {
+        return { color: '#333' };
+      }
+    }
+
+    return {};
+  }
+
+  // async exportPDF() {
+  //   this.preview();
+
+  //   setTimeout(async () => {
+  //     const host = document.getElementById('paged-preview-host');
+  //     if (!host) return;
+
+  //     const pages = host.querySelectorAll('.pagedjs_page');
+
+  //     // 🔥 KLUCZ: pokaż wszystkie strony
+  //     pages.forEach((p: any) => {
+  //       p.style.display = 'block';
+  //     });
+
+  //     const pdf = new jsPDF({
+  //       unit: 'px',
+  //       format: [794, 1123],
+  //     });
+
+  //     for (let i = 0; i < pages.length; i++) {
+  //       const page = pages[i] as HTMLElement;
+
+  //       const canvas = await html2canvas(page, {
+  //         scale: 2,
+  //         useCORS: true, // 🔥 ważne dla obrazów (cover!)
+  //       });
+
+  //       const imgData = canvas.toDataURL('image/jpeg', 1);
+
+  //       if (i > 0) pdf.addPage();
+
+  //       pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
+  //     }
+
+  //     pdf.save('moj-tomik.pdf');
+
+  //     // 🔥 przywróć preview (1 strona)
+  //     this.fixLayout();
+
+  //   }, 700);
+  // }
+
+  // async exportPDF() {
+  //   this.preview();
+
+  //   setTimeout(async () => {
+  //     const host = document.getElementById('paged-preview-host');
+  //     if (!host) return;
+
+  //     const pages = host.querySelectorAll('.pagedjs_page');
+
+    
+  //     pages.forEach((p: any) => {
+  //       p.style.display = 'block';
+  //     });
+
+  //     const pdf = new jsPDF({
+  //       unit: 'mm',
+  //       format: 'a4',
+  //       compress: true,
+  //     });
+
+  //     for (let i = 0; i < pages.length; i++) {
+  //       const page = pages[i] as HTMLElement;
+
+  //       const canvas = await html2canvas(page, {
+  //         scale: 2, 
+  //         useCORS: true,
+  //         backgroundColor: '#ffffff',
+  //       });
+
+  //       const imgData = canvas.toDataURL('image/jpeg', 0.85); 
+
+  //       if (i > 0) pdf.addPage();
+
+  //       pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+  //     }
+
+  //     pdf.save('moj-tomik.pdf');
+
+  //     this.fixLayout();
+  //   }, 500);
+  // }
+
+
+
+
+async exportPDF() {
+  this.preview();
+
+  setTimeout(async () => {
+    const host = document.getElementById('paged-preview-host');
+    if (!host) return;
+
+    const pages = host.querySelectorAll('.pagedjs_page');
+
+    pages.forEach((p: any) => {
+      p.style.display = 'block';
+    });
+
+    const pdf = new jsPDF({
+      unit: 'mm',
+      format: 'a4',
+      compress: true,
+    });
+
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i] as HTMLElement;
+
+      const canvas = await html2canvas(page, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.85);
+
+      if (i > 0) pdf.addPage();
+
+      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+    }
+
+    const rawTitle = this.cover?.title?.trim() || 'moj-tomik';
+    const safeTitle = rawTitle
+      .replace(/[\\/:*?"<>|]/g, '')
+      .replace(/\s+/g, '-')
+      .toLowerCase();
+
+    pdf.save(`${safeTitle}.pdf`);
+
+    this.fixLayout();
+  }, 500);
 }
-
-getVariantStylesForPage(p: any) {
-  return this.getVariantStylesBase(
-    p.template,
-    p.variant?.name
-  );
-}
-
-getVariantStylesBase(t: string, v?: string) {
-  // 📄 DEFAULT
-  if (t === 'Default') {
-    if (!v || v === 'Clean') {
-      return {
-        background: '#ffffff',
-        borderRadius: '8px',
-      };
-    }
-
-    if (v === 'Paper') {
-      return {
-        background: '#fdf6e3',
-        border: '1px solid #e5e7eb',
-        borderRadius: '8px',
-      };
-    }
-
-    if (v === 'Soft') {
-      return {
-        background: '#f8fafc',
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-      };
-    }
-
-    if (v === 'Classic') {
-      return {
-        background: '#ffffff',
-        border: '2px solid #111',
-        borderRadius: '6px',
-      };
-    }
-  }
-
-  // 🌸 FLORAL
-  if (t === 'Floral') {
-    if (!v || v === 'Soft') {
-      return { border: '3px solid pink', borderRadius: '16px' };
-    }
-
-    if (v === 'Elegant') {
-      return { border: '2px dashed hotpink', borderRadius: '20px' };
-    }
-
-    if (v === 'Frame') {
-      return { border: '6px double pink', borderRadius: '16px' };
-    }
-
-    if (v === 'Garden') {
-      return { border: '4px solid green', borderRadius: '12px' };
-    }
-  }
-
-  // 📜 VINTAGE
-  if (t === 'Vintage') {
-    if (!v || v === 'Old Paper') {
-      return {
-        background: '#fdf6e3',
-        border: '2px solid #d4af37',
-        borderRadius: '10px',
-      };
-    }
-
-    if (v === 'Gold Frame') {
-      return {
-        border: '4px solid gold',
-        borderRadius: '12px',
-      };
-    }
-
-    if (v === 'Classic Ink') {
-      return {
-        background: '#fffaf0',
-        borderRadius: '8px',
-      };
-    }
-
-    if (v === 'Retro') {
-      return {
-        border: '2px dashed brown',
-        borderRadius: '10px',
-      };
-    }
-  }
-
-  // ❀ ROMANTIC
-  if (t === 'Romantic') {
-    if (!v || v === 'Soft Love') {
-      return {
-        background: '#ffe4e6',
-        borderRadius: '16px',
-      };
-    }
-
-    if (v === 'Hearts') {
-      return {
-        border: '2px solid #f9a8d4',
-        borderRadius: '20px',
-        backgroundColor: '#fff1f2',
-        position: 'relative', // 🔥 ważne dla pseudo-elementów
-      };
-    }
-
-    if (v === 'Poetry') {
-      return {
-        borderBottom: '2px solid pink',
-      };
-    }
-
-    if (v === 'Rose') {
-      return {
-        border: '3px solid crimson',
-        borderRadius: '12px',
-      };
-    }
-  }
-
-  // 🌙 DARK
-  if (t === 'Dark') {
-    if (!v || v === 'Deep Night') {
-      return {
-        background: '#111827',
-        color: 'white',
-        borderRadius: '10px',
-      };
-    }
-
-    if (v === 'Soft Dark') {
-      return {
-        background: '#1f2937',
-        color: '#ddd',
-        borderRadius: '10px',
-      };
-    }
-
-    if (v === 'Neon') {
-      return {
-        background: '#000',
-        color: '#0ff',
-        borderRadius: '10px',
-      };
-    }
-
-    if (v === 'Midnight') {
-      return {
-        background: '#0f172a',
-        color: '#ccc',
-        borderRadius: '10px',
-      };
-    }
-  }
-
-  // ▫️ MINIMAL
-  if (t === 'Minimal') {
-    if (!v || v === 'Line') {
-      return { borderLeft: '3px solid black' };
-    }
-
-    if (v === 'Soft Line') {
-      return { borderLeft: '2px solid gray' };
-    }
-
-    if (v === 'Clean Space') {
-      return { padding: '20px' };
-    }
-
-    if (v === 'Mono') {
-      return { color: '#333' };
-    }
-  }
-
-  return {};
-}
-
-
-
 
 
 
