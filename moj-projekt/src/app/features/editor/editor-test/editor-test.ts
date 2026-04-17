@@ -805,6 +805,58 @@ prevPage() {
 
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   }
+
+
+
+
+getVariantStylesForPage(p: any) {
+  const t = p.template;
+  const v = p.variant?.name;
+
+  // 🌸 FLORAL
+  if (t === 'Floral') {
+    if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
+    if (v === 'Elegant') return { border: '2px dashed hotpink', borderRadius: '20px' };
+    if (v === 'Frame') return { border: '6px double pink' };
+    if (v === 'Garden') return { border: '4px solid green', borderRadius: '12px' };
+  }
+
+  // ❀ ROMANTIC
+  if (t === 'Romantic') {
+    if (!v || v === 'Soft Love') return { background: '#ffe4e6' };
+
+    if (v === 'Hearts') {
+      const heart = this.getHeartPattern();
+
+      return {
+        border: '2px solid #f9a8d4',
+        borderRadius: '20px',
+        backgroundColor: '#fff1f2',
+
+        backgroundImage: `${heart}, ${heart}`,
+        backgroundRepeat: 'no-repeat, no-repeat',
+        backgroundPosition: 'top left, bottom right',
+        backgroundSize: '60px, 60px',
+
+        padding: '30px',
+      };
+    }
+  }
+
+  return {};
+}
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 function trigger(arg0: string, arg1: any[]): any {
