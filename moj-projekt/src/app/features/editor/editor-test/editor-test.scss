@@ -1,11 +1,16 @@
+/* ============================= */
+/* 🧱 LAYOUT */
+/* ============================= */
 .layout {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 260px 1fr; /* sidebar + editor */
 }
 
+/* ============================= */
+/* 🔔 TOAST (powiadomienia) */
+/* ============================= */
 .toast {
   position: fixed;
-
   bottom: 20px;
   right: 20px;
 
@@ -18,31 +23,25 @@
   animation: fadeIn 0.3s ease;
 }
 
-.toast.success {
-  background: #16a34a;
-}
-
-.toast.danger {
-  background: #dc2626;
-}
+.toast.success { background: #16a34a; }
+.toast.danger { background: #dc2626; }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
+/* ============================= */
+/* 🧠 EDITOR */
+/* ============================= */
 .editor-area {
   padding: 24px;
   background: #f9fafb;
 }
 
-/* TOOLBAR */
+/* ============================= */
+/* 🛠 TOOLBAR */
+/* ============================= */
 .toolbar {
   display: flex;
   gap: 10px;
@@ -52,10 +51,13 @@
   background: white;
   border-radius: 12px;
 
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   margin-bottom: 20px;
 }
 
+/* ============================= */
+/* 🏷 TEMPLATE LABEL */
+/* ============================= */
 .template-label {
   display: flex;
   align-items: center;
@@ -67,54 +69,42 @@
 .template-label .icon {
   width: 24px;
   height: 24px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 18px;
 }
 
-/* POEM */
+/* ============================= */
+/* ✍️ EDYTOR WIERSZA */
+/* ============================= */
 .poem-container {
   max-width: 600px;
   height: 70%;
   margin: auto;
+
   position: relative;
   padding: 30px;
   border-radius: 16px;
 
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-/* 🔥 KLUCZOWE — textarea dziedziczy styl template */
+/* input/textarea dziedziczą styl template */
 .poem-container textarea,
 .poem-container input {
   background: transparent;
   color: inherit;
 }
 
-/* INPUT */
 .title {
   width: 100%;
   font-size: 26px;
   border: none;
   outline: none;
-  background: transparent;
   margin-bottom: 10px;
   text-align: center;
 }
-
-/* TEXT */
-// textarea {
-//   width: 100%;
-//   border: none;
-//   outline: none;
-//   resize: none;
-//   background: transparent;
-//   min-height: 700px;
-//   line-height: 1.6;
-// }
 
 textarea {
   width: 100%;
@@ -127,7 +117,9 @@ textarea {
   min-height: 100%;
 }
 
-/* BOTTOM BAR */
+/* ============================= */
+/* 🔘 DOLNY BAR */
+/* ============================= */
 .bottom-bar {
   display: flex;
   justify-content: center;
@@ -148,19 +140,19 @@ textarea {
   background: #374151;
 }
 
-/* 🌸 Floral */
+/* ============================= */
+/* 🎨 TEMPLATE KLASY */
+/* ============================= */
 .Floral {
   border: 4px solid pink;
   border-radius: 16px;
 }
 
-/* 📜 Vintage */
 .Vintage {
   border: 3px solid #d4af37;
   background: #fffdf5 !important;
 }
 
-/* ❀ Romantic */
 .Romantic::before,
 .Romantic::after {
   content: '❀ ❀ ❀';
@@ -168,18 +160,19 @@ textarea {
   text-align: center;
 }
 
-/* 🌙 Dark */
 .Dark {
   background: #111827 !important;
   color: white;
 }
 
-/* 🔳 Minimal */
 .Minimal {
   border-left: 3px solid #000;
   padding-left: 16px;
 }
 
+/* ============================= */
+/* 📄 PAGE CONTROLS */
+/* ============================= */
 .page-controls {
   display: flex;
   justify-content: center;
@@ -189,9 +182,8 @@ textarea {
   margin-top: 20px;
   padding: 10px 16px;
 
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255,255,255,0.05);
   border-radius: 12px;
-
   backdrop-filter: blur(6px);
 }
 
@@ -204,24 +196,24 @@ textarea {
   cursor: pointer;
 }
 
+.page-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .page-id {
   margin-top: 8px;
   font-size: 12px;
   opacity: 0.5;
 }
 
-.page-controls button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-///////////////////////////////////
 /* ============================= */
-/* 🔥 OVERLAY */
+/* 🔥 PREVIEW OVERLAY */
 /* ============================= */
 .preview-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0,0,0,0.85);
 
   display: flex;
   justify-content: center;
@@ -231,13 +223,12 @@ textarea {
 }
 
 /* ============================= */
-/* 📖 PREVIEW CONTAINER */
+/* 📖 PREVIEW BOOK */
 /* ============================= */
 .preview-book {
   width: 820px;
   height: 95vh;
 
-  // background: #111; /* tło wokół kartki */
   border-radius: 12px;
 
   display: flex;
@@ -250,11 +241,7 @@ textarea {
 }
 
 /* ============================= */
-/* ❌ USUWAMY preview-a3 */
-/* ============================= */
-
-/* ============================= */
-/* 🔘 CLOSE BUTTON */
+/* ❌ CLOSE BUTTON */
 /* ============================= */
 .close-btn {
   position: absolute;
@@ -262,14 +249,13 @@ textarea {
   right: 20px;
 
   padding: 10px 18px;
-  border: none;
   border-radius: 8px;
+  border: none;
 
   background: #1f2937;
   color: white;
 
   cursor: pointer;
-  z-index: 10;
 }
 
 .close-btn:hover {
@@ -277,7 +263,7 @@ textarea {
 }
 
 /* ============================= */
-/* 🔁 NAV */
+/* 🔁 NAV BUTTONS */
 /* ============================= */
 .nav-buttons {
   display: flex;
@@ -292,16 +278,10 @@ textarea {
 
   background: #111827;
   color: white;
-
-  cursor: pointer;
-}
-
-.nav-buttons button:hover {
-  background: #374151;
 }
 
 /* ============================= */
-/* 📄 PAGED.JS (KLUCZ) */
+/* 📄 PAGED.JS */
 /* ============================= */
 @page {
   size: A4;
@@ -310,14 +290,12 @@ textarea {
 .pagedjs_page {
   width: 794px;
   height: 1123px;
-
-  background: #ffffff !important;
-  overflow: hidden;
+  background: #fff !important;
 
   margin: 0 auto;
+  overflow: visible; /* 🔥 pozwala hearts wychodzić */
 }
 
-/* fix wrapper */
 .pagedjs_pagebox {
   width: 100% !important;
 }
@@ -334,8 +312,7 @@ textarea {
 /* ============================= */
 .cover {
   position: relative;
-
-  min-height: 100%;
+  height: 100%;
 
   display: flex;
   align-items: center;
@@ -344,8 +321,11 @@ textarea {
   text-align: center;
 
   break-after: page;
-  overflow: hidden;
+  
 }
+
+
+
 
 .cover-image {
   position: absolute;
@@ -354,150 +334,88 @@ textarea {
   background-size: cover;
   background-position: center;
 
-  opacity: 0.85;
+  z-index: 1;
 }
 
 .cover-content {
   position: relative;
   z-index: 2;
-  padding: 20px;
 }
+
+
+
+
+
+
+
+
+
+
 
 /* ============================= */
 /* 📖 POEM PAGE */
 /* ============================= */
 .poem {
-  break-after: page;
+  height: 100%;
 
+  display: flex;
+  flex-direction: column;
+
+  padding: 0; /* 🔥 ważne */
+  position: relative;
+
+  break-after: page;
+}
+
+/* wnętrze strony */
+.poem-inner {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+
+  padding: 60px;
   box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  background: white;
 }
 
 /* ============================= */
-/* ✍️ TEXT */
+/* ✍️ PREVIEW TEXT */
 /* ============================= */
 .title-preview {
-  width: 100%;
   margin-bottom: 40px;
-  font-weight: 600;
   text-align: center;
 }
 
 .text-preview {
-  width: 100%;
-
-  line-height: 1.8;
-  letter-spacing: 0.3px;
-
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.cover {
-  height: 100%;
-}
-
-// .poem {
-//   height: 100%;
-
-//   display: flex;
-//   flex-direction: column;
-//   overflow: hidden;
-//   background-color: red;
-// }
-.poem {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-
-  padding: 0; /* 🔥 KLUCZ */
-}
-.poem-inner {
-  background-color: white;
-
-  flex: 1; /* 🔥 KLUCZ */
-  width: 100%;
-
-  box-sizing: border-box;
-  padding: 60px;
-
-  display: flex;
-  flex-direction: column;
-}
-.cover,
-.poem {
-  box-sizing: border-box;
-}
-
-.poem.hearts::before,
-.poem.hearts::after {
-  content: '';
-  position: absolute;
-  width: 60px;
-  height: 60px;
-
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 20 C40 5, 70 5, 70 30 C70 55, 40 75, 40 75 C40 75, 10 55, 10 30 C10 5, 40 5, 40 20 Z' fill='%23fb7185'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-.poem.hearts::before {
-  top: 10px;
-  left: 10px;
-}
-
-.poem.hearts::after {
-  bottom: 10px;
-  right: 10px;
-}
-
-.title-preview {
-  margin-bottom: 40px;
-}
-
-.text-preview {
   flex: 1;
+  line-height: 1.8;
+  white-space: pre-wrap;
 }
+
+/* ============================= */
+/* ❤️ HEARTS */
+/* ============================= */
 .hearts::before,
 .hearts::after {
   content: '';
   position: absolute;
+
   width: 60px;
   height: 60px;
 
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 20 C40 5, 70 5, 70 30 C70 55, 40 75, 40 75 C40 75, 10 55, 10 30 C10 5, 40 5, 40 20 Z' fill='%23fb7185'/%3E%3C/svg%3E");
+
   background-size: contain;
   background-repeat: no-repeat;
-}
 
-.hearts::before {
-  top: 10px;
-  left: 10px;
-}
-
-.hearts::after {
-  bottom: 10px;
-  right: 10px;
-}
-
-.pagedjs_page {
-  overflow: visible; /* 🔥 zamiast hidden */
-}
-
-.hearts::before,
-.hearts::after {
   z-index: 5;
 }
 
-.pagedjs_page {
-  overflow: visible;
-}
-
-.poem {
-  position: relative;
-}
-
-
+/* rogi */
 .hearts::before {
   top: 20px;
   left: 20px;
