@@ -461,116 +461,116 @@ quis nostrud exercitation ullamco.`;
 
   // 🔥 STYLES
 
-  getVariantStyles() {
-    if (!this.selectedTemplate) return {};
+  // getVariantStyles() {
+  //   if (!this.selectedTemplate) return {};
 
-    const t = this.selectedTemplate;
+  //   const t = this.selectedTemplate;
 
-    // 🔥 jeśli brak variantu → użyj default
-    const v = this.selectedVariant?.name;
-    // 📄 DEFAULT
-    if (t === 'Default') {
-      if (!v || v === 'Clean') {
-        return {
-          background: '#ffffff',
-          borderRadius: '8px',
-        };
-      }
+  //   // 🔥 jeśli brak variantu → użyj default
+  //   const v = this.selectedVariant?.name;
+  //   // 📄 DEFAULT
+  //   if (t === 'Default') {
+  //     if (!v || v === 'Clean') {
+  //       return {
+  //         background: '#ffffff',
+  //         borderRadius: '8px',
+  //       };
+  //     }
 
-      if (v === 'Paper') {
-        return {
-          background: '#fdf6e3',
-          border: '1px solid #e5e7eb',
-          borderRadius: '8px',
-        };
-      }
+  //     if (v === 'Paper') {
+  //       return {
+  //         background: '#fdf6e3',
+  //         border: '1px solid #e5e7eb',
+  //         borderRadius: '8px',
+  //       };
+  //     }
 
-      if (v === 'Soft') {
-        return {
-          background: '#f8fafc',
-          borderRadius: '12px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-        };
-      }
+  //     if (v === 'Soft') {
+  //       return {
+  //         background: '#f8fafc',
+  //         borderRadius: '12px',
+  //         boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+  //       };
+  //     }
 
-      if (v === 'Classic') {
-        return {
-          background: '#ffffff',
-          border: '2px solid #111',
-          borderRadius: '6px',
-        };
-      }
-    }
-    // 🌸 FLORAL
-    if (t === 'Floral') {
-      if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
-      if (v === 'Elegant') return { border: '2px dashed hotpink', borderRadius: '20px' };
-      if (v === 'Frame') return { border: '6px double pink' };
-      if (v === 'Garden') return { border: '4px solid green', borderRadius: '12px' };
-    }
+  //     if (v === 'Classic') {
+  //       return {
+  //         background: '#ffffff',
+  //         border: '2px solid #111',
+  //         borderRadius: '6px',
+  //       };
+  //     }
+  //   }
+  //   // 🌸 FLORAL
+  //   if (t === 'Floral') {
+  //     if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
+  //     if (v === 'Elegant') return { border: '2px dashed hotpink', borderRadius: '20px' };
+  //     if (v === 'Frame') return { border: '6px double pink' };
+  //     if (v === 'Garden') return { border: '4px solid green', borderRadius: '12px' };
+  //   }
 
-    // 📜 VINTAGE
-    if (t === 'Vintage') {
-      if (!v || v === 'Old Paper') return { background: '#fdf6e3', border: '2px solid #d4af37' };
-      if (v === 'Gold Frame') return { border: '4px solid gold' };
-      if (v === 'Classic Ink') return { background: '#fffaf0' };
-      if (v === 'Retro') return { border: '2px dashed brown' };
-    }
+  //   // 📜 VINTAGE
+  //   if (t === 'Vintage') {
+  //     if (!v || v === 'Old Paper') return { background: '#fdf6e3', border: '2px solid #d4af37' };
+  //     if (v === 'Gold Frame') return { border: '4px solid gold' };
+  //     if (v === 'Classic Ink') return { background: '#fffaf0' };
+  //     if (v === 'Retro') return { border: '2px dashed brown' };
+  //   }
 
-    // ❀ ROMANTIC
-    if (t === 'Romantic') {
-      if (!v || v === 'Soft Love') return { background: '#ffe4e6' };
-      if (v === 'Hearts') {
-        const heart = this.getHeartPattern();
+  //   // ❀ ROMANTIC
+  //   if (t === 'Romantic') {
+  //     if (!v || v === 'Soft Love') return { background: '#ffe4e6' };
+  //     if (v === 'Hearts') {
+  //       const heart = this.getHeartPattern();
 
-        return {
-          border: '2px solid #f9a8d4',
-          borderRadius: '20px',
-          backgroundColor: '#fff1f2',
+  //       return {
+  //         border: '2px solid #f9a8d4',
+  //         borderRadius: '20px',
+  //         backgroundColor: '#fff1f2',
 
-          // 🔥 dwa serca
-          backgroundImage: `${heart}, ${heart}`,
-          backgroundRepeat: 'no-repeat, no-repeat',
+  //         // 🔥 dwa serca
+  //         backgroundImage: `${heart}, ${heart}`,
+  //         backgroundRepeat: 'no-repeat, no-repeat',
 
-          // 🔥 pozycje
-          backgroundPosition: 'top left, bottom right',
+  //         // 🔥 pozycje
+  //         backgroundPosition: 'top left, bottom right',
 
-          // 🔥 rozmiar
-          backgroundSize: '60px, 60px',
+  //         // 🔥 rozmiar
+  //         backgroundSize: '60px, 60px',
 
-          padding: '30px',
-        };
-      }
-      if (v === 'Poetry') return { borderBottom: '2px solid pink' };
-      if (v === 'Rose') return { border: '3px solid crimson' };
-    }
+  //         padding: '30px',
+  //       };
+  //     }
+  //     if (v === 'Poetry') return { borderBottom: '2px solid pink' };
+  //     if (v === 'Rose') return { border: '3px solid crimson' };
+  //   }
 
-    // 🌙 DARK
-    if (t === 'Dark') {
-      if (!v || v === 'Deep Night') return { background: '#111827', color: 'white' };
-      if (v === 'Soft Dark') return { background: '#1f2937', color: '#ddd' };
-      if (v === 'Neon') return { background: '#000', color: '#0ff' };
-      if (v === 'Midnight') return { background: '#0f172a', color: '#ccc' };
-    }
+  //   // 🌙 DARK
+  //   if (t === 'Dark') {
+  //     if (!v || v === 'Deep Night') return { background: '#111827', color: 'white' };
+  //     if (v === 'Soft Dark') return { background: '#1f2937', color: '#ddd' };
+  //     if (v === 'Neon') return { background: '#000', color: '#0ff' };
+  //     if (v === 'Midnight') return { background: '#0f172a', color: '#ccc' };
+  //   }
 
-    // ▫️ MINIMAL
-    if (t === 'Minimal') {
-      if (!v || v === 'Line') return { borderLeft: '3px solid black' };
-      if (v === 'Soft Line') return { borderLeft: '2px solid gray' };
-      if (v === 'Clean Space') return { padding: '20px' };
-      if (v === 'Mono') return { color: '#333' };
-    }
+  //   // ▫️ MINIMAL
+  //   if (t === 'Minimal') {
+  //     if (!v || v === 'Line') return { borderLeft: '3px solid black' };
+  //     if (v === 'Soft Line') return { borderLeft: '2px solid gray' };
+  //     if (v === 'Clean Space') return { padding: '20px' };
+  //     if (v === 'Mono') return { color: '#333' };
+  //   }
 
-    // 📄 DEFAULT TEMPLATE
-    if (t === 'Default') {
-      return {
-        background: '#ffffff',
-        borderRadius: '8px',
-      };
-    }
+  //   // 📄 DEFAULT TEMPLATE
+  //   if (t === 'Default') {
+  //     return {
+  //       background: '#ffffff',
+  //       borderRadius: '8px',
+  //     };
+  //   }
 
-    return {};
-  }
+  //   return {};
+  // }
 
   currentPreviewPage = 0;
   private pagedPreviewer: any;
@@ -646,25 +646,6 @@ quis nostrud exercitation ullamco.`;
     }
   }
 
-  animatePage(direction: 'next' | 'prev') {
-    const pages = document.querySelectorAll('#paged-preview-host .pagedjs_page');
-
-    pages.forEach((p: any, i: number) => {
-      p.classList.remove('active', 'enter-left', 'enter-right', 'exit-left', 'exit-right');
-
-      if (i === this.currentPreviewPage) {
-        p.classList.add('active');
-      }
-    });
-
-    const current = pages[this.currentPreviewPage];
-
-    if (direction === 'next') {
-      current.classList.add('enter-right');
-    } else {
-      current.classList.add('enter-left');
-    }
-  }
 
   goBack() {
     window.history.back();
@@ -706,33 +687,241 @@ quis nostrud exercitation ullamco.`;
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   }
 
-  getVariantStylesForPage(p: any) {
-    const t = p.template;
-    const v = p.variant?.name;
+  // getVariantStylesForPage(p: any) {
+  //   const t = p.template;
+  //   const v = p.variant?.name;
 
-    // 🌸 FLORAL
-    if (t === 'Floral') {
-      if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
-      if (v === 'Elegant') return { border: '2px dashed hotpink', borderRadius: '20px' };
-      if (v === 'Frame') return { border: '6px double pink' };
-      if (v === 'Garden') return { border: '4px solid green', borderRadius: '12px' };
+  //   // 🌸 FLORAL
+  //   if (t === 'Floral') {
+  //     if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
+  //     if (v === 'Elegant') return { border: '2px dashed hotpink', borderRadius: '20px' };
+  //     if (v === 'Frame') return { border: '6px double pink' };
+  //     if (v === 'Garden') return { border: '4px solid green', borderRadius: '12px' };
+  //   }
+
+  //   // ❀ ROMANTIC
+  //   if (t === 'Romantic') {
+  //     if (!v || v === 'Soft Love') return { background: '#ffe4e6' };
+  //     if (v === 'Hearts') {
+  //       return {
+  //         border: '2px solid #f9a8d4',
+  //         borderRadius: '20px',
+  //         backgroundColor: '#fff1f2',
+  //         position: 'relative',
+  //       };
+  //     }
+  //   }
+
+  //   return {};
+  // }
+getVariantStyles() {
+  return this.getVariantStylesBase(
+    this.selectedTemplate,
+    this.selectedVariant?.name
+  );
+}
+
+getVariantStylesForPage(p: any) {
+  return this.getVariantStylesBase(
+    p.template,
+    p.variant?.name
+  );
+}
+
+getVariantStylesBase(t: string, v?: string) {
+  // 📄 DEFAULT
+  if (t === 'Default') {
+    if (!v || v === 'Clean') {
+      return {
+        background: '#ffffff',
+        borderRadius: '8px',
+      };
     }
 
-    // ❀ ROMANTIC
-    if (t === 'Romantic') {
-      if (!v || v === 'Soft Love') return { background: '#ffe4e6' };
-      if (v === 'Hearts') {
-        return {
-          border: '2px solid #f9a8d4',
-          borderRadius: '20px',
-          backgroundColor: '#fff1f2',
-          position: 'relative',
-        };
-      }
+    if (v === 'Paper') {
+      return {
+        background: '#fdf6e3',
+        border: '1px solid #e5e7eb',
+        borderRadius: '8px',
+      };
     }
 
-    return {};
+    if (v === 'Soft') {
+      return {
+        background: '#f8fafc',
+        borderRadius: '12px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+      };
+    }
+
+    if (v === 'Classic') {
+      return {
+        background: '#ffffff',
+        border: '2px solid #111',
+        borderRadius: '6px',
+      };
+    }
   }
+
+  // 🌸 FLORAL
+  if (t === 'Floral') {
+    if (!v || v === 'Soft') {
+      return { border: '3px solid pink', borderRadius: '16px' };
+    }
+
+    if (v === 'Elegant') {
+      return { border: '2px dashed hotpink', borderRadius: '20px' };
+    }
+
+    if (v === 'Frame') {
+      return { border: '6px double pink', borderRadius: '16px' };
+    }
+
+    if (v === 'Garden') {
+      return { border: '4px solid green', borderRadius: '12px' };
+    }
+  }
+
+  // 📜 VINTAGE
+  if (t === 'Vintage') {
+    if (!v || v === 'Old Paper') {
+      return {
+        background: '#fdf6e3',
+        border: '2px solid #d4af37',
+        borderRadius: '10px',
+      };
+    }
+
+    if (v === 'Gold Frame') {
+      return {
+        border: '4px solid gold',
+        borderRadius: '12px',
+      };
+    }
+
+    if (v === 'Classic Ink') {
+      return {
+        background: '#fffaf0',
+        borderRadius: '8px',
+      };
+    }
+
+    if (v === 'Retro') {
+      return {
+        border: '2px dashed brown',
+        borderRadius: '10px',
+      };
+    }
+  }
+
+  // ❀ ROMANTIC
+  if (t === 'Romantic') {
+    if (!v || v === 'Soft Love') {
+      return {
+        background: '#ffe4e6',
+        borderRadius: '16px',
+      };
+    }
+
+    if (v === 'Hearts') {
+      return {
+        border: '2px solid #f9a8d4',
+        borderRadius: '20px',
+        backgroundColor: '#fff1f2',
+        position: 'relative', // 🔥 ważne dla pseudo-elementów
+      };
+    }
+
+    if (v === 'Poetry') {
+      return {
+        borderBottom: '2px solid pink',
+      };
+    }
+
+    if (v === 'Rose') {
+      return {
+        border: '3px solid crimson',
+        borderRadius: '12px',
+      };
+    }
+  }
+
+  // 🌙 DARK
+  if (t === 'Dark') {
+    if (!v || v === 'Deep Night') {
+      return {
+        background: '#111827',
+        color: 'white',
+        borderRadius: '10px',
+      };
+    }
+
+    if (v === 'Soft Dark') {
+      return {
+        background: '#1f2937',
+        color: '#ddd',
+        borderRadius: '10px',
+      };
+    }
+
+    if (v === 'Neon') {
+      return {
+        background: '#000',
+        color: '#0ff',
+        borderRadius: '10px',
+      };
+    }
+
+    if (v === 'Midnight') {
+      return {
+        background: '#0f172a',
+        color: '#ccc',
+        borderRadius: '10px',
+      };
+    }
+  }
+
+  // ▫️ MINIMAL
+  if (t === 'Minimal') {
+    if (!v || v === 'Line') {
+      return { borderLeft: '3px solid black' };
+    }
+
+    if (v === 'Soft Line') {
+      return { borderLeft: '2px solid gray' };
+    }
+
+    if (v === 'Clean Space') {
+      return { padding: '20px' };
+    }
+
+    if (v === 'Mono') {
+      return { color: '#333' };
+    }
+  }
+
+  return {};
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 function trigger(arg0: string, arg1: any[]): any {
