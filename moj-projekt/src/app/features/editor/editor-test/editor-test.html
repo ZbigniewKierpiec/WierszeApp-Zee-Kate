@@ -137,7 +137,11 @@
     </div>
 
     <!-- 📖 POEM -->
-    <div class="poem-container" [ngStyle]="getVariantStyles()">
+    <div
+      class="poem-container"
+      [class.hearts]="selectedVariant?.name === 'Hearts'"
+      [ngStyle]="getVariantStyles()"
+    >
       <input
         [(ngModel)]="title"
         placeholder="Tytuł wiersza..."
@@ -242,7 +246,7 @@
         <p>{{ cover.author }}</p>
       </div>
     </section>
-<!--     
+    <!--     
 
     <section
       class="poem"
@@ -276,46 +280,34 @@
       </div>
     </section> -->
 
+    <section class="poem" *ngFor="let p of pages" [class.hearts]="p.variant?.name === 'Hearts'">
+      <div class="poem-inner" [ngStyle]="getVariantStylesForPage(p)">
+        <div
+          class="title-preview"
+          [ngStyle]="{
+            'text-align': titleAlign,
+            'font-family': p.titleFont,
+            'font-size.px': titleSize,
+            color: p.titleColor,
+          }"
+        >
+          {{ p.title }}
+        </div>
 
-<section
-  class="poem"
-  *ngFor="let p of pages"
-  [class.hearts]="p.variant?.name === 'Hearts'"
->
-  <div class="poem-inner" [ngStyle]="getVariantStylesForPage(p)">
-    <div
-      class="title-preview"
-      [ngStyle]="{
-        'text-align': titleAlign,
-        'font-family': p.titleFont,
-        'font-size.px': titleSize,
-        color: p.titleColor
-      }"
-    >
-      {{ p.title }}
-    </div>
-
-    <div
-      class="text-preview"
-      [ngStyle]="{
-        'text-align': textAlign,
-        'font-family': p.textFont,
-        'font-size.px': textFontSize,
-        color: p.textColor,
-        'white-space': 'pre-wrap'
-      }"
-    >
-      {{ p.text }}
-    </div>
-  </div>
-</section>
-
-
-
-
-
-
-
+        <div
+          class="text-preview"
+          [ngStyle]="{
+            'text-align': textAlign,
+            'font-family': p.textFont,
+            'font-size.px': textFontSize,
+            color: p.textColor,
+            'white-space': 'pre-wrap',
+          }"
+        >
+          {{ p.text }}
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 

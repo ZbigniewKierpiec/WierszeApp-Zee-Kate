@@ -80,21 +80,12 @@
   max-width: 600px;
   height: 70%;
   margin: auto;
-
+  position: relative;
   padding: 30px;
   border-radius: 16px;
 
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
-
-
-
-
-
-
-
-
-
 
 /* 🔥 KLUCZOWE — textarea dziedziczy styl template */
 .poem-container textarea,
@@ -133,10 +124,8 @@ textarea {
   resize: none;
   background: transparent;
   line-height: 1.6;
-   min-height:100%;
+  min-height: 100%;
 }
-
-
 
 /* BOTTOM BAR */
 .bottom-bar {
@@ -264,7 +253,6 @@ textarea {
 /* ❌ USUWAMY preview-a3 */
 /* ============================= */
 
-
 /* ============================= */
 /* 🔘 CLOSE BUTTON */
 /* ============================= */
@@ -312,13 +300,11 @@ textarea {
   background: #374151;
 }
 
-
 /* ============================= */
 /* 📄 PAGED.JS (KLUCZ) */
 /* ============================= */
 @page {
   size: A4;
-  margin: 2cm;
 }
 
 .pagedjs_page {
@@ -336,15 +322,12 @@ textarea {
   width: 100% !important;
 }
 
-
 /* ============================= */
 /* 📚 BOOK */
 /* ============================= */
 .book {
   display: block;
-  
 }
-
 
 /* ============================= */
 /* 📕 COVER */
@@ -380,17 +363,14 @@ textarea {
   padding: 20px;
 }
 
-
 /* ============================= */
 /* 📖 POEM PAGE */
 /* ============================= */
 .poem {
   break-after: page;
-background-color: white;
-  padding: 60px;
+
   box-sizing: border-box;
 }
-
 
 /* ============================= */
 /* ✍️ TEXT */
@@ -412,40 +392,46 @@ background-color: white;
   word-break: break-word;
 }
 
-
 .cover {
   height: 100%;
 }
 
+// .poem {
+//   height: 100%;
 
-.poem-inner {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  padding: 60px; /* przenieś padding z .poem tutaj */
-}
-
-
-
-
-
-
+//   display: flex;
+//   flex-direction: column;
+//   overflow: hidden;
+//   background-color: red;
+// }
 .poem {
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-}
 
+  padding: 0; /* 🔥 KLUCZ */
+}
+.poem-inner {
+  background-color: white;
+
+  flex: 1; /* 🔥 KLUCZ */
+  width: 100%;
+
+  box-sizing: border-box;
+  padding: 60px;
+
+  display: flex;
+  flex-direction: column;
+}
 .cover,
 .poem {
   box-sizing: border-box;
-  padding: 60px;
 }
 
 .poem.hearts::before,
 .poem.hearts::after {
-  content: "";
+  content: '';
   position: absolute;
   width: 60px;
   height: 60px;
@@ -463,4 +449,61 @@ background-color: white;
 .poem.hearts::after {
   bottom: 10px;
   right: 10px;
+}
+
+.title-preview {
+  margin-bottom: 40px;
+}
+
+.text-preview {
+  flex: 1;
+}
+.hearts::before,
+.hearts::after {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 60px;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 20 C40 5, 70 5, 70 30 C70 55, 40 75, 40 75 C40 75, 10 55, 10 30 C10 5, 40 5, 40 20 Z' fill='%23fb7185'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.hearts::before {
+  top: 10px;
+  left: 10px;
+}
+
+.hearts::after {
+  bottom: 10px;
+  right: 10px;
+}
+
+.pagedjs_page {
+  overflow: visible; /* 🔥 zamiast hidden */
+}
+
+.hearts::before,
+.hearts::after {
+  z-index: 5;
+}
+
+.pagedjs_page {
+  overflow: visible;
+}
+
+.poem {
+  position: relative;
+}
+
+
+.hearts::before {
+  top: 20px;
+  left: 20px;
+}
+
+.hearts::after {
+  bottom: 20px;
+  right: 20px;
 }
