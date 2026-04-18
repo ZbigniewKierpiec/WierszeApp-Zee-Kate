@@ -1,3 +1,4 @@
+import { EditorApiService } from './../../../services/editor-api';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { Topbar } from '../topbar/topbar';
 import { CommonModule } from '@angular/common';
@@ -7,7 +8,9 @@ import { animate, style, transition } from '@angular/animations';
 import { CoverEditor } from '../../cover-editor/cover-editor';
 import html2pdf from 'html2pdf.js';
 import html2canvas from 'html2canvas';
+
 import jsPDF from 'jspdf';
+
 @Component({
   selector: 'app-editor-test',
   imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor],
@@ -21,7 +24,7 @@ export class EditorTest {
   selectedTheme = '';
   selectedTemplate = 'Default';
   selectedVariant: any = null;
-
+  bookId = '';
   textFont = 'Playfair Display';
   textFontSize = 18;
   textAlign = 'left';
@@ -59,6 +62,11 @@ export class EditorTest {
     textColor: '#ffffff',
   };
 
+  constructor(
+    private cd: ChangeDetectorRef,
+    private api: EditorApiService,
+  ) {}
+
   onCoverImageUpload(event: any) {
     const file = event.target.files[0];
     if (!file) return;
@@ -84,37 +92,6 @@ export class EditorTest {
     this.savePage();
     localStorage.setItem('pages', JSON.stringify(this.pages));
   }
-
-  // applyPreset(p: any) {
-  //   const applyToAll = true;
-
-  //   if (applyToAll) {
-  //     this.pages.forEach((page) => {
-  //       page.template = p.template;
-  //       page.variant = p.variant;
-  //     });
-  //   }
-
-  //   this.selectedTemplate = p.template;
-  //   this.selectedVariant = p.variant;
-
-  //   if (p.titleFont) this.titleFont = p.titleFont;
-  //   if (p.textFont) this.textFont = p.textFont;
-  //   if (p.textColor) this.textColor = p.textColor;
-  //   if (p.titleColor) this.titleColor = p.titleColor;
-
-  //   // 🔥 NAJWAŻNIEJSZE — AUTO FORMAT
-  //   if (p.autoFormat) {
-  //     this.text = this.formatText(this.text, p.autoFormat);
-  //   }
-
-  //   if (p.autoFormat === 'advanced') {
-  //     this.text = this.formatPoemAdvanced(this.text);
-  //   }
-
-  //   this.savePage();
-  //   localStorage.setItem('pages', JSON.stringify(this.pages));
-  // }
 
   applyPreset(p: any) {
     const current = this.pages[this.currentPageIndex];
@@ -285,14 +262,42 @@ quis nostrud exercitation ullamco.`;
   }
 
   ///////////////////////////////////////////
-  constructor(private cd: ChangeDetectorRef) {}
 
   // 🔥 ID
   generateId(): string {
     return crypto.randomUUID();
   }
 
+  // ngOnInit() {
+  //   const savedPages = localStorage.getItem('pages');
+
+  //   if (savedPages) {
+  //     this.pages = JSON.parse(savedPages);
+  //   }
+
+  //   if (this.pages.length === 0) {
+  //     this.newPage();
+  //   } else {
+  //     this.loadPage();
+  //   }
+
+  //   // 🔥 COVER FIX
+  //   const savedCover = localStorage.getItem('cover');
+
+  //   if (savedCover) {
+  //     Object.assign(this.cover, JSON.parse(savedCover));
+  //   }
+  // }
+
   ngOnInit() {
+    const savedId = localStorage.getItem('bookId');
+
+    if (savedId) {
+      this.loadBook(savedId);
+      return;
+    }
+
+    // fallback (to co masz)
     const savedPages = localStorage.getItem('pages');
 
     if (savedPages) {
@@ -303,13 +308,6 @@ quis nostrud exercitation ullamco.`;
       this.newPage();
     } else {
       this.loadPage();
-    }
-
-    // 🔥 COVER FIX
-    const savedCover = localStorage.getItem('cover');
-
-    if (savedCover) {
-      Object.assign(this.cover, JSON.parse(savedCover));
     }
   }
 
@@ -359,6 +357,54 @@ quis nostrud exercitation ullamco.`;
     this.textFont = p.textFont || 'Georgia, serif';
     this.titleColor = p.titleColor || '#000';
     this.textColor = p.textColor || '#000';
+  }
+
+  loadBook(id: string) {
+    this.api.getBook(id).subscribe({
+      next: (book: any) => {
+        console.log('📥 BOOK FROM API:', book);
+
+        // 🔥 ID
+        this.bookId = book.id;
+
+        // 🔥 COVER
+        this.cover = book.cover || {
+          title: 'Mój tomik',
+          author: '',
+          image: '',
+          bgColor: '#000000',
+          textColor: '#ffffff',
+        };
+
+        // 🔥 PAGES
+        this.pages = book.pages?.length ? book.pages : [this.createEmptyPage()];
+
+        // 🔥 THEME (snake_case → camelCase)
+        this.selectedTheme = book.selected_theme || '';
+
+        // 🔥 ZAŁADUJ PIERWSZĄ STRONĘ
+        this.currentPageIndex = 0;
+        this.loadPage();
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error('❌ LOAD ERROR:', err);
+      },
+    });
+  }
+
+  createEmptyPage() {
+    return {
+      id: this.generateId(),
+      title: '',
+      text: '',
+      template: 'Default',
+      variant: null,
+      titleFont: this.titleFont,
+      textFont: this.textFont,
+      titleColor: '#000000',
+      textColor: '#000000',
+    };
   }
 
   savePage() {
@@ -428,17 +474,60 @@ quis nostrud exercitation ullamco.`;
   }
 
   // 🔥 SAVE ALL
+  // save() {
+  //   this.savePage();
+
+  //   localStorage.setItem('pages', JSON.stringify(this.pages));
+
+  //   this.savedMessage = true;
+
+  //   setTimeout(() => {
+  //     this.savedMessage = false;
+  //     this.cd.detectChanges();
+  //   }, 2000);
+  // }
+
   save() {
+    console.log('🔥 SAVE CLICKED');
+
+    // 🔥 FIX ID (tylko raz)
+    if (!this.bookId) {
+      this.bookId = crypto.randomUUID();
+      localStorage.setItem('bookId', this.bookId);
+      console.log('🔥 FIXED ID:', this.bookId);
+    }
+
     this.savePage();
 
-    localStorage.setItem('pages', JSON.stringify(this.pages));
+    // 🔥 FIX COLORS (GLOBALNY)
+    const fixedPages = this.pages.map((p) => ({
+      ...p,
+      titleColor: p.titleColor && p.titleColor.startsWith('#') ? p.titleColor : '#000000',
+      textColor: p.textColor && p.textColor.startsWith('#') ? p.textColor : '#000000',
+    }));
 
-    this.savedMessage = true;
+    const payload = {
+      id: this.bookId,
+      title: this.cover?.title || 'Mój tomik',
+      cover: {
+        ...this.cover,
+        bgColor: this.cover.bgColor || '#000000',
+        textColor: this.cover.textColor || '#ffffff',
+      },
+      pages: fixedPages, // 🔥 używamy poprawionych
+      selectedTheme: this.selectedTheme || '',
+    };
 
-    setTimeout(() => {
-      this.savedMessage = false;
-      this.cd.detectChanges();
-    }, 2000);
+    console.log('🔥 PAYLOAD:', payload);
+
+    this.api.saveBook(payload).subscribe({
+      next: () => {
+        console.log('Zapisano do backendu 🚀');
+      },
+      error: (err) => {
+        console.error('Błąd zapisu:', err);
+      },
+    });
   }
 
   // 🔥 CLEAR CURRENT PAGE
@@ -949,7 +1038,6 @@ quis nostrud exercitation ullamco.`;
 
   //     const pages = host.querySelectorAll('.pagedjs_page');
 
-    
   //     pages.forEach((p: any) => {
   //       p.style.display = 'block';
   //     });
@@ -964,12 +1052,12 @@ quis nostrud exercitation ullamco.`;
   //       const page = pages[i] as HTMLElement;
 
   //       const canvas = await html2canvas(page, {
-  //         scale: 2, 
+  //         scale: 2,
   //         useCORS: true,
   //         backgroundColor: '#ffffff',
   //       });
 
-  //       const imgData = canvas.toDataURL('image/jpeg', 0.85); 
+  //       const imgData = canvas.toDataURL('image/jpeg', 0.85);
 
   //       if (i > 0) pdf.addPage();
 
@@ -982,72 +1070,52 @@ quis nostrud exercitation ullamco.`;
   //   }, 500);
   // }
 
+  async exportPDF() {
+    this.preview();
 
+    setTimeout(async () => {
+      const host = document.getElementById('paged-preview-host');
+      if (!host) return;
 
+      const pages = host.querySelectorAll('.pagedjs_page');
 
-async exportPDF() {
-  this.preview();
-
-  setTimeout(async () => {
-    const host = document.getElementById('paged-preview-host');
-    if (!host) return;
-
-    const pages = host.querySelectorAll('.pagedjs_page');
-
-    pages.forEach((p: any) => {
-      p.style.display = 'block';
-    });
-
-    const pdf = new jsPDF({
-      unit: 'mm',
-      format: 'a4',
-      compress: true,
-    });
-
-    for (let i = 0; i < pages.length; i++) {
-      const page = pages[i] as HTMLElement;
-
-      const canvas = await html2canvas(page, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
+      pages.forEach((p: any) => {
+        p.style.display = 'block';
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.85);
+      const pdf = new jsPDF({
+        unit: 'mm',
+        format: 'a4',
+        compress: true,
+      });
 
-      if (i > 0) pdf.addPage();
+      for (let i = 0; i < pages.length; i++) {
+        const page = pages[i] as HTMLElement;
 
-      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-    }
+        const canvas = await html2canvas(page, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+        });
 
-    const rawTitle = this.cover?.title?.trim() || 'moj-tomik';
-    const safeTitle = rawTitle
-      .replace(/[\\/:*?"<>|]/g, '')
-      .replace(/\s+/g, '-')
-      .toLowerCase();
+        const imgData = canvas.toDataURL('image/jpeg', 0.85);
 
-    pdf.save(`${safeTitle}.pdf`);
+        if (i > 0) pdf.addPage();
 
-    this.fixLayout();
-  }, 500);
-}
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+      }
 
+      const rawTitle = this.cover?.title?.trim() || 'moj-tomik';
+      const safeTitle = rawTitle
+        .replace(/[\\/:*?"<>|]/g, '')
+        .replace(/\s+/g, '-')
+        .toLowerCase();
 
+      pdf.save(`${safeTitle}.pdf`);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      this.fixLayout();
+    }, 500);
+  }
 }
 
 function trigger(arg0: string, arg1: any[]): any {
