@@ -289,27 +289,38 @@ quis nostrud exercitation ullamco.`;
   //   }
   // }
 
-  ngOnInit() {
-    const savedId = localStorage.getItem('bookId');
+  // ngOnInit() {
+  //   const savedId = localStorage.getItem('bookId');
 
-    if (savedId) {
-      this.loadBook(savedId);
-      return;
-    }
+  //   if (savedId) {
+  //     this.loadBook(savedId);
+  //     return;
+  //   }
 
-    // fallback (to co masz)
-    const savedPages = localStorage.getItem('pages');
+  //   // fallback (to co masz)
+  //   const savedPages = localStorage.getItem('pages');
 
-    if (savedPages) {
-      this.pages = JSON.parse(savedPages);
-    }
+  //   if (savedPages) {
+  //     this.pages = JSON.parse(savedPages);
+  //   }
 
-    if (this.pages.length === 0) {
-      this.newPage();
-    } else {
-      this.loadPage();
-    }
-  }
+  //   if (this.pages.length === 0) {
+  //     this.newPage();
+  //   } else {
+  //     this.loadPage();
+  //   }
+  // }
+
+
+
+
+
+
+
+
+
+
+
 
   newPage() {
     const page = {
@@ -330,7 +341,7 @@ quis nostrud exercitation ullamco.`;
     this.currentPageIndex = this.pages.length - 1;
     this.loadPage();
 
-    localStorage.setItem('pages', JSON.stringify(this.pages));
+    // localStorage.setItem('pages', JSON.stringify(this.pages));
   }
 
   onFontChange(value: string) {
@@ -407,20 +418,45 @@ quis nostrud exercitation ullamco.`;
     };
   }
 
-  savePage() {
-    const p = this.pages[this.currentPageIndex];
+  // savePage() {
+  //   const p = this.pages[this.currentPageIndex];
 
-    p.title = this.title;
-    p.text = this.text;
-    p.template = this.selectedTemplate;
-    p.variant = this.selectedVariant;
+  //   p.title = this.title;
+  //   p.text = this.text;
+  //   p.template = this.selectedTemplate;
+  //   p.variant = this.selectedVariant;
 
-    // 🔥 KLUCZOWE
-    p.titleFont = this.titleFont;
-    p.textFont = this.textFont;
-    p.titleColor = this.titleColor;
-    p.textColor = this.textColor;
+  //   // 🔥 KLUCZOWE
+  //   p.titleFont = this.titleFont;
+  //   p.textFont = this.textFont;
+  //   p.titleColor = this.titleColor;
+  //   p.textColor = this.textColor;
+  // }
+
+
+savePage() {
+  const p = this.pages[this.currentPageIndex];
+
+  if (!p) {
+    console.warn("⚠️ Brak strony, tworzę nową");
+    this.newPage();
+    return;
   }
+
+  p.title = this.title;
+  p.text = this.text;
+  p.template = this.selectedTemplate;
+  p.variant = this.selectedVariant;
+
+  p.titleFont = this.titleFont;
+  p.textFont = this.textFont;
+  p.titleColor = this.titleColor;
+  p.textColor = this.textColor;
+}
+
+
+
+
 
   nextPage() {
     if (this.currentPageIndex < this.pages.length - 1) {
