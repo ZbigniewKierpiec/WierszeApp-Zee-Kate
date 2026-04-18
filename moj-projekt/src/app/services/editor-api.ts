@@ -16,4 +16,26 @@ export class EditorApiService {
   getBook(id: string) {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
+
+
+ createEmptyBook() {
+    return this.http.post(this.apiUrl, {
+      title: 'Mój tomik',
+      cover: {
+        title: 'Mój tomik',
+        author: '',
+        image: '',
+        bgColor: '#000000',
+        textColor: '#ffffff',
+      },
+      pages: [],
+      selectedTheme: ''
+    });
+  }
+
+
+
+
+
+
 }

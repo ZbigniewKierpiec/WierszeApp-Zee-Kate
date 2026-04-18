@@ -8,9 +8,9 @@ import { animate, style, transition } from '@angular/animations';
 import { CoverEditor } from '../../cover-editor/cover-editor';
 import html2pdf from 'html2pdf.js';
 import html2canvas from 'html2canvas';
-
+import { Router } from '@angular/router';
 import jsPDF from 'jspdf';
-
+import { ActivatedRoute} from '@angular/router';
 @Component({
   selector: 'app-editor-test',
   imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor],
@@ -65,6 +65,8 @@ export class EditorTest {
   constructor(
     private cd: ChangeDetectorRef,
     private api: EditorApiService,
+    private route: ActivatedRoute,
+     private router: Router 
   ) {}
 
   onCoverImageUpload(event: any) {
@@ -310,17 +312,29 @@ quis nostrud exercitation ullamco.`;
   //     this.loadPage();
   //   }
   // }
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    console.log('🔎 ID:', id);
 
+    if (id) {
+      this.loadBook(id);
+    } else {
+      // 🔥 TWORZY BOOKA AUTOMATYCZNIE
+      this.api.createEmptyBook().subscribe({
+        next: (res: any) => {
+          console.log('🆕 CREATED:', res);
 
+          this.bookId = res.id;
 
-
-
-
-
-
-
-
-
+          // 🔥 NAJWAŻNIEJSZE
+          this.router.navigate(['/editor', this.bookId]);
+        },
+        error: (err) => {
+          console.error('❌ CREATE ERROR:', err);
+        },
+      });
+    }
+  }
 
   newPage() {
     const page = {
@@ -370,36 +384,75 @@ quis nostrud exercitation ullamco.`;
     this.textColor = p.textColor || '#000';
   }
 
+  // loadBook(id: string) {
+  //   this.api.getBook(id).subscribe({
+  //     next: (book: any) => {
+  //       console.log('📥 BOOK FROM API:', book);
+
+  //       // 🔥 ID
+  //       this.bookId = book.id;
+
+  //       // 🔥 COVER
+  //       this.cover = book.cover || {
+  //         title: 'Mój tomik',
+  //         author: '',
+  //         image: '',
+  //         bgColor: '#000000',
+  //         textColor: '#ffffff',
+  //       };
+
+  //       // 🔥 PAGES
+  //       this.pages = book.pages?.length ? book.pages : [this.createEmptyPage()];
+
+  //       // 🔥 THEME (snake_case → camelCase)
+  //       this.selectedTheme = book.selected_theme || '';
+
+  //       // 🔥 ZAŁADUJ PIERWSZĄ STRONĘ
+  //       this.currentPageIndex = 0;
+  //       this.loadPage();
+  //       this.cd.detectChanges();
+  //     },
+  //     error: (err) => {
+  //       console.error('❌ LOAD ERROR:', err);
+  //     },
+  //   });
+  // }
+
   loadBook(id: string) {
     this.api.getBook(id).subscribe({
       next: (book: any) => {
-        console.log('📥 BOOK FROM API:', book);
+        console.log('📦 BOOK:', book);
 
-        // 🔥 ID
         this.bookId = book.id;
 
-        // 🔥 COVER
-        this.cover = book.cover || {
-          title: 'Mój tomik',
-          author: '',
-          image: '',
-          bgColor: '#000000',
-          textColor: '#ffffff',
+        this.cover = {
+          title: book.cover?.title || 'Mój tomik',
+          author: book.cover?.author || '',
+          image: book.cover?.image || '',
+          bgColor: book.cover?.bgColor || '#000000',
+          textColor: book.cover?.textColor || '#ffffff',
         };
 
-        // 🔥 PAGES
-        this.pages = book.pages?.length ? book.pages : [this.createEmptyPage()];
+        this.pages = (book.pages || []).map((p:any) => ({
+          ...p,
+          titleColor: p.titleColor || '#000000',
+          textColor: p.textColor || '#000000',
+        }));
 
-        // 🔥 THEME (snake_case → camelCase)
+        if (!this.pages.length) {
+          this.pages = [this.createEmptyPage()];
+        }
+
         this.selectedTheme = book.selected_theme || '';
 
-        // 🔥 ZAŁADUJ PIERWSZĄ STRONĘ
         this.currentPageIndex = 0;
         this.loadPage();
+
         this.cd.detectChanges();
       },
       error: (err) => {
         console.error('❌ LOAD ERROR:', err);
+        this.newPage();
       },
     });
   }
@@ -433,30 +486,25 @@ quis nostrud exercitation ullamco.`;
   //   p.textColor = this.textColor;
   // }
 
+  savePage() {
+    const p = this.pages[this.currentPageIndex];
 
-savePage() {
-  const p = this.pages[this.currentPageIndex];
+    if (!p) {
+      console.warn('⚠️ Brak strony, tworzę nową');
+      this.newPage();
+      return;
+    }
 
-  if (!p) {
-    console.warn("⚠️ Brak strony, tworzę nową");
-    this.newPage();
-    return;
+    p.title = this.title;
+    p.text = this.text;
+    p.template = this.selectedTemplate;
+    p.variant = this.selectedVariant;
+
+    p.titleFont = this.titleFont;
+    p.textFont = this.textFont;
+    p.titleColor = this.titleColor;
+    p.textColor = this.textColor;
   }
-
-  p.title = this.title;
-  p.text = this.text;
-  p.template = this.selectedTemplate;
-  p.variant = this.selectedVariant;
-
-  p.titleFont = this.titleFont;
-  p.textFont = this.textFont;
-  p.titleColor = this.titleColor;
-  p.textColor = this.textColor;
-}
-
-
-
-
 
   nextPage() {
     if (this.currentPageIndex < this.pages.length - 1) {
