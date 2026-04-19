@@ -21,31 +21,6 @@ export class Login {
     private api: EditorApiService,
   ) {}
 
-  // login() {
-  //   const data = {
-  //     email: this.email,
-  //     password: this.password,
-  //   };
-
-  //   this.auth.login(data).subscribe((user: any) => {
-  //     console.log('LOGIN RESPONSE:', user);
-  //     this.api.getUserBooks(user.id).subscribe((books: any) => {
-  //       console.log('LOGIN RESPONSE:', user);
-  //       if (books.length) {
-  //         const latest = books[0];
-
-  //         localStorage.setItem('bookId', latest.id);
-  //         this.router.navigate(['/editor']);
-  //       } else {
-  //         this.api.createEmptyBook(user.id).subscribe((res: any) => {
-  //           localStorage.setItem('bookId', res.id);
-  //           this.router.navigate(['/editor']);
-  //         });
-  //       }
-  //     });
-  //   });
-  // }
-
 
 
 login() {
@@ -58,23 +33,44 @@ login() {
 
     console.log('✅ LOGIN:', user);
 
-    // 🔥 NIE tworzymy książki
-    // 🔥 NIE ustawiamy bookId na siłę
+    // 🔥 KLUCZOWE — ZAPISZ USER ID
+    localStorage.setItem('user_id', user.id);
 
     const lastBookId = localStorage.getItem('bookId');
 
     if (lastBookId) {
-      // opcjonalnie: możesz sprawdzić czy istnieje
       console.log('📌 Last book exists:', lastBookId);
     }
 
-    // 👉 zawsze dashboard
     this.router.navigate(['/dashboard']);
   });
 }
 
 
 
+// login() {
+//   const data = {
+//     email: this.email,
+//     password: this.password,
+//   };
+
+//   this.auth.login(data).subscribe((user: any) => {
+
+//     console.log('✅ LOGIN:', user);
+
+//     if (!user?.id) {
+//       console.error('❌ NO ID FROM BACKEND');
+//       return;
+//     }
+
+//     // 🔥 zapis
+//     localStorage.setItem('user_id', user.id);
+
+//     console.log('💾 SAVED:', localStorage.getItem('user_id'));
+
+//     this.router.navigate(['/dashboard']);
+//   });
+// }
 
 
 

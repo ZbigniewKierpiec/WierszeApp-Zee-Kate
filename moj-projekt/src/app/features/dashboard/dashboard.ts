@@ -1,3 +1,4 @@
+import { routes } from './../../app.routes';
 
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
@@ -5,6 +6,7 @@ import { Auth } from '../../services/auth';
 import { EditorApiService } from '../../services/editor-api';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 @Component({
   selector: 'app-dashboard',
    standalone: true,
@@ -46,6 +48,7 @@ export class Dashboard implements OnInit {
       }
     });
   }
+
 
   openBook(book: any) {
     localStorage.setItem('bookId', book.id);
@@ -110,9 +113,68 @@ getVariantStylesBase(t: string, v?: string) {
 }
 
 
+// deleteBook(book: any, event: Event) {
+//   event.stopPropagation();
+
+//   const userId = this.auth.getUserId();
+//   if (!userId) {
+//     console.error('NO USER ID');
+//     return;
+//   }
+
+//   console.log('DELETE CLICK:', { id: book.id, userId });
+
+// this.api.deleteBook(book.id, userId).subscribe({
+//   next: () => {
+//     const updated = this.books.filter(b => b.id !== book.id);
+
+//     this.books = [];
+//     setTimeout(() => {
+//       this.books = updated;
+//     });
+
+//     if (book.id === this.lastBookId) {
+//       this.lastBookId = updated[0]?.id || null;
+//     }
+//   }
 
 
 
+// });
+
+
+// }
+
+
+
+deleteBook(book: any, event: Event) {
+  event.stopPropagation();
+
+  const userId = this.auth.getUserId();
+  if (!userId) {
+    console.error('NO USER ID');
+    return;
+  }
+
+  this.api.deleteBook(book.id, userId).subscribe({
+    next: () => {
+      // 🔥 aktualizuj lokalną listę (opcjonalnie)
+      this.books = this.books.filter(b => b.id !== book.id);
+
+      // 🔥 PRZEJŚCIE DO EDIT (bez ustawiania aktywnej książki)
+      this.router.navigate(['editor']);
+    },
+    error: (err) => {
+      console.error('DELETE ERROR:', err);
+    }
+  });
+}
+
+
+
+trackById(index: number, item: any) {
+  return item.id;
+}
 
 
 

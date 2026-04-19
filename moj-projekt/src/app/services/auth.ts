@@ -33,4 +33,14 @@ export class Auth {
   logout() {
     localStorage.removeItem('user');
   }
+
+
+getUserId(): string | null {
+    return localStorage.getItem('user_id');
+  }
+
+
+
+
+
 }
