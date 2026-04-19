@@ -1,32 +1,23 @@
-<!-- <header class="topbar">
 
-  <div class="left">
-    ✍️ <span class="logo">Poetry Studio</span>
-  </div> 
-
-  <div class="left">
-    ✍️ <span class="logo">Poetry Studio</span>
-
-
-    <button class="btn subtle" (click)="coverEdit.emit()">📕 <span>Cover</span></button>
-  </div>
-
-  <div class="right">
-    <button class="btn primary" (click)="save.emit()">💾 <span>Save</span></button>
-
-    <button class="btn danger" (click)="clear.emit()">🧹 <span>Clear</span></button>
-
-    <button (click)="export.emit()" class="btn">📥 <span>Export</span></button>
-
-    <button class="btn icon">⚙️</button>
-  </div>
-</header> -->
 <header class="topbar">
   <div class="left">
     ✍️ <span class="logo">Poetry Studio</span>
     <button class="btn subtle" (click)="coverEdit.emit()">📕 <span>Cover</span></button>
   </div>
-<button (click)="goDashboard.emit()">🏠 Dashboard</button>
+<!-- <button (click)="goDashboard.emit()">🏠 Dashboard</button> -->
+
+<button 
+  mat-raised-button
+  color="primary"
+  (click)="goDashboard.emit()"
+  [matBadge]="booksCount"
+  matBadgeColor="accent"
+  matBadgeOverlap="false"
+>
+  🏠 Dashboard
+</button>
+
+
   <div class="right">
     <button class="btn primary" (click)="save.emit()">💾 <span>Save</span></button>
     <button class="btn danger" (click)="clear.emit()">🧹 <span>Clear</span></button>

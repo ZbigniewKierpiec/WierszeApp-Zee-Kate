@@ -262,6 +262,20 @@
 .delete-btn {
   padding: 3px 6px;
   background-color: white;
-  font-size:20px;
+  font-size: 20px;
   cursor: pointer;
+}
+.back-btn {
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-weight: 500;
+  background-color: black;
+  color: white;
+
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
 }

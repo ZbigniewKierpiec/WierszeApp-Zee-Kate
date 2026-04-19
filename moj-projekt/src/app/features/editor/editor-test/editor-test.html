@@ -5,6 +5,7 @@
   (export)="exportPDF()"
    (newBook)="createNewBook()" 
    (goDashboard)="goDashboard()" 
+    [booksCount]="booksCount"
 ></app-topbar>
 
 <div class="layout">
@@ -203,7 +204,9 @@
 
 <!-- 🔔 TOASTS -->
 @if (savedMessage) {
-  <div class="toast success">💾 Zapisano!</div>
+  <div class="toast success">
+    {{ savedMessageText }}
+  </div>
 }
 
 @if (clearMessage) {

@@ -7,23 +7,25 @@ import { EditorApiService } from '../../services/editor-api';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 @Component({
   selector: 'app-dashboard',
-   standalone: true,
-  imports: [CommonModule,FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
 export class Dashboard implements OnInit {
-
- books: any[] = [];
+  books: any[] = [];
   loading = true;
- lastBookId = localStorage.getItem('bookId');
+  lastBookId = localStorage.getItem('bookId');
   constructor(
     private api: EditorApiService,
     private auth: Auth,
     private router: Router,
-     private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit() {
@@ -35,20 +37,18 @@ export class Dashboard implements OnInit {
     }
 
     this.api.getUserBooksFull(user.id).subscribe({
-      
       next: (books: any) => {
-        console.log(books)
+        console.log(books);
         this.books = books;
         this.loading = false;
-         this.cd.detectChanges();
+        this.cd.detectChanges();
       },
       error: (err) => {
         console.error('❌ LOAD BOOKS ERROR:', err);
         this.loading = false;
-      }
+      },
     });
   }
-
 
   openBook(book: any) {
     localStorage.setItem('bookId', book.id);
@@ -69,114 +69,93 @@ export class Dashboard implements OnInit {
     });
   }
 
-goToLastBook() {
-  const lastId = localStorage.getItem('bookId');
+  goToLastBook() {
+    const lastId = localStorage.getItem('bookId');
 
-  if (!lastId) return;
+    if (!lastId) return;
 
-  this.router.navigate(['/editor']);
-}
-
-getVariantStylesForPreview(p: any) {
-  return this.getVariantStylesBase(p?.template, p?.variant?.name);
-}
-
-
-
-
-
-
-getVariantStylesBase(t: string, v?: string) {
-  if (t === 'Floral') {
-    if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
+    this.router.navigate(['/editor']);
   }
 
-  if (t === 'Romantic') {
-    if (v === 'Hearts') {
+  getVariantStylesForPreview(p: any) {
+    return this.getVariantStylesBase(p?.template, p?.variant?.name);
+  }
+
+  getVariantStylesBase(t: string, v?: string) {
+    if (t === 'Floral') {
+      if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
+    }
+
+    if (t === 'Romantic') {
+      if (v === 'Hearts') {
+        return {
+          border: '2px solid #f9a8d4',
+          borderRadius: '20px',
+          backgroundColor: '#fff1f2',
+          position: 'relative',
+        };
+      }
+    }
+
+    if (t === 'Dark') {
       return {
-        border: '2px solid #f9a8d4',
-        borderRadius: '20px',
-        backgroundColor: '#fff1f2',
-        position: 'relative',
+        background: '#111827',
+        color: 'white',
       };
     }
+
+    return {};
   }
 
-  if (t === 'Dark') {
-    return {
-      background: '#111827',
-      color: 'white'
-    };
+  deleteBook(book: any, event: Event) {
+    event.stopPropagation();
+
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '350px',
+      panelClass: 'custom-dialog',
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result !== true) return;
+
+      const userId = this.auth.getUserId();
+      if (!userId) {
+        console.error('NO USER ID');
+        return;
+      }
+
+      this.api.deleteBook(book.id, userId).subscribe({
+        next: () => {
+          this.books = this.books.filter((b) => b.id !== book.id);
+          this.router.navigate(['editor']);
+        },
+        error: (err) => {
+          console.error('DELETE ERROR:', err);
+        },
+      });
+    });
   }
 
-  return {};
-}
 
 
-// deleteBook(book: any, event: Event) {
-//   event.stopPropagation();
-
-//   const userId = this.auth.getUserId();
-//   if (!userId) {
-//     console.error('NO USER ID');
-//     return;
-//   }
-
-//   console.log('DELETE CLICK:', { id: book.id, userId });
-
-// this.api.deleteBook(book.id, userId).subscribe({
-//   next: () => {
-//     const updated = this.books.filter(b => b.id !== book.id);
-
-//     this.books = [];
-//     setTimeout(() => {
-//       this.books = updated;
-//     });
-
-//     if (book.id === this.lastBookId) {
-//       this.lastBookId = updated[0]?.id || null;
-//     }
-//   }
-
-
-
-// });
-
-
-// }
-
-
-
-deleteBook(book: any, event: Event) {
-  event.stopPropagation();
-
-  const userId = this.auth.getUserId();
-  if (!userId) {
-    console.error('NO USER ID');
+goBackToEditor() {
+  // jeśli masz ostatnią książkę → otwórz ją
+  if (this.lastBookId) {
+    this.router.navigate(['editor', this.lastBookId]);
     return;
   }
 
-  this.api.deleteBook(book.id, userId).subscribe({
-    next: () => {
-      // 🔥 aktualizuj lokalną listę (opcjonalnie)
-      this.books = this.books.filter(b => b.id !== book.id);
-
-      // 🔥 PRZEJŚCIE DO EDIT (bez ustawiania aktywnej książki)
-      this.router.navigate(['editor']);
-    },
-    error: (err) => {
-      console.error('DELETE ERROR:', err);
-    }
-  });
-}
-
-
-
-trackById(index: number, item: any) {
-  return item.id;
+  // jeśli NIE ma → po prostu wejdź do editora
+  this.router.navigate(['editor']);
 }
 
 
 
 
+
+
+  trackById(index: number, item: any) {
+    return item.id;
+  }
 }

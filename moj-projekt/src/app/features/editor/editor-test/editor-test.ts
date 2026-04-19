@@ -12,6 +12,9 @@ import { Router } from '@angular/router';
 import jsPDF from 'jspdf';
 import { ActivatedRoute } from '@angular/router';
 import { Auth } from './../../../services/auth';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+
 @Component({
   selector: 'app-editor-test',
   imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor],
@@ -52,9 +55,10 @@ export class EditorTest {
   currentPageIndex = 0;
   isCoverEditorOpen = false;
   isPreviewOpen = false;
-
+  booksCount = 0;
   //////////////////////////////////////
 
+  savedMessageText = '';
   cover = {
     title: 'Mój tomik',
     author: '',
@@ -69,6 +73,8 @@ export class EditorTest {
     private route: ActivatedRoute,
     private router: Router,
     private auth: Auth,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -78,7 +84,9 @@ export class EditorTest {
       this.router.navigate(['/login']);
       return;
     }
-
+    this.api.getUserBooksFull(user.id).subscribe((books) => {
+      this.booksCount = books.length;
+    });
     const idFromStorage = localStorage.getItem('bookId');
 
     if (idFromStorage) {
@@ -101,6 +109,23 @@ export class EditorTest {
     };
 
     reader.readAsDataURL(file);
+  }
+
+  // showMessage(msg: string) {
+  //   this.savedMessageText = msg;
+  //   this.savedMessage = true;
+
+  //   setTimeout(() => {
+  //     this.savedMessage = false;
+  //     this.cd.detectChanges();
+  //   }, 2000);
+  // }
+
+  showMessage(message: string) {
+    this.snackBar.open(message, 'OK', {
+      duration: 3000,
+      verticalPosition: 'top',
+    });
   }
 
   saveCover(updatedCover: any) {
@@ -354,28 +379,6 @@ quis nostrud exercitation ullamco.`;
         this.applyBook(book);
       },
 
-      // error: (err) => {
-      //   if (err.status === 404) {
-      //     console.warn('❌ Book nie istnieje → ustawiam pusty stan');
-
-      //     this.bookId = id;
-
-      //     this.pages = [this.createEmptyPage()];
-
-      //     this.cover = {
-      //       title: 'Mój tomik',
-      //       author: '',
-      //       image: '',
-      //       bgColor: '#000000',
-      //       textColor: '#ffffff',
-      //     };
-      //   } else if (err.status === 403) {
-      //     console.warn('🚫 Brak dostępu do książki');
-      //   } else {
-      //     console.error('❌ LOAD ERROR:', err);
-      //   }
-      // },
-
       error: (err) => {
         if (err.status === 404) {
           console.warn('❌ Book nie istnieje → czyszczę state');
@@ -578,31 +581,34 @@ quis nostrud exercitation ullamco.`;
 
     this.api.saveBook(payload).subscribe({
       next: (res: any) => {
-        // 🔥 FIRST SAVE = CREATE
         if (isNew && res?.id) {
           this.bookId = res.id;
           localStorage.setItem('bookId', res.id);
 
           console.log('🆕 Book created:', res.id);
 
-          // 🔥 opcjonalnie: redirect
-          // this.router.navigate(['/dashboard']);
+          this.booksCount++; // ⚡ instant update
+          this.refreshBooksCount(); // 🔄 sync
+
+          this.showMessage('📚 Book created!');
+        } else {
+          this.showMessage('💾 Changes saved');
         }
-
-        // 🔥 UI FEEDBACK
-        this.savedMessage = true;
-
-        setTimeout(() => {
-          this.savedMessage = false;
-          this.cd.detectChanges();
-        }, 2000);
 
         console.log('💾 Saved');
       },
-
       error: (err) => {
         console.error('❌ SAVE ERROR:', err);
       },
+    });
+  }
+
+  refreshBooksCount() {
+    const user = this.auth.getUser();
+    if (!user?.id) return;
+
+    this.api.getUserBooksFull(user.id).subscribe((books) => {
+      this.booksCount = books.length;
     });
   }
 

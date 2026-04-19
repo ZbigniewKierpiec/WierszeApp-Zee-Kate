@@ -1,0 +1,22 @@
+<div class="dialog-container">
+
+  <div class="dialog-header">
+    <div class="icon">⚠️</div>
+    <h2>Potwierdzenie</h2>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    Czy na pewno chcesz usunąć tę książkę? 📚
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-button class="cancel-btn" (click)="onCancel()">
+      Anuluj
+    </button>
+
+    <button mat-raised-button class="delete-btn" (click)="onConfirm()">
+      Usuń
+    </button>
+  </mat-dialog-actions>
+
+</div>

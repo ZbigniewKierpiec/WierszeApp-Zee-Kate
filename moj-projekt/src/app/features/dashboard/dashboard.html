@@ -13,6 +13,13 @@
   </div>
 
   <div class="actions">
+<button 
+  class="back-btn"
+  (click)="goBackToEditor()"
+>
+  ⬅️ Back to editor
+</button>
+
     <button 
       class="continue-btn"
       *ngIf="lastBookId"

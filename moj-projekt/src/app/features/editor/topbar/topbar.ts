@@ -1,12 +1,14 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
-
+import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from './../../../services/auth';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+
 @Component({
   selector: 'app-topbar',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatBadgeModule, MatButtonModule],
   templateUrl: './topbar.html',
   styleUrl: './topbar.scss',
 })
@@ -16,7 +18,11 @@ export class Topbar implements OnInit {
   @Output() coverEdit = new EventEmitter<void>();
   @Output() export = new EventEmitter<void>();
   @Output() goDashboard = new EventEmitter<void>();
+  @Output() newBook = new EventEmitter<void>();
+
   user: any = null;
+
+  @Input() booksCount: number = 0;
   constructor(
     private auth: Auth,
     private router: Router,
@@ -24,10 +30,6 @@ export class Topbar implements OnInit {
   ngOnInit(): void {
     this.user = this.auth.getUser();
   }
-
-@Output() newBook = new EventEmitter<void>();
-
-
 
   logout() {
     this.auth.logout();
