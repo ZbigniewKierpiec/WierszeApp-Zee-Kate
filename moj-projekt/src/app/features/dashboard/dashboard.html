@@ -1,0 +1,109 @@
+<div class="dashboard">
+
+  <!-- HEADER -->
+  
+
+
+<div class="header">
+  <div class="left">
+    <h1>📚 Your books</h1>
+    <p class="subtitle">
+      {{ books.length }} books
+    </p>
+  </div>
+
+  <div class="actions">
+    <button 
+      class="continue-btn"
+      *ngIf="lastBookId"
+      (click)="goToLastBook()"
+    >
+      ✍️ Continue
+    </button>
+
+    <button class="create-btn" (click)="createBook()">
+      ➕ New Book
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+  <!-- STATES -->
+  <div class="state" *ngIf="loading">
+    <div class="loader"></div>
+    <p>Loading your books...</p>
+  </div>
+
+  <div class="state empty" *ngIf="!loading && books.length === 0">
+    <h2>📖 Start your first book</h2>
+    <p>Your stories will appear here</p>
+
+    <button class="create-btn big" (click)="createBook()">
+      ✨ Create your first book
+    </button>
+  </div>
+
+  <!-- GRID -->
+  <div class="books-grid" *ngIf="!loading && books.length > 0">
+
+    <div 
+      class="book-card"
+      *ngFor="let book of books"
+      (click)="openBook(book)"
+      [class.active]="book.id === lastBookId"
+    >
+
+      <!-- COVER (30%) -->
+      <div 
+        class="cover"
+        [style.background]="book.cover?.bgColor ?? '#000'"
+      >
+        <div class="cover-overlay"></div>
+
+        <div class="cover-content">
+          <h3>{{ book.title || 'Untitled' }}</h3>
+          <p>{{ book.cover?.author || '—' }}</p>
+        </div>
+      </div>
+
+      <!-- PREVIEW (70%) -->
+      <div 
+        class="preview"
+        *ngIf="book.preview"
+        [ngStyle]="getVariantStylesForPreview(book.preview)"
+        [class.hearts]="book.preview?.variant?.name === 'Hearts'"
+      >
+
+        <div class="preview-header">
+          <strong>{{ book.preview.title || 'No title' }}</strong>
+
+          <span class="tag">
+            🎨 {{ book.preview.template || 'Default' }}
+          </span>
+        </div>
+
+        <p class="preview-text">
+          {{ book.preview.text | slice:0:120 }}
+          <span *ngIf="book.preview.text?.length > 120">...</span>
+        </p>
+
+      </div>
+
+      <!-- META -->
+      <div class="meta">
+        <span>🕒 {{ book.updated_at | date:'short' }}</span>
+        <span>📄 {{ book.pages_count || 0 }}</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

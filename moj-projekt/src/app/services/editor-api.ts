@@ -1,11 +1,13 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EditorApiService {
-  private apiUrl = 'http://localhost:3000/api/books';
+ 
+private apiUrl = 'http://localhost:3000/api/books';
+  private api = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -13,13 +15,32 @@ export class EditorApiService {
     return this.http.post(this.apiUrl, payload);
   }
 
-  getBook(id: string) {
-    return this.http.get(`${this.apiUrl}/${id}`);
+  // 🔥 FIX — dodaj user_id
+  getBook(id: string, userId: string) {
+    const params = new HttpParams().set('user_id', userId);
+    return this.http.get(`${this.apiUrl}/${id}`, { params });
+  }
+
+  getUserBooks(userId: string) {
+    return this.http.get(`${this.api}/books/user/${userId}`);
   }
 
 
- createEmptyBook() {
+
+  getUserBooksFull(userId: string) {
+    return this.http.get(`${this.api}/books/user/${userId}/full`);
+  }
+
+
+
+
+
+
+
+
+  createEmptyBook(userId: string) {
     return this.http.post(this.apiUrl, {
+      user_id: userId,
       title: 'Mój tomik',
       cover: {
         title: 'Mój tomik',
@@ -29,12 +50,9 @@ export class EditorApiService {
         textColor: '#ffffff',
       },
       pages: [],
-      selectedTheme: ''
+      selectedTheme: '',
     });
   }
-
-
-
 
 
 

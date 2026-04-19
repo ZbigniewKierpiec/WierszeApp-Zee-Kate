@@ -1,0 +1,15 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Welcome back ✍️</h2>
+
+    <input [(ngModel)]="email" placeholder="Email" />
+    <input [(ngModel)]="password" type="password" placeholder="Password" />
+
+    <button (click)="login()">Login</button>
+
+    <p class="switch">
+      Nie masz konta?
+      <span (click)="goRegister()">Zarejestruj się</span>
+    </p>
+  </div>
+</div>

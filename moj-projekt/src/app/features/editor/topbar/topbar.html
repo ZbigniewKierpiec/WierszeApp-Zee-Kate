@@ -1,13 +1,13 @@
-<header class="topbar">
-  <!-- 
+<!-- <header class="topbar">
+
   <div class="left">
     ✍️ <span class="logo">Poetry Studio</span>
-  </div> -->
+  </div> 
 
   <div class="left">
     ✍️ <span class="logo">Poetry Studio</span>
 
-    <!-- 🔥 NOWY BUTTON -->
+
     <button class="btn subtle" (click)="coverEdit.emit()">📕 <span>Cover</span></button>
   </div>
 
@@ -18,6 +18,30 @@
 
     <button (click)="export.emit()" class="btn">📥 <span>Export</span></button>
 
+    <button class="btn icon">⚙️</button>
+  </div>
+</header> -->
+<header class="topbar">
+  <div class="left">
+    ✍️ <span class="logo">Poetry Studio</span>
+    <button class="btn subtle" (click)="coverEdit.emit()">📕 <span>Cover</span></button>
+  </div>
+<button (click)="goDashboard.emit()">🏠 Dashboard</button>
+  <div class="right">
+    <button class="btn primary" (click)="save.emit()">💾 <span>Save</span></button>
+    <button class="btn danger" (click)="clear.emit()">🧹 <span>Clear</span></button>
+    <button (click)="export.emit()" class="btn">📥 <span>Export</span></button>
+
+    <ng-container *ngIf="user; else guest">
+      <span class="user">👤 {{ user.email }}</span>
+      <button class="btn subtle" (click)="logout()">Logout</button>
+    </ng-container>
+
+    <ng-template #guest>
+      <button class="btn subtle" (click)="goLogin()">Login</button>
+      <button class="btn subtle" (click)="goRegister()">Register</button>
+    </ng-template>
+<button (click)="newBook.emit()">➕ New Book</button>
     <button class="btn icon">⚙️</button>
   </div>
 </header>

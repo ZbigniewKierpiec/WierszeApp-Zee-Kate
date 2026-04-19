@@ -10,7 +10,8 @@ import html2pdf from 'html2pdf.js';
 import html2canvas from 'html2canvas';
 import { Router } from '@angular/router';
 import jsPDF from 'jspdf';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { Auth } from './../../../services/auth';
 @Component({
   selector: 'app-editor-test',
   imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor],
@@ -66,8 +67,28 @@ export class EditorTest {
     private cd: ChangeDetectorRef,
     private api: EditorApiService,
     private route: ActivatedRoute,
-     private router: Router 
+    private router: Router,
+    private auth: Auth,
   ) {}
+
+  ngOnInit() {
+    const user = this.auth.getUser();
+
+    if (!user?.id) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const idFromStorage = localStorage.getItem('bookId');
+
+    if (idFromStorage) {
+      this.bookId = idFromStorage;
+      this.loadBook(this.bookId);
+    } else {
+      this.pages = [this.createEmptyPage()];
+      this.loadPage();
+    }
+  }
 
   onCoverImageUpload(event: any) {
     const file = event.target.files[0];
@@ -270,72 +291,6 @@ quis nostrud exercitation ullamco.`;
     return crypto.randomUUID();
   }
 
-  // ngOnInit() {
-  //   const savedPages = localStorage.getItem('pages');
-
-  //   if (savedPages) {
-  //     this.pages = JSON.parse(savedPages);
-  //   }
-
-  //   if (this.pages.length === 0) {
-  //     this.newPage();
-  //   } else {
-  //     this.loadPage();
-  //   }
-
-  //   // 🔥 COVER FIX
-  //   const savedCover = localStorage.getItem('cover');
-
-  //   if (savedCover) {
-  //     Object.assign(this.cover, JSON.parse(savedCover));
-  //   }
-  // }
-
-  // ngOnInit() {
-  //   const savedId = localStorage.getItem('bookId');
-
-  //   if (savedId) {
-  //     this.loadBook(savedId);
-  //     return;
-  //   }
-
-  //   // fallback (to co masz)
-  //   const savedPages = localStorage.getItem('pages');
-
-  //   if (savedPages) {
-  //     this.pages = JSON.parse(savedPages);
-  //   }
-
-  //   if (this.pages.length === 0) {
-  //     this.newPage();
-  //   } else {
-  //     this.loadPage();
-  //   }
-  // }
-  ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    console.log('🔎 ID:', id);
-
-    if (id) {
-      this.loadBook(id);
-    } else {
-      // 🔥 TWORZY BOOKA AUTOMATYCZNIE
-      this.api.createEmptyBook().subscribe({
-        next: (res: any) => {
-          console.log('🆕 CREATED:', res);
-
-          this.bookId = res.id;
-
-          // 🔥 NAJWAŻNIEJSZE
-          this.router.navigate(['/editor', this.bookId]);
-        },
-        error: (err) => {
-          console.error('❌ CREATE ERROR:', err);
-        },
-      });
-    }
-  }
-
   newPage() {
     const page = {
       id: this.generateId(),
@@ -374,87 +329,116 @@ quis nostrud exercitation ullamco.`;
 
     this.title = p.title;
     this.text = p.text;
-    this.selectedTemplate = p.template;
-    this.selectedVariant = p.variant;
 
-    // 🔥 KLUCZOWE
-    this.titleFont = p.titleFont || "'Playfair Display', serif";
-    this.textFont = p.textFont || 'Georgia, serif';
-    this.titleColor = p.titleColor || '#000';
-    this.textColor = p.textColor || '#000';
+    this.selectedTemplate = p.template || 'Default'; // 🔥 FIX
+    this.selectedVariant = p.variant || null; // 🔥 FIX
+
+    this.titleFont = p.titleFont || 'Playfair Display';
+    this.textFont = p.textFont || 'Georgia';
+
+    this.titleColor = p.titleColor && p.titleColor.startsWith('#') ? p.titleColor : '#000000';
+    this.textColor = p.textColor && p.textColor.startsWith('#') ? p.textColor : '#000000';
   }
 
-  // loadBook(id: string) {
-  //   this.api.getBook(id).subscribe({
-  //     next: (book: any) => {
-  //       console.log('📥 BOOK FROM API:', book);
-
-  //       // 🔥 ID
-  //       this.bookId = book.id;
-
-  //       // 🔥 COVER
-  //       this.cover = book.cover || {
-  //         title: 'Mój tomik',
-  //         author: '',
-  //         image: '',
-  //         bgColor: '#000000',
-  //         textColor: '#ffffff',
-  //       };
-
-  //       // 🔥 PAGES
-  //       this.pages = book.pages?.length ? book.pages : [this.createEmptyPage()];
-
-  //       // 🔥 THEME (snake_case → camelCase)
-  //       this.selectedTheme = book.selected_theme || '';
-
-  //       // 🔥 ZAŁADUJ PIERWSZĄ STRONĘ
-  //       this.currentPageIndex = 0;
-  //       this.loadPage();
-  //       this.cd.detectChanges();
-  //     },
-  //     error: (err) => {
-  //       console.error('❌ LOAD ERROR:', err);
-  //     },
-  //   });
-  // }
-
   loadBook(id: string) {
-    this.api.getBook(id).subscribe({
+    const user = this.auth.getUser();
+
+    if (!user?.id) {
+      console.warn('❌ Brak usera — nie ładuję książki');
+      return;
+    }
+
+    this.api.getBook(id, user.id).subscribe({
       next: (book: any) => {
-        console.log('📦 BOOK:', book);
-
-        this.bookId = book.id;
-
-        this.cover = {
-          title: book.cover?.title || 'Mój tomik',
-          author: book.cover?.author || '',
-          image: book.cover?.image || '',
-          bgColor: book.cover?.bgColor || '#000000',
-          textColor: book.cover?.textColor || '#ffffff',
-        };
-
-        this.pages = (book.pages || []).map((p:any) => ({
-          ...p,
-          titleColor: p.titleColor || '#000000',
-          textColor: p.textColor || '#000000',
-        }));
-
-        if (!this.pages.length) {
-          this.pages = [this.createEmptyPage()];
-        }
-
-        this.selectedTheme = book.selected_theme || '';
-
-        this.currentPageIndex = 0;
-        this.loadPage();
-
-        this.cd.detectChanges();
+        console.log('✅ LOADED:', book);
+        this.applyBook(book);
       },
+
+      // error: (err) => {
+      //   if (err.status === 404) {
+      //     console.warn('❌ Book nie istnieje → ustawiam pusty stan');
+
+      //     this.bookId = id;
+
+      //     this.pages = [this.createEmptyPage()];
+
+      //     this.cover = {
+      //       title: 'Mój tomik',
+      //       author: '',
+      //       image: '',
+      //       bgColor: '#000000',
+      //       textColor: '#ffffff',
+      //     };
+      //   } else if (err.status === 403) {
+      //     console.warn('🚫 Brak dostępu do książki');
+      //   } else {
+      //     console.error('❌ LOAD ERROR:', err);
+      //   }
+      // },
+
       error: (err) => {
-        console.error('❌ LOAD ERROR:', err);
-        this.newPage();
+        if (err.status === 404) {
+          console.warn('❌ Book nie istnieje → czyszczę state');
+
+          localStorage.removeItem('bookId'); // 🔥 KLUCZ
+          this.bookId = ''; // 🔥 KLUCZ
+
+          this.pages = [this.createEmptyPage()];
+
+          this.cover = {
+            title: 'Mój tomik',
+            author: '',
+            image: '',
+            bgColor: '#000000',
+            textColor: '#ffffff',
+          };
+
+          this.loadPage();
+        } else if (err.status === 403) {
+          console.warn('🚫 Brak dostępu do książki');
+        } else {
+          console.error('❌ LOAD ERROR:', err);
+        }
       },
     });
+  }
+
+  applyBook(book: any) {
+    this.bookId = book.id;
+
+    this.cover = {
+      title: book.title || 'Mój tomik',
+      author: book.cover?.author || '',
+      image: book.cover?.image || '',
+      bgColor: this.fixColor(book.cover?.bgColor),
+      textColor: this.fixColor(book.cover?.textColor),
+    };
+
+    this.pages = (book.pages || []).map((p: any) => ({
+      ...p,
+      titleColor: this.fixColor(p.titleColor),
+      textColor: this.fixColor(p.textColor),
+    }));
+
+    this.selectedTheme = book.selected_theme || '';
+
+    this.currentPageIndex = 0;
+
+    if (this.pages.length === 0) {
+      this.pages = [this.createEmptyPage()];
+    }
+
+    this.loadPage();
+
+    // 🔥 KLUCZ
+    this.cd.detectChanges();
+  }
+
+  fixColor(color: string | null | undefined): string {
+    if (!color || color === '') {
+      return '#000000';
+    }
+    return color;
   }
 
   createEmptyPage() {
@@ -470,21 +454,6 @@ quis nostrud exercitation ullamco.`;
       textColor: '#000000',
     };
   }
-
-  // savePage() {
-  //   const p = this.pages[this.currentPageIndex];
-
-  //   p.title = this.title;
-  //   p.text = this.text;
-  //   p.template = this.selectedTemplate;
-  //   p.variant = this.selectedVariant;
-
-  //   // 🔥 KLUCZOWE
-  //   p.titleFont = this.titleFont;
-  //   p.textFont = this.textFont;
-  //   p.titleColor = this.titleColor;
-  //   p.textColor = this.textColor;
-  // }
 
   savePage() {
     const p = this.pages[this.currentPageIndex];
@@ -535,12 +504,6 @@ quis nostrud exercitation ullamco.`;
     this.savePage();
   }
 
-  // applyTemplate(template: string) {
-  //   this.selectedTemplate = template;
-  //   this.selectedVariant = null;
-  //   this.savePage();
-  // }
-
   applyTemplate(template: string) {
     this.selectedTemplate = template;
     this.selectedVariant = null;
@@ -549,67 +512,96 @@ quis nostrud exercitation ullamco.`;
     p.template = template;
     p.variant = null;
 
-    this.savePage();
+    this.savePage(); // 🔥 już masz
   }
 
+  ////////////////
+
+  createNewBook() {
+    const confirmNew = confirm('Utworzyć nową książkę? Niezapisane zmiany przepadną.');
+
+    if (!confirmNew) return;
+
+    const user = this.auth.getUser();
+    if (!user?.id) return;
+
+    this.api.createEmptyBook(user.id).subscribe((res: any) => {
+      localStorage.setItem('bookId', res.id);
+
+      this.bookId = res.id;
+      this.pages = [this.createEmptyPage()];
+      this.currentPageIndex = 0;
+      this.loadPage();
+    });
+  }
+
+  ////////////////////
   applyVariant(variant: any) {
     this.selectedVariant = variant;
     this.savePage();
   }
 
-  // 🔥 SAVE ALL
-  // save() {
-  //   this.savePage();
-
-  //   localStorage.setItem('pages', JSON.stringify(this.pages));
-
-  //   this.savedMessage = true;
-
-  //   setTimeout(() => {
-  //     this.savedMessage = false;
-  //     this.cd.detectChanges();
-  //   }, 2000);
-  // }
-
   save() {
     console.log('🔥 SAVE CLICKED');
 
-    // 🔥 FIX ID (tylko raz)
-    if (!this.bookId) {
-      this.bookId = crypto.randomUUID();
-      localStorage.setItem('bookId', this.bookId);
-      console.log('🔥 FIXED ID:', this.bookId);
-    }
-
     this.savePage();
 
-    // 🔥 FIX COLORS (GLOBALNY)
+    const user = this.auth.getUser();
+
+    if (!user?.id) {
+      console.error('❌ Brak usera — nie zapisuję');
+      return;
+    }
+
+    const isNew = !this.bookId; // 🔥 KLUCZ
+
     const fixedPages = this.pages.map((p) => ({
       ...p,
-      titleColor: p.titleColor && p.titleColor.startsWith('#') ? p.titleColor : '#000000',
-      textColor: p.textColor && p.textColor.startsWith('#') ? p.textColor : '#000000',
+      titleColor: p.titleColor?.startsWith('#') ? p.titleColor : '#000000',
+      textColor: p.textColor?.startsWith('#') ? p.textColor : '#000000',
     }));
 
     const payload = {
-      id: this.bookId,
+      id: this.bookId || null,
+      user_id: user.id,
       title: this.cover?.title || 'Mój tomik',
+
       cover: {
         ...this.cover,
         bgColor: this.cover.bgColor || '#000000',
         textColor: this.cover.textColor || '#ffffff',
       },
-      pages: fixedPages, // 🔥 używamy poprawionych
+
+      pages: fixedPages,
       selectedTheme: this.selectedTheme || '',
     };
 
-    console.log('🔥 PAYLOAD:', payload);
-
     this.api.saveBook(payload).subscribe({
-      next: () => {
-        console.log('Zapisano do backendu 🚀');
+      next: (res: any) => {
+        // 🔥 FIRST SAVE = CREATE
+        if (isNew && res?.id) {
+          this.bookId = res.id;
+          localStorage.setItem('bookId', res.id);
+
+          console.log('🆕 Book created:', res.id);
+
+          // 🔥 opcjonalnie: redirect
+          // this.router.navigate(['/dashboard']);
+        }
+
+        // 🔥 UI FEEDBACK
+        this.savedMessage = true;
+
+        setTimeout(() => {
+          this.savedMessage = false;
+          this.cd.detectChanges();
+        }, 2000);
+
+        console.log('💾 Saved');
       },
+
       error: (err) => {
-        console.error('Błąd zapisu:', err);
+        console.error('❌ SAVE ERROR:', err);
       },
     });
   }
@@ -633,119 +625,6 @@ quis nostrud exercitation ullamco.`;
       this.cd.detectChanges();
     }, 2000);
   }
-
-  // 🔥 STYLES
-
-  // getVariantStyles() {
-  //   if (!this.selectedTemplate) return {};
-
-  //   const t = this.selectedTemplate;
-
-  //   // 🔥 jeśli brak variantu → użyj default
-  //   const v = this.selectedVariant?.name;
-  //   // 📄 DEFAULT
-  //   if (t === 'Default') {
-  //     if (!v || v === 'Clean') {
-  //       return {
-  //         background: '#ffffff',
-  //         borderRadius: '8px',
-  //       };
-  //     }
-
-  //     if (v === 'Paper') {
-  //       return {
-  //         background: '#fdf6e3',
-  //         border: '1px solid #e5e7eb',
-  //         borderRadius: '8px',
-  //       };
-  //     }
-
-  //     if (v === 'Soft') {
-  //       return {
-  //         background: '#f8fafc',
-  //         borderRadius: '12px',
-  //         boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-  //       };
-  //     }
-
-  //     if (v === 'Classic') {
-  //       return {
-  //         background: '#ffffff',
-  //         border: '2px solid #111',
-  //         borderRadius: '6px',
-  //       };
-  //     }
-  //   }
-  //   // 🌸 FLORAL
-  //   if (t === 'Floral') {
-  //     if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
-  //     if (v === 'Elegant') return { border: '2px dashed hotpink', borderRadius: '20px' };
-  //     if (v === 'Frame') return { border: '6px double pink' };
-  //     if (v === 'Garden') return { border: '4px solid green', borderRadius: '12px' };
-  //   }
-
-  //   // 📜 VINTAGE
-  //   if (t === 'Vintage') {
-  //     if (!v || v === 'Old Paper') return { background: '#fdf6e3', border: '2px solid #d4af37' };
-  //     if (v === 'Gold Frame') return { border: '4px solid gold' };
-  //     if (v === 'Classic Ink') return { background: '#fffaf0' };
-  //     if (v === 'Retro') return { border: '2px dashed brown' };
-  //   }
-
-  //   // ❀ ROMANTIC
-  //   if (t === 'Romantic') {
-  //     if (!v || v === 'Soft Love') return { background: '#ffe4e6' };
-  //     if (v === 'Hearts') {
-  //       const heart = this.getHeartPattern();
-
-  //       return {
-  //         border: '2px solid #f9a8d4',
-  //         borderRadius: '20px',
-  //         backgroundColor: '#fff1f2',
-
-  //         // 🔥 dwa serca
-  //         backgroundImage: `${heart}, ${heart}`,
-  //         backgroundRepeat: 'no-repeat, no-repeat',
-
-  //         // 🔥 pozycje
-  //         backgroundPosition: 'top left, bottom right',
-
-  //         // 🔥 rozmiar
-  //         backgroundSize: '60px, 60px',
-
-  //         padding: '30px',
-  //       };
-  //     }
-  //     if (v === 'Poetry') return { borderBottom: '2px solid pink' };
-  //     if (v === 'Rose') return { border: '3px solid crimson' };
-  //   }
-
-  //   // 🌙 DARK
-  //   if (t === 'Dark') {
-  //     if (!v || v === 'Deep Night') return { background: '#111827', color: 'white' };
-  //     if (v === 'Soft Dark') return { background: '#1f2937', color: '#ddd' };
-  //     if (v === 'Neon') return { background: '#000', color: '#0ff' };
-  //     if (v === 'Midnight') return { background: '#0f172a', color: '#ccc' };
-  //   }
-
-  //   // ▫️ MINIMAL
-  //   if (t === 'Minimal') {
-  //     if (!v || v === 'Line') return { borderLeft: '3px solid black' };
-  //     if (v === 'Soft Line') return { borderLeft: '2px solid gray' };
-  //     if (v === 'Clean Space') return { padding: '20px' };
-  //     if (v === 'Mono') return { color: '#333' };
-  //   }
-
-  //   // 📄 DEFAULT TEMPLATE
-  //   if (t === 'Default') {
-  //     return {
-  //       background: '#ffffff',
-  //       borderRadius: '8px',
-  //     };
-  //   }
-
-  //   return {};
-  // }
 
   currentPreviewPage = 0;
   private pagedPreviewer: any;
@@ -861,33 +740,6 @@ quis nostrud exercitation ullamco.`;
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   }
 
-  // getVariantStylesForPage(p: any) {
-  //   const t = p.template;
-  //   const v = p.variant?.name;
-
-  //   // 🌸 FLORAL
-  //   if (t === 'Floral') {
-  //     if (!v || v === 'Soft') return { border: '3px solid pink', borderRadius: '16px' };
-  //     if (v === 'Elegant') return { border: '2px dashed hotpink', borderRadius: '20px' };
-  //     if (v === 'Frame') return { border: '6px double pink' };
-  //     if (v === 'Garden') return { border: '4px solid green', borderRadius: '12px' };
-  //   }
-
-  //   // ❀ ROMANTIC
-  //   if (t === 'Romantic') {
-  //     if (!v || v === 'Soft Love') return { background: '#ffe4e6' };
-  //     if (v === 'Hearts') {
-  //       return {
-  //         border: '2px solid #f9a8d4',
-  //         borderRadius: '20px',
-  //         backgroundColor: '#fff1f2',
-  //         position: 'relative',
-  //       };
-  //     }
-  //   }
-
-  //   return {};
-  // }
   getVariantStyles() {
     return this.getVariantStylesBase(this.selectedTemplate, this.selectedVariant?.name);
   }
@@ -1071,88 +923,9 @@ quis nostrud exercitation ullamco.`;
     return {};
   }
 
-  // async exportPDF() {
-  //   this.preview();
-
-  //   setTimeout(async () => {
-  //     const host = document.getElementById('paged-preview-host');
-  //     if (!host) return;
-
-  //     const pages = host.querySelectorAll('.pagedjs_page');
-
-  //     // 🔥 KLUCZ: pokaż wszystkie strony
-  //     pages.forEach((p: any) => {
-  //       p.style.display = 'block';
-  //     });
-
-  //     const pdf = new jsPDF({
-  //       unit: 'px',
-  //       format: [794, 1123],
-  //     });
-
-  //     for (let i = 0; i < pages.length; i++) {
-  //       const page = pages[i] as HTMLElement;
-
-  //       const canvas = await html2canvas(page, {
-  //         scale: 2,
-  //         useCORS: true, // 🔥 ważne dla obrazów (cover!)
-  //       });
-
-  //       const imgData = canvas.toDataURL('image/jpeg', 1);
-
-  //       if (i > 0) pdf.addPage();
-
-  //       pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
-  //     }
-
-  //     pdf.save('moj-tomik.pdf');
-
-  //     // 🔥 przywróć preview (1 strona)
-  //     this.fixLayout();
-
-  //   }, 700);
-  // }
-
-  // async exportPDF() {
-  //   this.preview();
-
-  //   setTimeout(async () => {
-  //     const host = document.getElementById('paged-preview-host');
-  //     if (!host) return;
-
-  //     const pages = host.querySelectorAll('.pagedjs_page');
-
-  //     pages.forEach((p: any) => {
-  //       p.style.display = 'block';
-  //     });
-
-  //     const pdf = new jsPDF({
-  //       unit: 'mm',
-  //       format: 'a4',
-  //       compress: true,
-  //     });
-
-  //     for (let i = 0; i < pages.length; i++) {
-  //       const page = pages[i] as HTMLElement;
-
-  //       const canvas = await html2canvas(page, {
-  //         scale: 2,
-  //         useCORS: true,
-  //         backgroundColor: '#ffffff',
-  //       });
-
-  //       const imgData = canvas.toDataURL('image/jpeg', 0.85);
-
-  //       if (i > 0) pdf.addPage();
-
-  //       pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-  //     }
-
-  //     pdf.save('moj-tomik.pdf');
-
-  //     this.fixLayout();
-  //   }, 500);
-  // }
+  goDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
 
   async exportPDF() {
     this.preview();
