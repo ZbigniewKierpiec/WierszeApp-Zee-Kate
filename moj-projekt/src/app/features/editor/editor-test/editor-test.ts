@@ -4,17 +4,16 @@ import { Topbar } from '../topbar/topbar';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
-import { animate, style, transition } from '@angular/animations';
 import { CoverEditor } from '../../cover-editor/cover-editor';
-import html2pdf from 'html2pdf.js';
-import html2canvas from 'html2canvas';
 import { Router } from '@angular/router';
-import jsPDF from 'jspdf';
 import { ActivatedRoute } from '@angular/router';
 import { Auth } from './../../../services/auth';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-
+import { FormattingService } from './../../../services/formatting-service';
+import { StorageService } from './../../../services/storage-service';
+import { ExportService } from './../../../services/export-service';
+import { ThemeService } from './../../../services/theme-service';
 @Component({
   selector: 'app-editor-test',
   imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor],
@@ -33,7 +32,6 @@ export class EditorTest {
   textFontSize = 18;
   textAlign = 'left';
   textColor = '#000000';
-
   titleFont = 'Playfair Display';
   titleSize = 28;
   titleColor = '#000000';
@@ -75,6 +73,10 @@ export class EditorTest {
     private auth: Auth,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private formatting: FormattingService,
+    private storage: StorageService,
+    private exportService: ExportService,
+    private theme: ThemeService,
   ) {}
 
   ngOnInit() {
@@ -87,7 +89,7 @@ export class EditorTest {
     this.api.getUserBooksFull(user.id).subscribe((books) => {
       this.booksCount = books.length;
     });
-    const idFromStorage = localStorage.getItem('bookId');
+    const idFromStorage = this.storage.getBookId();
 
     if (idFromStorage) {
       this.bookId = idFromStorage;
@@ -111,16 +113,6 @@ export class EditorTest {
     reader.readAsDataURL(file);
   }
 
-  // showMessage(msg: string) {
-  //   this.savedMessageText = msg;
-  //   this.savedMessage = true;
-
-  //   setTimeout(() => {
-  //     this.savedMessage = false;
-  //     this.cd.detectChanges();
-  //   }, 2000);
-  // }
-
   showMessage(message: string) {
     this.snackBar.open(message, 'OK', {
       duration: 3000,
@@ -129,16 +121,14 @@ export class EditorTest {
   }
 
   saveCover(updatedCover: any) {
-    Object.assign(this.cover, updatedCover); // 🔥 zamiast =
-    localStorage.setItem('cover', JSON.stringify(this.cover));
+    Object.assign(this.cover, updatedCover);
+    this.storage.saveCover(this.cover);
   }
 
-  /////////////////////////////////////
-
   formatAdvanced() {
-    this.text = this.formatPoemAdvanced(this.text);
+    this.text = this.formatting.formatPoemAdvanced(this.text);
     this.savePage();
-    localStorage.setItem('pages', JSON.stringify(this.pages));
+    this.storage.savePages(this.pages);
   }
 
   applyPreset(p: any) {
@@ -155,145 +145,26 @@ export class EditorTest {
     if (p.textColor) this.textColor = p.textColor;
     if (p.titleColor) this.titleColor = p.titleColor;
 
+    // 🔥 FORMATOWANIE → SERWIS
     if (p.autoFormat) {
-      this.text = this.formatText(this.text, p.autoFormat);
+      this.text = this.formatting.formatText(this.text, p.autoFormat);
     }
 
     if (p.autoFormat === 'advanced') {
-      this.text = this.formatPoemAdvanced(this.text);
+      this.text = this.formatting.formatPoemAdvanced(this.text);
     }
 
     this.savePage();
-    localStorage.setItem('pages', JSON.stringify(this.pages));
-  }
 
-  formatPoemAdvanced(text: string): string {
-    if (!text) return text;
-
-    // 🔥 1. RESET (kluczowe)
-    text = text
-      .replace(/\n+/g, '\n') // max 1 enter
-      .replace(/\s+/g, ' ') // usuń dziwne spacje
-      .trim();
-
-    // 🔥 2. podziel na zdania
-    const sentences = text.split(/(?<=[.!?])/);
-
-    const lines: string[] = [];
-
-    sentences.forEach((sentence) => {
-      const words = sentence.trim().split(' ');
-      let current = '';
-
-      words.forEach((word) => {
-        if ((current + ' ' + word).length > 35) {
-          lines.push(current.trim());
-          current = word;
-        } else {
-          current += ' ' + word;
-        }
-      });
-
-      if (current) lines.push(current.trim());
-
-      // 🔥 pauza między zdaniami
-      lines.push('');
-    });
-
-    return lines.join('\n').replace(/\n{3,}/g, '\n\n');
-  }
-
-  formatPoemAI(text: string): string {
-    if (!text) return text;
-
-    // 🔥 normalize
-    text = text
-      .replace(/\s+/g, ' ')
-      .replace(/\s([.,!?])/g, '$1')
-      .trim();
-
-    // 🔥 podziel na zdania (pauzy)
-    const sentences = text.split(/(?<=[.!?])/);
-
-    const lines: string[] = [];
-
-    sentences.forEach((sentence) => {
-      const words = sentence.trim().split(' ');
-
-      let currentLine = '';
-
-      words.forEach((word) => {
-        // 🔥 krótsze wersy = bardziej poetycko
-        if ((currentLine + ' ' + word).length > 35) {
-          lines.push(currentLine.trim());
-          currentLine = word;
-        } else {
-          currentLine += ' ' + word;
-        }
-      });
-
-      if (currentLine) {
-        lines.push(currentLine.trim());
-      }
-
-      // 🔥 pauza po zdaniu = przerwa strofy
-      lines.push('');
-    });
-
-    // 🔥 dodatkowy rytm (co 3 wersy)
-    const final: string[] = [];
-
-    lines.forEach((line, i) => {
-      final.push(line);
-
-      if ((i + 1) % 4 === 0) {
-        final.push('');
-      }
-    });
-
-    return final.join('\n').replace(/\n{3,}/g, '\n\n');
+    // 🔥 STORAGE → SERWIS
+    this.storage.savePages(this.pages);
   }
 
   formatAI() {
-    this.text = this.formatPoemAI(this.text);
+    this.text = this.formatting.formatPoemAI(this.text); // 🔥 serwis
 
     this.savePage();
-    localStorage.setItem('pages', JSON.stringify(this.pages));
-  }
-
-  formatText(text: string, mode: string): string {
-    if (!text) return text;
-
-    // 📝 POETRY (ładne wersy + odstępy)
-    if (mode === 'poetry') {
-      const lines = text.split('\n').map((l) => l.trim());
-
-      const result: string[] = [];
-
-      for (let line of lines) {
-        if (!line) continue;
-
-        result.push(line);
-
-        // 🔥 odstęp między wersami
-        if (line.length < 60) {
-          result.push('');
-        }
-      }
-
-      return result.join('\n');
-    }
-
-    // 📄 COMPACT (usuwa puste linie)
-    if (mode === 'compact') {
-      return text
-        .split('\n')
-        .map((l) => l.trim())
-        .filter((l) => l)
-        .join('\n');
-    }
-
-    return text;
+    this.storage.savePages(this.pages); // 🔥 storage
   }
 
   fillLorem() {
@@ -308,8 +179,6 @@ quis nostrud exercitation ullamco.`;
 
     this.savePage();
   }
-
-  ///////////////////////////////////////////
 
   // 🔥 ID
   generateId(): string {
@@ -334,8 +203,6 @@ quis nostrud exercitation ullamco.`;
     this.pages.push(page);
     this.currentPageIndex = this.pages.length - 1;
     this.loadPage();
-
-    // localStorage.setItem('pages', JSON.stringify(this.pages));
   }
 
   onFontChange(value: string) {
@@ -346,7 +213,7 @@ quis nostrud exercitation ullamco.`;
     }
 
     this.savePage();
-    localStorage.setItem('pages', JSON.stringify(this.pages));
+    this.storage.savePages(this.pages);
   }
 
   loadPage() {
@@ -383,7 +250,7 @@ quis nostrud exercitation ullamco.`;
         if (err.status === 404) {
           console.warn('❌ Book nie istnieje → czyszczę state');
 
-          localStorage.removeItem('bookId'); // 🔥 KLUCZ
+          this.storage.removeBookId();
           this.bookId = ''; // 🔥 KLUCZ
 
           this.pages = [this.createEmptyPage()];
@@ -482,7 +349,7 @@ quis nostrud exercitation ullamco.`;
     if (this.currentPageIndex < this.pages.length - 1) {
       this.savePage();
 
-      localStorage.setItem('pages', JSON.stringify(this.pages));
+      this.storage.savePages(this.pages);
 
       this.currentPageIndex++;
       this.loadPage();
@@ -493,7 +360,7 @@ quis nostrud exercitation ullamco.`;
     if (this.currentPageIndex > 0) {
       this.savePage();
 
-      localStorage.setItem('pages', JSON.stringify(this.pages));
+      this.storage.savePages(this.pages);
 
       this.currentPageIndex--;
       this.loadPage();
@@ -529,7 +396,7 @@ quis nostrud exercitation ullamco.`;
     if (!user?.id) return;
 
     this.api.createEmptyBook(user.id).subscribe((res: any) => {
-      localStorage.setItem('bookId', res.id);
+      this.storage.saveBookId(res.id);
 
       this.bookId = res.id;
       this.pages = [this.createEmptyPage()];
@@ -538,7 +405,6 @@ quis nostrud exercitation ullamco.`;
     });
   }
 
-  ////////////////////
   applyVariant(variant: any) {
     this.selectedVariant = variant;
     this.savePage();
@@ -556,7 +422,7 @@ quis nostrud exercitation ullamco.`;
       return;
     }
 
-    const isNew = !this.bookId; // 🔥 KLUCZ
+    const isNew = !this.bookId;
 
     const fixedPages = this.pages.map((p) => ({
       ...p,
@@ -583,12 +449,13 @@ quis nostrud exercitation ullamco.`;
       next: (res: any) => {
         if (isNew && res?.id) {
           this.bookId = res.id;
-          localStorage.setItem('bookId', res.id);
+
+          this.storage.saveBookId(res.id); // 🔥 zamiast localStorage
 
           console.log('🆕 Book created:', res.id);
 
-          this.booksCount++; // ⚡ instant update
-          this.refreshBooksCount(); // 🔄 sync
+          this.booksCount++;
+          this.refreshBooksCount();
 
           this.showMessage('📚 Book created!');
         } else {
@@ -633,46 +500,20 @@ quis nostrud exercitation ullamco.`;
   }
 
   currentPreviewPage = 0;
-  private pagedPreviewer: any;
 
   preview() {
     this.savePage();
+    this.storage.savePages(this.pages);
 
-    localStorage.setItem('pages', JSON.stringify(this.pages));
     this.cd.detectChanges();
     this.isPreviewOpen = true;
     this.currentPreviewPage = 0;
 
     setTimeout(async () => {
-      const source = document.querySelector('#paged-source .book') as HTMLElement | null;
-      const host = document.getElementById('paged-preview-host');
+      await this.exportService.preview('#paged-source .book', 'paged-preview-host');
 
-      if (!source || !host) return;
-
-      host.innerHTML = '';
-
-      const clonedSource = source.cloneNode(true) as HTMLElement;
-
-      // @ts-ignore
-      this.pagedPreviewer = new window.Paged.Previewer();
-
-      await this.pagedPreviewer.preview(clonedSource, [], host);
-
-      this.fixLayout();
+      this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
     }, 100);
-  }
-
-  fixLayout() {
-    const host = document.getElementById('paged-preview-host');
-    if (!host) return;
-
-    const pages = host.querySelectorAll('.pagedjs_page');
-    if (!pages.length) return;
-
-    pages.forEach((p: any, index: number) => {
-      p.style.display = index === this.currentPreviewPage ? 'block' : 'none';
-      p.style.margin = '0 auto';
-    });
   }
 
   nextPreviewPage() {
@@ -683,14 +524,14 @@ quis nostrud exercitation ullamco.`;
 
     if (this.currentPreviewPage < pages.length - 1) {
       this.currentPreviewPage++;
-      this.fixLayout();
+      this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
     }
   }
 
   prevPreviewPage() {
     if (this.currentPreviewPage > 0) {
       this.currentPreviewPage--;
-      this.fixLayout();
+      this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
     }
   }
 
@@ -728,205 +569,19 @@ quis nostrud exercitation ullamco.`;
 
     this.loadPage();
 
-    localStorage.setItem('pages', JSON.stringify(this.pages));
-  }
-
-  getHeartPattern(): string {
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">
-        <path d="M40 20 
-                 C40 5, 70 5, 70 30 
-                 C70 55, 40 75, 40 75 
-                 C40 75, 10 55, 10 30 
-                 C10 5, 40 5, 40 20 Z"
-          fill="#fb7185"/>
-      </svg>
-    `;
-
-    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+    this.storage.savePages(this.pages);
   }
 
   getVariantStyles() {
-    return this.getVariantStylesBase(this.selectedTemplate, this.selectedVariant?.name);
+    return this.theme.getVariantStyles(this.selectedTemplate, this.selectedVariant?.name);
   }
 
   getVariantStylesForPage(p: any) {
-    return this.getVariantStylesBase(p.template, p.variant?.name);
+    return this.theme.getVariantStyles(p.template, p.variant?.name);
   }
 
-  getVariantStylesBase(t: string, v?: string) {
-    // 📄 DEFAULT
-    if (t === 'Default') {
-      if (!v || v === 'Clean') {
-        return {
-          background: '#ffffff',
-          borderRadius: '8px',
-        };
-      }
-
-      if (v === 'Paper') {
-        return {
-          background: '#fdf6e3',
-          border: '1px solid #e5e7eb',
-          borderRadius: '8px',
-        };
-      }
-
-      if (v === 'Soft') {
-        return {
-          background: '#f8fafc',
-          borderRadius: '12px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-        };
-      }
-
-      if (v === 'Classic') {
-        return {
-          background: '#ffffff',
-          border: '2px solid #111',
-          borderRadius: '6px',
-        };
-      }
-    }
-
-    // 🌸 FLORAL
-    if (t === 'Floral') {
-      if (!v || v === 'Soft') {
-        return { border: '3px solid pink', borderRadius: '16px' };
-      }
-
-      if (v === 'Elegant') {
-        return { border: '2px dashed hotpink', borderRadius: '20px' };
-      }
-
-      if (v === 'Frame') {
-        return { border: '6px double pink', borderRadius: '16px' };
-      }
-
-      if (v === 'Garden') {
-        return { border: '4px solid green', borderRadius: '12px' };
-      }
-    }
-
-    // 📜 VINTAGE
-    if (t === 'Vintage') {
-      if (!v || v === 'Old Paper') {
-        return {
-          background: '#fdf6e3',
-          border: '2px solid #d4af37',
-          borderRadius: '10px',
-        };
-      }
-
-      if (v === 'Gold Frame') {
-        return {
-          border: '4px solid gold',
-          borderRadius: '12px',
-        };
-      }
-
-      if (v === 'Classic Ink') {
-        return {
-          background: '#fffaf0',
-          borderRadius: '8px',
-        };
-      }
-
-      if (v === 'Retro') {
-        return {
-          border: '2px dashed brown',
-          borderRadius: '10px',
-        };
-      }
-    }
-
-    // ❀ ROMANTIC
-    if (t === 'Romantic') {
-      if (!v || v === 'Soft Love') {
-        return {
-          background: '#ffe4e6',
-          borderRadius: '16px',
-        };
-      }
-
-      if (v === 'Hearts') {
-        return {
-          border: '2px solid #f9a8d4',
-          borderRadius: '20px',
-          backgroundColor: '#fff1f2',
-          position: 'relative', // 🔥 ważne dla pseudo-elementów
-        };
-      }
-
-      if (v === 'Poetry') {
-        return {
-          borderBottom: '2px solid pink',
-        };
-      }
-
-      if (v === 'Rose') {
-        return {
-          border: '3px solid crimson',
-          borderRadius: '12px',
-        };
-      }
-    }
-
-    // 🌙 DARK
-    if (t === 'Dark') {
-      if (!v || v === 'Deep Night') {
-        return {
-          background: '#111827',
-          color: 'white',
-          borderRadius: '10px',
-        };
-      }
-
-      if (v === 'Soft Dark') {
-        return {
-          background: '#1f2937',
-          color: '#ddd',
-          borderRadius: '10px',
-        };
-      }
-
-      if (v === 'Neon') {
-        return {
-          background: '#000',
-          color: '#0ff',
-          borderRadius: '10px',
-        };
-      }
-
-      if (v === 'Midnight') {
-        return {
-          background: '#0f172a',
-          color: '#ccc',
-          borderRadius: '10px',
-        };
-      }
-    }
-
-    // ▫️ MINIMAL
-    if (t === 'Minimal') {
-      if (!v || v === 'Line') {
-        return { borderLeft: '3px solid black' };
-      }
-
-      if (v === 'Soft Line') {
-        return { borderLeft: '2px solid gray' };
-      }
-
-      if (v === 'Clean Space') {
-        return { padding: '20px' };
-      }
-
-      if (v === 'Mono') {
-        return { color: '#333' };
-      }
-    }
-
-    return {};
+  getHeartPattern() {
+    return this.theme.getHeartPattern();
   }
 
   goDashboard() {
@@ -937,46 +592,16 @@ quis nostrud exercitation ullamco.`;
     this.preview();
 
     setTimeout(async () => {
-      const host = document.getElementById('paged-preview-host');
-      if (!host) return;
-
-      const pages = host.querySelectorAll('.pagedjs_page');
-
-      pages.forEach((p: any) => {
-        p.style.display = 'block';
-      });
-
-      const pdf = new jsPDF({
-        unit: 'mm',
-        format: 'a4',
-        compress: true,
-      });
-
-      for (let i = 0; i < pages.length; i++) {
-        const page = pages[i] as HTMLElement;
-
-        const canvas = await html2canvas(page, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#ffffff',
-        });
-
-        const imgData = canvas.toDataURL('image/jpeg', 0.85);
-
-        if (i > 0) pdf.addPage();
-
-        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-      }
-
       const rawTitle = this.cover?.title?.trim() || 'moj-tomik';
+
       const safeTitle = rawTitle
         .replace(/[\\/:*?"<>|]/g, '')
         .replace(/\s+/g, '-')
         .toLowerCase();
 
-      pdf.save(`${safeTitle}.pdf`);
+      await this.exportService.exportPDF('paged-preview-host', `${safeTitle}.pdf`);
 
-      this.fixLayout();
+      this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
     }, 500);
   }
 }
