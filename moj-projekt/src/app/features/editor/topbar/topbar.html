@@ -1,22 +1,20 @@
-
 <header class="topbar">
   <div class="left">
     ✍️ <span class="logo">Poetry Studio</span>
     <button class="btn subtle" (click)="coverEdit.emit()">📕 <span>Cover</span></button>
   </div>
-<!-- <button (click)="goDashboard.emit()">🏠 Dashboard</button> -->
+  <!-- <button (click)="goDashboard.emit()">🏠 Dashboard</button> -->
 
-<button 
-  mat-raised-button
-  color="primary"
-  (click)="goDashboard.emit()"
-  [matBadge]="booksCount"
-  matBadgeColor="accent"
-  matBadgeOverlap="false"
->
-  🏠 Dashboard
-</button>
-
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="goDashboard.emit()"
+    [matBadge]="booksCount"
+    matBadgeColor="accent"
+    matBadgeOverlap="false"
+  >
+    🏠 Dashboard
+  </button>
 
   <div class="right">
     <button class="btn primary" (click)="save.emit()">💾 <span>Save</span></button>
@@ -32,7 +30,7 @@
       <button class="btn subtle" (click)="goLogin()">Login</button>
       <button class="btn subtle" (click)="goRegister()">Register</button>
     </ng-template>
-<button (click)="newBook.emit()">➕ New Book</button>
+    <button (click)="newBook.emit()">➕ New Book</button>
     <button class="btn icon">⚙️</button>
   </div>
 </header>
