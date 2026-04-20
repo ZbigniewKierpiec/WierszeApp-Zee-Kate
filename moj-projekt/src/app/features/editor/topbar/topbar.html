@@ -3,13 +3,13 @@
     ✍️ <span class="logo">Poetry Studio</span>
     <button class="btn subtle" (click)="coverEdit.emit()">📕 <span>Cover</span></button>
   </div>
-  <!-- <button (click)="goDashboard.emit()">🏠 Dashboard</button> -->
+  
 
   <button
     mat-raised-button
     color="primary"
     (click)="goDashboard.emit()"
-    [matBadge]="booksCount"
+   [matBadge]="(booksCount$ | async) || 0"
     matBadgeColor="accent"
     matBadgeOverlap="false"
   >

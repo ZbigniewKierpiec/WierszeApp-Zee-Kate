@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
+import { BooksService } from './../../../services/books-service';
 
 @Component({
   selector: 'app-topbar',
@@ -22,14 +23,35 @@ export class Topbar implements OnInit {
 
   user: any = null;
 
-  @Input() booksCount: number = 0;
   constructor(
     private auth: Auth,
     private router: Router,
+    private booksService: BooksService
   ) {}
-  ngOnInit(): void {
-    this.user = this.auth.getUser();
+  // ngOnInit(): void {
+  //   this.user = this.auth.getUser();
+
+
+  // }
+
+
+ngOnInit(): void {
+  this.user = this.auth.getUser();
+
+  if (this.user?.id) {
+    this.booksService.load(this.user.id); 
   }
+}
+
+
+
+
+
+get booksCount$() {
+  return this.booksService.booksCount$;
+}
+
+
 
   logout() {
     this.auth.logout();
