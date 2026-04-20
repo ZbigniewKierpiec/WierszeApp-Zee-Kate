@@ -1,0 +1,14 @@
+{
+  "TOPBAR": {
+    "COVER": "Cover",
+    "DASHBOARD": "Dashboard",
+    "SAVE": "Save",
+    "CLEAR": "Clear",
+    "EXPORT": "Export",
+    "NEW_BOOK": "New Book",
+    "LOGOUT": "Logout",
+    "LOGIN": "Login",
+    "REGISTER": "Register",
+    "SETTINGS": "Settings"
+  }
+}

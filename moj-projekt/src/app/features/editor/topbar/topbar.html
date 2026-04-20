@@ -1,4 +1,4 @@
-<header class="topbar">
+<!-- <header class="topbar">
   <div class="left">
     ✍️ <span class="logo">Poetry Studio</span>
     <button class="btn subtle" (click)="coverEdit.emit()">📕 <span>Cover</span></button>
@@ -14,6 +14,16 @@
   >
     🏠 Dashboard
   </button>
+
+
+<button (click)="setLang('pl')">🇵🇱</button>
+<button (click)="setLang('en')">🇬🇧</button>
+
+
+
+
+
+
 
   <div class="right">
     <button class="btn primary" (click)="save.emit()">💾 <span>Save</span></button>
@@ -32,4 +42,99 @@
 
     <button class="btn icon">⚙️</button>
   </div>
+</header> -->
+
+
+
+
+
+<header class="topbar">
+  <div class="left">
+    ✍️ <span class="logo">Poetry Studio</span>
+
+    <button class="btn subtle" (click)="coverEdit.emit()">
+      📕 <span>{{ 'TOPBAR.COVER' | translate }}</span>
+    </button>
+  </div>
+
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="goDashboard.emit()"
+    [matBadge]="(booksCount$ | async) || 0"
+    matBadgeColor="accent"
+    matBadgeOverlap="false"
+  >
+    🏠 {{ 'TOPBAR.DASHBOARD' | translate }}
+  </button>
+
+  <!-- 🌍 LANGUAGE SWITCH -->
+  <!-- <button (click)="setLang('pl')">🇵🇱</button>
+  <button (click)="setLang('en')">🇬🇧</button> -->
+
+<div class="lang-dropdown" (click)="toggleLangMenu()" #dropdown>
+  🌍 {{ currentLang.toUpperCase() }}
+
+  <span class="arrow" [class.open]="isLangOpen">▾</span>
+
+  <div class="menu" *ngIf="isLangOpen">
+    <div 
+      class="item" 
+      [class.active]="currentLang === 'pl'"
+      (click)="setLang('pl'); $event.stopPropagation()"
+    >
+      🇵🇱 Polski
+    </div>
+
+    <div 
+      class="item" 
+      [class.active]="currentLang === 'en'"
+      (click)="setLang('en'); $event.stopPropagation()"
+    >
+      🇬🇧 English
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+  <div class="right">
+    <button class="btn primary" (click)="save.emit()">
+      💾 <span>{{ 'TOPBAR.SAVE' | translate }}</span>
+    </button>
+
+    <button class="btn danger" (click)="clear.emit()">
+      🧹 <span>{{ 'TOPBAR.CLEAR' | translate }}</span>
+    </button>
+
+    <button (click)="export.emit()" class="btn">
+      📥 <span>{{ 'TOPBAR.EXPORT' | translate }}</span>
+    </button>
+
+    <ng-container *ngIf="user; else guest">
+      <span class="user">👤 {{ user.email }}</span>
+
+      <button class="btn subtle" (click)="logout()">
+        {{ 'TOPBAR.LOGOUT' | translate }}
+      </button>
+    </ng-container>
+
+    <ng-template #guest>
+      <button class="btn subtle" (click)="goLogin()">
+        {{ 'TOPBAR.LOGIN' | translate }}
+      </button>
+
+      <button class="btn subtle" (click)="goRegister()">
+        {{ 'TOPBAR.REGISTER' | translate }}
+      </button>
+    </ng-template>
+
+    <button class="btn icon">⚙️</button>
+  </div>
 </header>
+
+
+

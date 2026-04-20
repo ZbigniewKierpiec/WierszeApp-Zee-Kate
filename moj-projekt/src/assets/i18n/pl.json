@@ -1,0 +1,14 @@
+{
+  "TOPBAR": {
+    "COVER": "Okładka",
+    "DASHBOARD": "Panel",
+    "SAVE": "Zapisz",
+    "CLEAR": "Wyczyść",
+    "EXPORT": "Eksportuj",
+    "NEW_BOOK": "Nowa książka",
+    "LOGOUT": "Wyloguj",
+    "LOGIN": "Zaloguj",
+    "REGISTER": "Rejestracja",
+    "SETTINGS": "Ustawienia"
+  }
+}
