@@ -14,6 +14,7 @@ import { FormattingService } from './../../../services/formatting-service';
 import { StorageService } from './../../../services/storage-service';
 import { ExportService } from './../../../services/export-service';
 import { ThemeService } from './../../../services/theme-service';
+import { BooksService } from '../../../services/books-service';
 @Component({
   selector: 'app-editor-test',
   imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor],
@@ -77,6 +78,7 @@ export class EditorTest {
     private storage: StorageService,
     private exportService: ExportService,
     private theme: ThemeService,
+    private booksService: BooksService,
   ) {}
 
   ngOnInit() {
@@ -123,6 +125,7 @@ export class EditorTest {
   saveCover(updatedCover: any) {
     Object.assign(this.cover, updatedCover);
     this.storage.saveCover(this.cover);
+    this.save();
   }
 
   formatAdvanced() {
@@ -273,11 +276,42 @@ quis nostrud exercitation ullamco.`;
     });
   }
 
+  // applyBook(book: any) {
+  //   this.bookId = book.id;
+
+  //   this.cover = {
+  //     title: book.title || 'Mój tomik',
+  //     author: book.cover?.author || '',
+  //     image: book.cover?.image || '',
+  //     bgColor: this.fixColor(book.cover?.bgColor),
+  //     textColor: this.fixColor(book.cover?.textColor),
+  //   };
+
+  //   this.pages = (book.pages || []).map((p: any) => ({
+  //     ...p,
+  //     titleColor: this.fixColor(p.titleColor),
+  //     textColor: this.fixColor(p.textColor),
+  //   }));
+
+  //   this.selectedTheme = book.selected_theme || '';
+
+  //   this.currentPageIndex = 0;
+
+  //   if (this.pages.length === 0) {
+  //     this.pages = [this.createEmptyPage()];
+  //   }
+
+  //   this.loadPage();
+
+  //   // 🔥 KLUCZ
+  //   this.cd.detectChanges();
+  // }
+
   applyBook(book: any) {
     this.bookId = book.id;
 
     this.cover = {
-      title: book.title || 'Mój tomik',
+      title: book.cover?.title || book.title || 'Mój tomik', // 🔥 FIX
       author: book.cover?.author || '',
       image: book.cover?.image || '',
       bgColor: this.fixColor(book.cover?.bgColor),
@@ -291,7 +325,6 @@ quis nostrud exercitation ullamco.`;
     }));
 
     this.selectedTheme = book.selected_theme || '';
-
     this.currentPageIndex = 0;
 
     if (this.pages.length === 0) {
@@ -299,8 +332,6 @@ quis nostrud exercitation ullamco.`;
     }
 
     this.loadPage();
-
-    // 🔥 KLUCZ
     this.cd.detectChanges();
   }
 

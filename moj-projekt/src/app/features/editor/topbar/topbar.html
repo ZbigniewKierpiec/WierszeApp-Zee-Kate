@@ -3,13 +3,12 @@
     ✍️ <span class="logo">Poetry Studio</span>
     <button class="btn subtle" (click)="coverEdit.emit()">📕 <span>Cover</span></button>
   </div>
-  
 
   <button
     mat-raised-button
     color="primary"
     (click)="goDashboard.emit()"
-   [matBadge]="(booksCount$ | async) || 0"
+    [matBadge]="(booksCount$ | async) || 0"
     matBadgeColor="accent"
     matBadgeOverlap="false"
   >
@@ -30,7 +29,7 @@
       <button class="btn subtle" (click)="goLogin()">Login</button>
       <button class="btn subtle" (click)="goRegister()">Register</button>
     </ng-template>
-    <button (click)="newBook.emit()">➕ New Book</button>
+
     <button class="btn icon">⚙️</button>
   </div>
 </header>
