@@ -507,3 +507,13 @@ textarea {
   border-bottom: 1px dotted #999;
   margin: 0 10px;
 }
+app-gu {
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+app-gu.visible {
+  opacity: 1;
+  pointer-events: auto;
+}

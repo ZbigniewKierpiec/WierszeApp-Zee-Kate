@@ -194,3 +194,143 @@
     transform: translateY(0) scale(1);
   }
 }
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 8px 14px;
+  border-radius: 10px;
+
+  border: none;
+  cursor: pointer;
+
+  background: #1f2937;
+  color: white;
+
+  transition: all 0.2s ease;
+
+  min-width: 110px; /* 🔥 stabilizacja */
+}
+
+.btn span {
+  white-space: nowrap;
+}
+
+.topbar * {
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+///////////////////////////
+.topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 14px 24px;
+  background: #111827;
+  color: white;
+  border-bottom: 1px solid #1f2937;
+}
+
+.left,
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.left {
+  flex: 1 1 auto;
+}
+
+.right {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+
+.dashboard-btn {
+  flex-shrink: 0;
+}
+
+.topbar-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.topbar-center app-language-switcher {
+  display: block;
+  width: 140px;
+  pointer-events: auto;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+
+  background: #1f2937;
+  color: white;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: #374151;
+  transform: translateY(-1px);
+}
+
+.btn.subtle {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.btn.subtle:hover {
+  background: #f3f4f6;
+  color: black;
+  border: 1px solid #e5e7eb;
+}
+
+.btn.primary {
+  background: #6366f1;
+}
+
+.btn.primary:hover {
+  background: #4f46e5;
+}
+
+.btn.danger {
+  background: #7f1d1d;
+}
+
+.btn.danger:hover {
+  background: #991b1b;
+}
+
+.btn.icon {
+  padding: 8px 10px;
+}
+
+.logo,
+.user,
+.btn span {
+  white-space: nowrap;
+}

@@ -35,14 +35,14 @@
         type="text"
         placeholder="Tytuł"
         [(ngModel)]="cover.title"
-        (ngModelChange)="emitSave()"
+       
       />
 
       <input
         type="text"
         placeholder="Autor"
         [(ngModel)]="cover.author"
-        (ngModelChange)="emitSave()"
+        
       />
 
       <input
@@ -53,12 +53,12 @@
 
       <div class="row">
         <label>Tło</label>
-        <input type="color" [(ngModel)]="cover.bgColor" (ngModelChange)="emitSave()" />
+        <input type="color" [(ngModel)]="cover.bgColor"  />
       </div>
 
       <div class="row">
         <label>Tekst</label>
-        <input type="color" [(ngModel)]="cover.textColor" (ngModelChange)="emitSave()" />
+        <input type="color" [(ngModel)]="cover.textColor"  />
       </div>
 
     </div>
