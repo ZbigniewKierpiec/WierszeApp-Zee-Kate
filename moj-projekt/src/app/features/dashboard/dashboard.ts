@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
+import { BooksService } from '../../services/books-service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -26,6 +27,7 @@ export class Dashboard implements OnInit {
     private router: Router,
     private cd: ChangeDetectorRef,
     private dialog: MatDialog,
+    private booksService: BooksService,
   ) {}
 
   ngOnInit() {
@@ -50,24 +52,53 @@ export class Dashboard implements OnInit {
     });
   }
 
+  goDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
+
   openBook(book: any) {
     localStorage.setItem('bookId', book.id);
     this.router.navigate(['/editor']);
   }
 
-  createBook() {
-    const user = this.auth.getUser();
+  // createBook() {
+  //   const user = this.auth.getUser();
 
-    if (!user?.id) {
-      this.router.navigate(['/login']);
-      return;
-    }
+  //   if (!user?.id) {
+  //     this.router.navigate(['/login']);
+  //     return;
+  //   }
 
-    this.api.createEmptyBook(user.id).subscribe((res: any) => {
-      localStorage.setItem('bookId', res.id);
-      this.router.navigate(['/editor']);
-    });
+  //   this.api.createEmptyBook(user.id).subscribe((res: any) => {
+  //     localStorage.setItem('bookId', res.id);
+  //     this.router.navigate(['/editor']);
+  //   });
+  // }
+
+
+
+createBook() {
+  const user = this.auth.getUser();
+
+  if (!user?.id) {
+    this.router.navigate(['/login']);
+    return;
   }
+
+  this.api.createEmptyBook(user.id).subscribe((res: any) => {
+    localStorage.setItem('bookId', res.id);
+
+    this.booksService.increment(); // 🔥 KLUCZ
+
+    this.router.navigate(['/editor']);
+  });
+}
+
+
+
+
+
+
 
   goToLastBook() {
     const lastId = localStorage.getItem('bookId');
@@ -125,9 +156,22 @@ export class Dashboard implements OnInit {
         return;
       }
 
+      // this.api.deleteBook(book.id, userId).subscribe({
+      //   next: () => {
+      //     this.books = this.books.filter((b) => b.id !== book.id);
+      //     this.router.navigate(['editor']);
+      //   },
+      //   error: (err) => {
+      //     console.error('DELETE ERROR:', err);
+      //   },
+      // });
+
       this.api.deleteBook(book.id, userId).subscribe({
         next: () => {
           this.books = this.books.filter((b) => b.id !== book.id);
+
+          this.booksService.decrement(); // 🔥 KLUCZ
+
           this.router.navigate(['editor']);
         },
         error: (err) => {
@@ -137,23 +181,16 @@ export class Dashboard implements OnInit {
     });
   }
 
+  goBackToEditor() {
+    // jeśli masz ostatnią książkę → otwórz ją
+    if (this.lastBookId) {
+      this.router.navigate(['editor', this.lastBookId]);
+      return;
+    }
 
-
-goBackToEditor() {
-  // jeśli masz ostatnią książkę → otwórz ją
-  if (this.lastBookId) {
-    this.router.navigate(['editor', this.lastBookId]);
-    return;
+    // jeśli NIE ma → po prostu wejdź do editora
+    this.router.navigate(['editor']);
   }
-
-  // jeśli NIE ma → po prostu wejdź do editora
-  this.router.navigate(['editor']);
-}
-
-
-
-
-
 
   trackById(index: number, item: any) {
     return item.id;

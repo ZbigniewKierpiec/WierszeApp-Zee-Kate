@@ -1,5 +1,5 @@
 import { EditorApiService } from './../../../services/editor-api';
-import { ChangeDetectorRef, Component, HostListener } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, type OnDestroy } from '@angular/core';
 import { Topbar } from '../topbar/topbar';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../sidebar/sidebar';
@@ -16,13 +16,15 @@ import { ExportService } from './../../../services/export-service';
 import { ThemeService } from './../../../services/theme-service';
 import { BooksService } from '../../../services/books-service';
 import { Gu } from './gu/gu';
+import { EditorEventsService } from '../../../shared/editor-events-service';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-editor-test',
   imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor, Gu],
   templateUrl: './editor-test.html',
   styleUrl: './editor-test.scss',
 })
-export class EditorTest {
+export class EditorTest implements OnDestroy {
   // 🔥 UI fields (edytor)
   title = '';
   text = '';
@@ -57,7 +59,7 @@ export class EditorTest {
   isPreviewOpen = false;
   booksCount = 0;
   //////////////////////////////////////
-
+  private destroy$ = new Subject<void>();
   showGooey = false;
 
   savedMessageText = '';
@@ -100,7 +102,71 @@ export class EditorTest {
     private exportService: ExportService,
     private theme: ThemeService,
     private booksService: BooksService,
+    private events: EditorEventsService,
   ) {}
+
+  // ngOnInit() {
+  //   const user = this.auth.getUser();
+
+  //   if (!user?.id) {
+  //     this.router.navigate(['/login']);
+  //     return;
+  //   }
+  //   this.api.getUserBooksFull(user.id).subscribe((books) => {
+  //     this.booksCount = books.length;
+  //   });
+  //   const idFromStorage = this.storage.getBookId();
+
+  //   if (idFromStorage) {
+  //     this.bookId = idFromStorage;
+  //     this.loadBook(this.bookId);
+  //   } else {
+  //     this.pages = [this.createEmptyPage()];
+  //     this.loadPage();
+  //   }
+  // }
+
+  // ngOnInit() {
+  //   const user = this.auth.getUser();
+
+  //   if (!user?.id) {
+  //     this.router.navigate(['/login']);
+  //     return;
+  //   }
+
+  //   this.api.getUserBooksFull(user.id).subscribe((books) => {
+  //     this.booksCount = books.length;
+  //   });
+
+  //   const idFromStorage = this.storage.getBookId();
+
+  //   if (idFromStorage) {
+  //     this.bookId = idFromStorage;
+  //     this.loadBook(this.bookId);
+  //   } else {
+  //     this.pages = [this.createEmptyPage()];
+  //     this.loadPage();
+  //   }
+
+  //   // 🔥 NOWE – nasłuchiwanie topbara
+
+  // this.events.save$.subscribe(() => {
+  //   console.log('SAVE kliknięty');
+  //   this.save();
+  // });
+
+  // this.events.clear$.subscribe(() => {
+  //   this.clear(); // masz metodę ✔
+  // });
+
+  // this.events.export$.subscribe(() => {
+  //   this.exportPDF(); // masz metodę ✔
+  // });
+
+  //   this.events.coverEdit$.subscribe(() => {
+  //     this.openCoverEditor();
+  //   });
+  // }
 
   ngOnInit() {
     const user = this.auth.getUser();
@@ -109,9 +175,11 @@ export class EditorTest {
       this.router.navigate(['/login']);
       return;
     }
+
     this.api.getUserBooksFull(user.id).subscribe((books) => {
       this.booksCount = books.length;
     });
+
     const idFromStorage = this.storage.getBookId();
 
     if (idFromStorage) {
@@ -121,6 +189,18 @@ export class EditorTest {
       this.pages = [this.createEmptyPage()];
       this.loadPage();
     }
+
+    // 🔥 EVENTY (z cleanupem)
+    this.events.save$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      console.log('SAVE kliknięty');
+      this.save();
+    });
+
+    this.events.clear$.pipe(takeUntil(this.destroy$)).subscribe(() => this.clear());
+
+    this.events.export$.pipe(takeUntil(this.destroy$)).subscribe(() => this.exportPDF());
+
+    this.events.coverEdit$.pipe(takeUntil(this.destroy$)).subscribe(() => this.openCoverEditor());
   }
 
   onCoverImageUpload(event: any) {
@@ -153,6 +233,10 @@ export class EditorTest {
     this.cover = { ...updatedCover };
     this.storage.saveCover(this.cover);
     this.save();
+  }
+
+  openCoverEditor() {
+    this.isCoverEditorOpen = true;
   }
 
   formatAdvanced() {
@@ -503,17 +587,40 @@ quis nostrud exercitation ullamco.`;
       selectedTheme: this.selectedTheme || '',
     };
 
+    // this.api.saveBook(payload).subscribe({
+    //   next: (res: any) => {
+    //     if (isNew && res?.id) {
+    //       this.bookId = res.id;
+
+    //       this.storage.saveBookId(res.id); // 🔥 zamiast localStorage
+
+    //       console.log('🆕 Book created:', res.id);
+
+    //       this.booksCount++;
+    //       this.refreshBooksCount();
+
+    //       this.showMessage('📚 Book created!');
+    //     } else {
+    //       this.showMessage('💾 Changes saved');
+    //     }
+
+    //     console.log('💾 Saved');
+    //   },
+    //   error: (err) => {
+    //     console.error('❌ SAVE ERROR:', err);
+    //   },
+    // });
+
     this.api.saveBook(payload).subscribe({
       next: (res: any) => {
         if (isNew && res?.id) {
           this.bookId = res.id;
 
-          this.storage.saveBookId(res.id); // 🔥 zamiast localStorage
+          this.storage.saveBookId(res.id);
 
           console.log('🆕 Book created:', res.id);
 
-          this.booksCount++;
-          this.refreshBooksCount();
+          this.booksService.increment(); // 🔥 FIX
 
           this.showMessage('📚 Book created!');
         } else {
@@ -661,6 +768,11 @@ quis nostrud exercitation ullamco.`;
 
       this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
     }, 500);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
 

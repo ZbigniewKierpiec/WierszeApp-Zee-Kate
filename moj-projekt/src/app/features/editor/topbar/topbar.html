@@ -1,4 +1,4 @@
-<header class="topbar">
+<!-- <header class="topbar">
   <div class="left">
     ✍️ <span class="logo">Poetry Studio</span>
 
@@ -34,6 +34,69 @@
     </button>
 
     <button (click)="export.emit()" class="btn">
+      📥 <span>{{ 'TOPBAR.EXPORT' | translate }}</span>
+    </button>
+
+    <ng-container *ngIf="user; else guest">
+      <span class="user">👤 {{ user.email }}</span>
+
+      <button class="btn subtle" (click)="logout()">
+        {{ 'TOPBAR.LOGOUT' | translate }}
+      </button>
+    </ng-container>
+
+    <ng-template #guest>
+      <button class="btn subtle" (click)="goLogin()">
+        {{ 'TOPBAR.LOGIN' | translate }}
+      </button>
+
+      <button class="btn subtle" (click)="goRegister()">
+        {{ 'TOPBAR.REGISTER' | translate }}
+      </button>
+    </ng-template>
+
+    <button class="btn icon">⚙️</button>
+  </div>
+</header> -->
+<header class="topbar">
+  <div class="left">
+    ✍️ <span class="logo">Poetry Studio</span>
+
+    <button class="btn subtle" (click)="coverEdit()">
+      📕 <span>{{ 'TOPBAR.COVER' | translate }}</span>
+    </button>
+  </div>
+
+  <button
+    class="dashboard-btn"
+    mat-raised-button
+    color="primary"
+    (click)="goDashboard()"
+    [matBadge]="(booksCount$ | async) || 0"
+    matBadgeColor="accent"
+    matBadgeOverlap="false"
+  >
+    🏠 {{ 'TOPBAR.DASHBOARD' | translate }}
+  </button>
+
+  <div class="topbar-center">
+    <app-language-switcher
+      [currentLang]="currentLang"
+      (langChange)="setLang($event)"
+    >
+    </app-language-switcher>
+  </div>
+
+  <div class="right">
+    <button class="btn primary" (click)="save()">
+      💾 <span>{{ 'TOPBAR.SAVE' | translate }}</span>
+    </button>
+
+    <button class="btn danger" (click)="clear()">
+      🧹 <span>{{ 'TOPBAR.CLEAR' | translate }}</span>
+    </button>
+
+    <button (click)="export()" class="btn">
       📥 <span>{{ 'TOPBAR.EXPORT' | translate }}</span>
     </button>
 
