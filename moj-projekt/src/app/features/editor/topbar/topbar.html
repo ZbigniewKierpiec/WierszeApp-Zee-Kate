@@ -80,15 +80,12 @@
   </button>
 
   <div class="topbar-center">
-    <app-language-switcher
-      [currentLang]="currentLang"
-      (langChange)="setLang($event)"
-    >
+    <app-language-switcher [currentLang]="currentLang" (langChange)="setLang($event)">
     </app-language-switcher>
   </div>
 
   <div class="right">
-    <button class="btn primary" (click)="save()">
+    <button class="btn primary"  (click)="save()">
       💾 <span>{{ 'TOPBAR.SAVE' | translate }}</span>
     </button>
 

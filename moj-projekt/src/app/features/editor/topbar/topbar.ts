@@ -48,6 +48,7 @@ export class Topbar implements OnInit {
     }
   }
 
+
   get booksCount$() {
     return this.booksService.booksCount$;
   }

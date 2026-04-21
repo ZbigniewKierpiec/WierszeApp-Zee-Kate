@@ -154,6 +154,7 @@
         placeholder="Tytuł wiersza..."
         class="title"
         (click)="activeField = 'title'"
+        
         [ngStyle]="{
           'text-align': titleAlign,
           'font-family': titleFont,
@@ -167,6 +168,7 @@
         placeholder="Napisz swój wiersz..."
         (click)="activeField = 'text'"
         (click)="onTextFocus()"
+        
         [ngStyle]="{
           'text-align': textAlign,
           'font-family': textFont,

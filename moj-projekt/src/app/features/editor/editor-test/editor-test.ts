@@ -229,10 +229,19 @@ export class EditorTest implements OnDestroy {
   //   this.save();
   // }
 
+  // saveCover(updatedCover: any) {
+  //   this.cover = { ...updatedCover };
+  //   this.storage.saveCover(this.cover);
+  //   this.save();
+  // }
+  get canSave(): boolean {
+    return !!this.title?.trim() && !!this.text?.trim();
+  }
+
+
   saveCover(updatedCover: any) {
     this.cover = { ...updatedCover };
     this.storage.saveCover(this.cover);
-    this.save();
   }
 
   openCoverEditor() {
@@ -344,6 +353,7 @@ quis nostrud exercitation ullamco.`;
 
     this.titleColor = p.titleColor && p.titleColor.startsWith('#') ? p.titleColor : '#000000';
     this.textColor = p.textColor && p.textColor.startsWith('#') ? p.textColor : '#000000';
+    
   }
 
   loadBook(id: string) {
@@ -485,6 +495,8 @@ quis nostrud exercitation ullamco.`;
     p.textFont = this.textFont;
     p.titleColor = this.titleColor;
     p.textColor = this.textColor;
+
+   
   }
 
   nextPage() {
@@ -554,7 +566,10 @@ quis nostrud exercitation ullamco.`;
 
   save() {
     console.log('🔥 SAVE CLICKED');
-
+    if (!this.canSave) {
+      this.showMessage('Uzupełnij tytuł i treść');
+      return;
+    }
     this.savePage();
 
     const user = this.auth.getUser();
