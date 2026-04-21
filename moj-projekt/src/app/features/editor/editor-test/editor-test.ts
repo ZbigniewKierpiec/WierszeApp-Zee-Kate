@@ -1,5 +1,5 @@
 import { EditorApiService } from './../../../services/editor-api';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener } from '@angular/core';
 import { Topbar } from '../topbar/topbar';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../sidebar/sidebar';
@@ -15,9 +15,10 @@ import { StorageService } from './../../../services/storage-service';
 import { ExportService } from './../../../services/export-service';
 import { ThemeService } from './../../../services/theme-service';
 import { BooksService } from '../../../services/books-service';
+import { Gu } from './gu/gu';
 @Component({
   selector: 'app-editor-test',
-  imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor],
+  imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor, Gu],
   templateUrl: './editor-test.html',
   styleUrl: './editor-test.scss',
 })
@@ -57,6 +58,8 @@ export class EditorTest {
   booksCount = 0;
   //////////////////////////////////////
 
+  showGooey = false;
+
   savedMessageText = '';
   cover = {
     title: 'Mój tomik',
@@ -65,6 +68,24 @@ export class EditorTest {
     bgColor: '#000000',
     textColor: '#ffffff',
   };
+
+  onTextFocus() {
+    this.activeField = 'text';
+    this.showGooey = true;
+  }
+
+  hideGooey() {
+    this.showGooey = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+
+    if (!target.closest('.gooey-menu') && !target.closest('textarea')) {
+      this.hideGooey();
+    }
+  }
 
   constructor(
     private cd: ChangeDetectorRef,

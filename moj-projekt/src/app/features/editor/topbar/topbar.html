@@ -1,49 +1,3 @@
-<!-- <header class="topbar">
-  <div class="left">
-    ✍️ <span class="logo">Poetry Studio</span>
-    <button class="btn subtle" (click)="coverEdit.emit()">📕 <span>Cover</span></button>
-  </div>
-
-  <button
-    mat-raised-button
-    color="primary"
-    (click)="goDashboard.emit()"
-    [matBadge]="(booksCount$ | async) || 0"
-    matBadgeColor="accent"
-    matBadgeOverlap="false"
-  >
-    🏠 Dashboard
-  </button>
-
-
-<button (click)="setLang('pl')">🇵🇱</button>
-<button (click)="setLang('en')">🇬🇧</button>
-
-
-
-
-
-
-
-  <div class="right">
-    <button class="btn primary" (click)="save.emit()">💾 <span>Save</span></button>
-    <button class="btn danger" (click)="clear.emit()">🧹 <span>Clear</span></button>
-    <button (click)="export.emit()" class="btn">📥 <span>Export</span></button>
-
-    <ng-container *ngIf="user; else guest">
-      <span class="user">👤 {{ user.email }}</span>
-      <button class="btn subtle" (click)="logout()">Logout</button>
-    </ng-container>
-
-    <ng-template #guest>
-      <button class="btn subtle" (click)="goLogin()">Login</button>
-      <button class="btn subtle" (click)="goRegister()">Register</button>
-    </ng-template>
-
-    <button class="btn icon">⚙️</button>
-  </div>
-</header> -->
-
 <header class="topbar">
   <div class="left">
     ✍️ <span class="logo">Poetry Studio</span>
@@ -54,6 +8,7 @@
   </div>
 
   <button
+    class="dashboard-btn"
     mat-raised-button
     color="primary"
     (click)="goDashboard.emit()"
@@ -64,9 +19,10 @@
     🏠 {{ 'TOPBAR.DASHBOARD' | translate }}
   </button>
 
-  <app-language-switcher [currentLang]="currentLang" (langChange)="setLang($event)">
-    ></app-language-switcher
-  >
+  <div class="topbar-center">
+    <app-language-switcher [currentLang]="currentLang" (langChange)="setLang($event)">
+    </app-language-switcher>
+  </div>
 
   <div class="right">
     <button class="btn primary" (click)="save.emit()">
