@@ -1,0 +1,54 @@
+.switcher {
+  position: relative;
+  width: 140px;
+}
+
+.current {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.current img,
+.option img {
+  width: 22px;
+  border-radius: 3px;
+}
+
+.arrow {
+  margin-left: auto;
+}
+
+.menu {
+  position: absolute;
+  top: 110%;
+  width: 100%;
+  background: #111827;
+  border-radius: 14px;
+  padding: 6px;
+  display: none;
+}
+
+.switcher.open .menu {
+  display: block;
+}
+
+.option {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.option:hover {
+  background: rgba(255,255,255,0.1);
+}

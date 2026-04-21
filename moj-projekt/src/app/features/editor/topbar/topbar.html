@@ -44,10 +44,6 @@
   </div>
 </header> -->
 
-
-
-
-
 <header class="topbar">
   <div class="left">
     ✍️ <span class="logo">Poetry Studio</span>
@@ -68,38 +64,9 @@
     🏠 {{ 'TOPBAR.DASHBOARD' | translate }}
   </button>
 
-  <!-- 🌍 LANGUAGE SWITCH -->
-  <!-- <button (click)="setLang('pl')">🇵🇱</button>
-  <button (click)="setLang('en')">🇬🇧</button> -->
-
-<div class="lang-dropdown" (click)="toggleLangMenu()" #dropdown>
-  🌍 {{ currentLang.toUpperCase() }}
-
-  <span class="arrow" [class.open]="isLangOpen">▾</span>
-
-  <div class="menu" *ngIf="isLangOpen">
-    <div 
-      class="item" 
-      [class.active]="currentLang === 'pl'"
-      (click)="setLang('pl'); $event.stopPropagation()"
-    >
-      🇵🇱 Polski
-    </div>
-
-    <div 
-      class="item" 
-      [class.active]="currentLang === 'en'"
-      (click)="setLang('en'); $event.stopPropagation()"
-    >
-      🇬🇧 English
-    </div>
-  </div>
-</div>
-
-
-
-
-
+  <app-language-switcher [currentLang]="currentLang" (langChange)="setLang($event)">
+    ></app-language-switcher
+  >
 
   <div class="right">
     <button class="btn primary" (click)="save.emit()">
@@ -135,6 +102,3 @@
     <button class="btn icon">⚙️</button>
   </div>
 </header>
-
-
-

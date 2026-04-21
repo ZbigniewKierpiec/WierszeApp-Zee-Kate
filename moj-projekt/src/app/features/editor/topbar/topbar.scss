@@ -116,14 +116,14 @@
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
 
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 
   transition: all 0.25s ease;
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   }
 
   /* arrow */
@@ -151,8 +151,8 @@
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(16px);
 
-    border: 1px solid rgba(0,0,0,0.05);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 
     animation: dropdownIn 0.18s ease;
 
@@ -170,7 +170,7 @@
     transition: all 0.2s ease;
 
     &:hover {
-      background: rgba(0,0,0,0.05);
+      background: rgba(0, 0, 0, 0.05);
       transform: translateX(4px);
     }
 
@@ -178,7 +178,7 @@
       background: linear-gradient(135deg, #111827, #1f2937);
       color: white;
       font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
   }
 }

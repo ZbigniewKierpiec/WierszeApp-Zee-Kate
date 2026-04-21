@@ -1,0 +1,16 @@
+<div class="switcher" [class.open]="isOpen">
+  <button class="current" (click)="toggleMenu()">
+    <img [src]="current?.flag">
+    <span>{{ (current?.code || 'PL').toUpperCase() }}</span>
+    <span class="arrow">▾</span>
+  </button>
+
+  <div class="menu">
+    <div class="option"
+         *ngFor="let lang of languages"
+         (click)="changeLang(lang)">
+      <img [src]="lang.flag">
+      <span>{{ lang.label }}</span>
+    </div>
+  </div>
+</div>

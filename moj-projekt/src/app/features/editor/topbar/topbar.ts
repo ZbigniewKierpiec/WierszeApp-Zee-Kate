@@ -7,10 +7,11 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { BooksService } from './../../../services/books-service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageSwitcher } from "./language-switcher/language-switcher";
 
 @Component({
   selector: 'app-topbar',
-  imports: [CommonModule, FormsModule, MatBadgeModule, MatButtonModule, TranslateModule],
+  imports: [CommonModule, FormsModule, MatBadgeModule, MatButtonModule, TranslateModule, LanguageSwitcher],
   templateUrl: './topbar.html',
   styleUrl: './topbar.scss',
 })
