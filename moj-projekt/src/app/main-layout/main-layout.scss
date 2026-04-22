@@ -15,7 +15,7 @@ app-sidebar {
 .content {
   flex: 1;
 
-  overflow-y: auto; /* 🔥 scroll tylko w pionie */
+  overflow-y: hidden; /* 🔥 scroll tylko w pionie */
   overflow-x: hidden;
 
   padding: 20px;

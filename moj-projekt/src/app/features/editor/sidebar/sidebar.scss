@@ -1,174 +1,7 @@
-.sidebar {
-  width: 260px;
-  height: 100vh;
-  box-sizing: border-box;
 
-  background: #111827;
-  color: white;
-  padding: 20px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/* SECTION */
-.section h3 {
-  font-size: 14px;
-  margin-bottom: 10px;
-  opacity: 0.7;
-}
-
-/* TEMPLATE GROUP */
-.template-group {
-  width: 100%;
-  min-width: 0;
-  margin-bottom: 8px;
-}
-
-/* CARD */
-.card {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-
-  padding: 10px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-
-  background: #1f2937;
-  margin-bottom: 8px;
-
-  transition: background 0.2s ease, border 0.2s ease, color 0.2s ease;
-}
-
-.card:hover {
-  background: #374151;
-}
-
-.card.active {
-  background: #6366f1;
-  color: white;
-}
-
-/* ARROW */
-.arrow {
-  opacity: 0.7;
-  flex-shrink: 0;
-}
-
-/* VARIANTS CONTAINER */
-.variants {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-
-  padding-left: 10px;
-
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transform: translateY(-6px);
-
-  transition:
-    max-height 0.3s ease,
-    opacity 0.25s ease,
-    transform 0.25s ease,
-    margin 0.25s ease;
-}
-
-.variants.open {
-  max-height: 220px;
-  opacity: 1;
-  transform: translateY(0);
-  margin-top: 4px;
-  margin-bottom: 8px;
-}
-
-/* SINGLE VARIANT */
-.variant {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 13px;
-
-  background: #1f2937;
-  color: #d1d5db;
-  cursor: pointer;
-  margin-bottom: 4px;
-
-  white-space: normal;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-.variant:hover {
-  background: #374151;
-  color: white;
-  transform: translateX(2px);
-}
-
-.variant.active {
-  background: #6366f1;
-  color: white;
-}
-
-/* ACTIONS */
-.actions button {
-  width: 100%;
-  box-sizing: border-box;
-
-  padding: 10px;
-  margin-bottom: 8px;
-
-  border: none;
-  border-radius: 10px;
-
-  cursor: pointer;
-  background: #1f2937;
-  color: white;
-
-  transition: background 0.2s ease;
-}
-
-.actions button:hover {
-  background: #374151;
-}
-
-.preview-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.preview-box {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  max-width: 600px;
-  width: 90%;
-}
-
+/* ============================= */
+/* 📦 SIDEBAR */
+/* ============================= */
 .sidebar {
   width: 260px;
   height: 100vh;
@@ -186,40 +19,220 @@
   overflow-x: hidden;
 }
 
-/* CARD */
+/* ============================= */
+/* 🔤 SECTION */
+/* ============================= */
+.section h3 {
+  font-size: 13px;
+  margin-bottom: 10px;
+  opacity: 0.6;
+  font-weight: 500;
+}
+
+/* ============================= */
+/* 📁 TEMPLATE GROUP */
+/* ============================= */
+.template-group {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+/* ============================= */
+/* 🧩 CARD */
+/* ============================= */
 .card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 12px;
+  border-radius: 10px;
+
+  cursor: pointer;
+  margin-bottom: 6px;
+
   background: var(--card-bg);
   color: var(--sidebar-text);
+
+  transition: all 0.2s ease;
 }
 
 .card:hover {
   background: var(--card-hover);
 }
 
+/* 🔥 ACTIVE */
 .card.active {
   background: var(--card-active);
-  color: white;
+  color: var(--sidebar-text);
+  border-left: 3px solid var(--accent, #6366f1);
+  padding-left: 9px;
 }
 
-/* VARIANT */
+/* ============================= */
+/* ➡️ ARROW */
+/* ============================= */
+.arrow {
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+/* ============================= */
+/* 📂 VARIANTS CONTAINER */
+/* ============================= */
+// .variants {
+//   padding-left: 10px;
+
+//   max-height: 0;
+//   opacity: 0;
+//   overflow: hidden;
+//   transform: translateY(-6px);
+
+//   transition:
+//     max-height 0.3s ease,
+//     opacity 0.25s ease,
+//     transform 0.25s ease,
+//     margin 0.25s ease;
+// }
+
+// .variants.open {
+//   max-height: 240px;
+//   opacity: 1;
+//   transform: translateY(0);
+//   margin-top: 4px;
+//   margin-bottom: 8px;
+// }
+
+
+.variants {
+  padding-left: 10px;
+
+  opacity: 0;
+  transform: translateY(-6px);
+
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.variants.open {
+  opacity: 1;
+  transform: translateY(0);
+
+  pointer-events: auto;
+  height: auto;
+
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================= */
+/* 🔹 VARIANT ITEM */
+/* ============================= */
 .variant {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+
   background: var(--variant-bg);
   color: var(--sidebar-text);
+
+  cursor: pointer;
+  margin-bottom: 4px;
+
+  transition: all 0.2s ease;
 }
 
 .variant:hover {
   background: var(--variant-hover);
-  color: white;
+  transform: translateX(2px);
 }
 
-/* ACTIONS */
+/* 🔥 ACTIVE VARIANT */
+.variant.active {
+  background: var(--card-active);
+  border-left: 3px solid var(--accent, #6366f1);
+  padding-left: 7px;
+}
+
+/* ============================= */
+/* 🔘 ACTIONS */
+/* ============================= */
 .actions button {
+  width: 100%;
+  padding: 10px;
+
+  border: none;
+  border-radius: 10px;
+
+  cursor: pointer;
+  margin-bottom: 8px;
+
   background: var(--card-bg);
   color: var(--sidebar-text);
+
+  transition: all 0.2s ease;
 }
 
 .actions button:hover {
   background: var(--card-hover);
 }
 
+/* ============================= */
+/* 👁 PREVIEW */
+/* ============================= */
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-box {
+  background: var(--poem-bg);
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+}
+
+.sidebar {
+  position: relative;
+}
+
+.active-indicator {
+  position: absolute;
+  left: 0;
+
+  width: 3px;
+  height: 40px;
+
+  background: var(--accent, #6366f1);
+  border-radius: 2px;
+
+  transition:
+    top 0.25s ease,
+    height 0.25s ease;
+}
+
+.variant.active {
+  background: var(--card-active);
+}

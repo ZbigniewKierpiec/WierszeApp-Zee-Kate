@@ -66,17 +66,19 @@
   max-width: 600px;
   height: 70%;
   margin: auto;
-position: relative; 
+  position: relative;
   padding: 30px;
   border-radius: 16px;
 
   background: var(--poem-bg);
+
   box-shadow: 0 10px 30px var(--poem-shadow);
 }
 
 .poem-container textarea,
 .poem-container input {
   background: transparent;
+
   color: inherit;
 }
 
@@ -98,6 +100,68 @@ textarea {
   background: transparent;
   line-height: 1.6;
   min-height: 100%;
+}
+
+.template-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  padding: 8px 14px;
+  margin: 10px auto;
+
+  width: fit-content;
+
+  border-radius: 12px;
+
+  background: var(--toolbar-bg);
+  color: var(--text-main);
+
+  border: 1px solid var(--border);
+
+  font-size: 14px;
+  font-weight: 500;
+
+  box-shadow: 0 4px 12px var(--card-shadow);
+
+  transition: all 0.25s ease;
+}
+
+/* 🔥 ICON */
+.template-label .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 8px;
+
+  background: var(--btn-bg);
+
+  font-size: 16px;
+}
+
+/* 🔥 TEXT */
+.template-label span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 🔥 VARIANT (kropka + nazwa) */
+.template-label span span {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* 🔥 HOVER subtle */
+.template-label:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px var(--card-shadow);
 }
 
 /* ============================= */
@@ -147,6 +211,10 @@ textarea {
 
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
+}
+
+.page-controls span {
+  color: var(--text-main);
 }
 
 body.dark .page-controls {
@@ -360,3 +428,8 @@ button,
     background 0.25s ease,
     color 0.25s ease;
 }
+// .editor-area {
+//   padding: 24px;
+//   background: #ffffff; /* 🔥 zawsze biały */
+//   color: #000000;
+// }
