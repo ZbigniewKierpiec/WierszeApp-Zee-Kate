@@ -1,3 +1,12 @@
+<!-- <app-topbar
+  (save)="save()"
+  (clear)="clear()"
+  (coverEdit)="isCoverEditorOpen = true"
+  (export)="exportPDF()"
+  (newBook)="createNewBook()"
+  (goDashboard)="goDashboard()"
+></app-topbar> -->
+
 <div class="layout">
   <!-- SIDEBAR -->
   <app-sidebar
@@ -61,6 +70,8 @@
         type="number"
         [ngModel]="activeField === 'title' ? titleSize : textFontSize"
         (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
+        min="12"
+        max="60"
       />
 
       <input
@@ -79,7 +90,7 @@
       </select>
     </div>
 
-    <!-- TEMPLATE -->
+    <!-- TEMPLATE LABEL -->
     <div class="template-label">
       <span class="icon">
         {{ templateIcons[selectedTemplate] || '📄' }}
@@ -87,10 +98,9 @@
 
       <span>
         {{ 'EDITOR.TEMPLATE' | translate }}: {{ selectedTemplate | translate }}
-
-        @if (selectedVariant) {
-          <span class="variant"> • {{ selectedVariant.name | translate }}</span>
-        }
+        <span *ngIf="selectedVariant" class="variant">
+          • {{ selectedVariant.name | translate }}
+        </span>
       </span>
     </div>
 
@@ -105,24 +115,36 @@
         [placeholder]="'EDITOR.TITLE_PLACEHOLDER' | translate"
         class="title"
         (click)="activeField = 'title'"
+        [ngStyle]="{
+          'text-align': titleAlign,
+          'font-family': titleFont,
+          'font-size.px': titleSize,
+          color: titleColor
+        }"
       />
 
       <textarea
         [(ngModel)]="text"
         [placeholder]="'EDITOR.TEXT_PLACEHOLDER' | translate"
-        (click)="activeField = 'text'"
+        (click)="activeField = 'text'; onTextFocus()"
+        [ngStyle]="{
+          'text-align': textAlign,
+          'font-family': textFont,
+          'font-size.px': textFontSize,
+          color: textColor
+        }"
       ></textarea>
 
       <app-gu [class.visible]="showGooey"></app-gu>
     </div>
 
-    <!-- NAV -->
+    <!-- NAVIGATION -->
     <div class="bottom-bar">
       <button (click)="goBack()">← {{ 'EDITOR.BACK' | translate }}</button>
       <button (click)="preview()">👁 {{ 'EDITOR.PREVIEW' | translate }}</button>
     </div>
 
-    <!-- PAGES -->
+    <!-- PAGE CONTROLS -->
     <div class="page-controls">
       <button (click)="prevPage()">⬅</button>
 
@@ -134,47 +156,118 @@
 
       <button (click)="newPage()">➕ {{ 'EDITOR.NEW_PAGE' | translate }}</button>
 
-      @if (pages.length > 1) {
-        <button (click)="deletePage()">🗑</button>
-      }
+      <button *ngIf="pages.length > 1" (click)="deletePage()">🗑</button>
     </div>
 
     <div class="page-id">ID: {{ pages[currentPageIndex]?.id }}</div>
   </div>
 </div>
 
-@if (savedMessage) {
-  <div class="toast success">
-    {{ savedMessageText }}
-  </div>
-}
+<!-- TOASTS -->
+<div *ngIf="savedMessage" class="toast success">
+  {{ savedMessageText }}
+</div>
 
-@if (clearMessage) {
-  <div class="toast danger">
-    🧹 {{ 'EDITOR.CLEARED' | translate }}
-  </div>
-}
+<div *ngIf="clearMessage" class="toast danger">
+  🧹 {{ 'EDITOR.CLEARED' | translate }}
+</div>
 
-@if (isPreviewOpen) {
-  <div class="preview-overlay" (click)="closePreview($event)">
-    <button class="close-btn">
-      {{ 'EDITOR.CLOSE' | translate }}
-    </button>
+<!-- PREVIEW -->
+<div *ngIf="isPreviewOpen" class="preview-overlay" (click)="closePreview($event)">
+  <button
+    type="button"
+    class="close-btn"
+    (click)="closePreview($event); $event.stopPropagation()"
+  >
+    {{ 'EDITOR.CLOSE' | translate }}
+  </button>
 
-    <div class="preview-book" (click)="$event.stopPropagation()">
-      <div id="paged-preview-host"></div>
+  <div class="preview-book" (click)="$event.stopPropagation()">
+    <div id="paged-preview-host"></div>
 
-      <div class="nav-buttons">
-        <button (click)="prevPreviewPage()">
-          ← {{ 'EDITOR.PREV' | translate }}
-        </button>
+    <div class="nav-buttons">
+      <button
+        type="button"
+        (click)="prevPreviewPage(); $event.stopPropagation()"
+      >
+        ← {{ 'EDITOR.PREV' | translate }}
+      </button>
 
-        <span>{{ currentPreviewPage + 1 }}</span>
+      <span>{{ currentPreviewPage + 1 }}</span>
 
-        <button (click)="nextPreviewPage()">
-          {{ 'EDITOR.NEXT' | translate }} →
-        </button>
-      </div>
+      <button
+        type="button"
+        (click)="nextPreviewPage(); $event.stopPropagation()"
+      >
+        {{ 'EDITOR.NEXT' | translate }} →
+      </button>
     </div>
   </div>
-}
+</div>
+
+<!-- UKRYTE ŹRÓDŁO DLA Paged.js -->
+<div id="paged-source" style="display: none">
+  <div class="book">
+    <section
+      class="cover"
+      [ngStyle]="{
+        background: cover.bgColor,
+        color: cover.textColor
+      }"
+    >
+      <div
+        class="cover-image"
+        *ngIf="cover.image"
+        [ngStyle]="{
+          'background-image': 'url(' + cover.image + ')'
+        }"
+      ></div>
+
+      <div class="cover-content">
+        <h1>{{ cover.title }}</h1>
+        <p>{{ cover.author }}</p>
+      </div>
+    </section>
+
+    <section
+      class="poem"
+      *ngFor="let p of pages"
+      [class.hearts]="p.variant?.name === 'Hearts'"
+    >
+      <div class="poem-inner" [ngStyle]="getVariantStylesForPage(p)">
+        <div
+          class="title-preview"
+          [ngStyle]="{
+            'text-align': titleAlign,
+            'font-family': p.titleFont,
+            'font-size.px': titleSize,
+            color: p.titleColor
+          }"
+        >
+          {{ p.title }}
+        </div>
+
+        <div
+          class="text-preview"
+          [ngStyle]="{
+            'text-align': textAlign,
+            'font-family': p.textFont,
+            'font-size.px': textFontSize,
+            color: p.textColor,
+            'white-space': 'pre-wrap'
+          }"
+        >
+          {{ p.text }}
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- COVER EDITOR -->
+<app-cover-editor
+  *ngIf="isCoverEditorOpen"
+  [cover]="cover"
+  (save)="saveCover($event)"
+  (close)="isCoverEditorOpen = false"
+></app-cover-editor>
