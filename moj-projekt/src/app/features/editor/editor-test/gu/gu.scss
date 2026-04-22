@@ -4,17 +4,17 @@
 //   position: relative;
 // }
 
-.gooey-menu {
-  // position: fixed;
-  // top: 30%;
-  // left: 50%;
+// .gooey-menu {
+//   // position: fixed;
+//   // top: 30%;
+//   // left: 50%;
 
-  width: 0;
-  height: 0;
+//   width: 0;
+//   height: 0;
 
-  filter: url('#goo');
-  z-index: 1000;
-}
+//   filter: url('#goo');
+//   z-index: 1000;
+// }
 
 /* shared */
 .menu-open-button,
@@ -94,12 +94,13 @@
 .gooey-menu {
   position: fixed;
   right: 80px;
-  bottom: 80px;
+  bottom: 200px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
+
   height: 0;
-  z-index: 1000;
+  z-index: 1000000000000000000000000000000000000000000000000000000000000000000000000000 !important;
 }
 
 .gooey-items {
