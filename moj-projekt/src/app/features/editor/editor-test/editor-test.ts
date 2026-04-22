@@ -1,5 +1,12 @@
 import { EditorApiService } from './../../../services/editor-api';
-import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Topbar } from '../topbar/topbar';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../sidebar/sidebar';
@@ -27,17 +34,9 @@ import { EditorStateService } from '../sidebar/editor-state-service';
   styleUrl: './editor-test.scss',
 })
 export class EditorTest implements OnInit, OnDestroy {
+  @ViewChild(Gu) gu?: Gu;
 
-@ViewChild(Gu) gu?: Gu;
-
-@HostListener('document:click', ['$event'])
-
-
-
-
-
-
-
+  @HostListener('document:click', ['$event'])
   title = '';
   text = '';
 
@@ -156,44 +155,30 @@ export class EditorTest implements OnInit, OnDestroy {
   }
 
   private bindEditorState() {
-    this.state.template$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((template) => {
-        if (!template || this.syncingFromPage) return;
-        this.applyTemplate(template);
-      });
+    this.state.template$.pipe(takeUntil(this.destroy$)).subscribe((template) => {
+      if (!template || this.syncingFromPage) return;
+      this.applyTemplate(template);
+    });
 
-    this.state.variant$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((variant) => {
-        if (!variant || this.syncingFromPage) return;
-        this.applyVariant(variant);
-      });
+    this.state.variant$.pipe(takeUntil(this.destroy$)).subscribe((variant) => {
+      if (!variant || this.syncingFromPage) return;
+      this.applyVariant(variant);
+    });
 
-    this.state.preset$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((preset) => {
-        if (!preset || this.syncingFromPage) return;
-        this.applyPreset(preset);
-      });
+    this.state.preset$.pipe(takeUntil(this.destroy$)).subscribe((preset) => {
+      if (!preset || this.syncingFromPage) return;
+      this.applyPreset(preset);
+    });
   }
 
   private bindEditorEvents() {
-    this.events.save$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.save());
+    this.events.save$.pipe(takeUntil(this.destroy$)).subscribe(() => this.save());
 
-    this.events.clear$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.clear());
+    this.events.clear$.pipe(takeUntil(this.destroy$)).subscribe(() => this.clear());
 
-    this.events.export$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.exportPDF());
+    this.events.export$.pipe(takeUntil(this.destroy$)).subscribe(() => this.exportPDF());
 
-    this.events.coverEdit$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.openCoverEditor());
+    this.events.coverEdit$.pipe(takeUntil(this.destroy$)).subscribe(() => this.openCoverEditor());
   }
 
   get canSave(): boolean {
@@ -324,6 +309,40 @@ quis nostrud exercitation ullamco.`;
     this.storage.savePages(this.pages);
   }
 
+  // loadPage() {
+  //   const p = this.pages[this.currentPageIndex];
+  //   if (!p) return;
+
+  //   this.syncingFromPage = true;
+
+  //   this.title = p.title || '';
+  //   this.text = p.text || '';
+
+  //   this.selectedTemplate = p.template || 'Default';
+  //   this.selectedVariant = p.variant || null;
+
+  //   this.activeMode = p.activeMode === 'preset' ? 'preset' : 'template';
+
+  //   this.selectedPreset = p.preset
+  //     ? typeof p.preset === 'object'
+  //       ? p.preset
+  //       : {
+  //           name: p.preset,
+  //           template: p.template,
+  //           variant: p.variant,
+  //         }
+  //     : null;
+
+  //   this.titleFont = p.titleFont || 'Playfair Display';
+  //   this.textFont = p.textFont || 'Playfair Display';
+
+  //   this.titleColor = this.fixColor(p.titleColor, '#000000');
+  //   this.textColor = this.fixColor(p.textColor, '#000000');
+
+  //   this.syncingFromPage = false;
+  //   this.cd.detectChanges();
+  // }
+
   loadPage() {
     const p = this.pages[this.currentPageIndex];
     if (!p) return;
@@ -338,15 +357,7 @@ quis nostrud exercitation ullamco.`;
 
     this.activeMode = p.activeMode === 'preset' ? 'preset' : 'template';
 
-    this.selectedPreset = p.preset
-      ? typeof p.preset === 'object'
-        ? p.preset
-        : {
-            name: p.preset,
-            template: p.template,
-            variant: p.variant,
-          }
-      : null;
+    this.selectedPreset = p.preset || null;
 
     this.titleFont = p.titleFont || 'Playfair Display';
     this.textFont = p.textFont || 'Playfair Display';
@@ -355,6 +366,11 @@ quis nostrud exercitation ullamco.`;
     this.textColor = this.fixColor(p.textColor, '#000000');
 
     this.syncingFromPage = false;
+
+    // 🔥 KLUCZOWE
+    this.state.template$.next(this.selectedTemplate);
+    this.state.variant$.next(this.selectedVariant);
+    this.state.preset$.next(this.selectedPreset);
     this.cd.detectChanges();
   }
 
