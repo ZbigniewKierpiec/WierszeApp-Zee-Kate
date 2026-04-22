@@ -35,7 +35,32 @@
     "NO_TITLE": "Brak tytułu",
     "DEFAULT": "Domyślny"
   },
+"EDITOR": {
+  "LOREM": "Lorem",
+  "FORMAT_ADVANCED": "Format zaawansowany",
+  "AI_FORMAT": "Format AI",
 
+  "LEFT": "Lewo",
+  "CENTER": "Środek",
+  "RIGHT": "Prawo",
+
+  "TEMPLATE": "Szablon",
+
+  "TITLE_PLACEHOLDER": "Tytuł wiersza...",
+  "TEXT_PLACEHOLDER": "Napisz swój wiersz...",
+
+  "BACK": "Wstecz",
+  "PREVIEW": "Podgląd",
+
+  "PAGE": "Strona",
+  "NEW_PAGE": "Nowa strona",
+
+  "CLEARED": "Wyczyszczone",
+
+  "CLOSE": "Zamknij",
+  "PREV": "Poprzednia",
+  "NEXT": "Następna"
+},
   "Romantic": "Romantyczny",
   "Minimal": "Minimalistyczny",
   "Dark Poetry": "Mroczna poezja",

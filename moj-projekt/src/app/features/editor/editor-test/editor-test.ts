@@ -18,9 +18,10 @@ import { BooksService } from '../../../services/books-service';
 import { Gu } from './gu/gu';
 import { EditorEventsService } from '../../../shared/editor-events-service';
 import { Subject, takeUntil } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-editor-test',
-  imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor, Gu],
+  imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor, Gu, TranslateModule],
   templateUrl: './editor-test.html',
   styleUrl: './editor-test.scss',
 })

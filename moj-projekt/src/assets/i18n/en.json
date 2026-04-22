@@ -36,6 +36,37 @@
     "DEFAULT": "Default"
   },
 
+"EDITOR": {
+  "LOREM": "Lorem",
+  "FORMAT_ADVANCED": "Format Advanced",
+  "AI_FORMAT": "AI Format",
+
+  "LEFT": "Left",
+  "CENTER": "Center",
+  "RIGHT": "Right",
+
+  "TEMPLATE": "Template",
+
+  "TITLE_PLACEHOLDER": "Poem title...",
+  "TEXT_PLACEHOLDER": "Write your poem...",
+
+  "BACK": "Back",
+  "PREVIEW": "Preview",
+
+  "PAGE": "Page",
+  "NEW_PAGE": "New Page",
+
+  "CLEARED": "Cleared",
+
+  "CLOSE": "Close",
+  "PREV": "Prev",
+  "NEXT": "Next"
+},
+
+
+
+
+
   "Romantic": "Romantic",
   "Minimal": "Minimal",
   "Dark Poetry": "Dark Poetry",
