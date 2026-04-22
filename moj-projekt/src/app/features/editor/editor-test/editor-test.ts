@@ -74,6 +74,7 @@ export class EditorTest implements OnInit, OnDestroy {
   showGooey = false;
 
   private destroy$ = new Subject<void>();
+  private syncingFromPage = false;
 
   cover = {
     title: 'Mój tomik',
@@ -146,46 +147,30 @@ export class EditorTest implements OnInit, OnDestroy {
   private bindEditorState() {
     this.state.template$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((t) => {
-        if (!t) return;
-
-        this.activeMode = 'template';
-        this.selectedTemplate = t;
-        this.selectedPreset = null;
-        this.selectedVariant = null;
-
-        this.applyTemplate(t);
+      .subscribe((template) => {
+        if (!template || this.syncingFromPage) return;
+        this.applyTemplate(template);
       });
 
     this.state.variant$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((v) => {
-        if (!v) return;
-
-        this.selectedVariant = v;
-        this.applyVariant(v);
+      .subscribe((variant) => {
+        if (!variant || this.syncingFromPage) return;
+        this.applyVariant(variant);
       });
 
     this.state.preset$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((p) => {
-        if (!p) return;
-
-        this.activeMode = 'preset';
-        this.selectedPreset = p;
-        this.selectedTemplate = p.template;
-        this.selectedVariant = p.variant;
-
-        this.applyPreset(p);
+      .subscribe((preset) => {
+        if (!preset || this.syncingFromPage) return;
+        this.applyPreset(preset);
       });
   }
 
   private bindEditorEvents() {
     this.events.save$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.save();
-      });
+      .subscribe(() => this.save());
 
     this.events.clear$
       .pipe(takeUntil(this.destroy$))
@@ -272,33 +257,6 @@ quis nostrud exercitation ullamco.`;
     this.savePage();
   }
 
-  applyPreset(p: any) {
-    const current = this.pages[this.currentPageIndex];
-    if (!current) return;
-
-    current.template = p.template;
-    current.variant = p.variant;
-
-    this.selectedTemplate = p.template;
-    this.selectedVariant = p.variant;
-
-    if (p.titleFont) this.titleFont = p.titleFont;
-    if (p.textFont) this.textFont = p.textFont;
-    if (p.textColor) this.textColor = this.fixColor(p.textColor);
-    if (p.titleColor) this.titleColor = this.fixColor(p.titleColor);
-
-    if (p.autoFormat) {
-      this.text = this.formatting.formatText(this.text, p.autoFormat);
-    }
-
-    if (p.autoFormat === 'advanced') {
-      this.text = this.formatting.formatPoemAdvanced(this.text);
-    }
-
-    this.savePage();
-    this.storage.savePages(this.pages);
-  }
-
   generateId(): string {
     return crypto.randomUUID();
   }
@@ -310,6 +268,8 @@ quis nostrud exercitation ullamco.`;
       text: '',
       template: 'Default',
       variant: null,
+      preset: null,
+      activeMode: 'template',
       titleFont: this.titleFont || 'Playfair Display',
       textFont: this.textFont || 'Playfair Display',
       titleColor: '#000000',
@@ -334,18 +294,9 @@ quis nostrud exercitation ullamco.`;
   }
 
   newPage() {
-    const page = {
-      id: this.generateId(),
-      title: '',
-      text: '',
-      template: 'Default',
-      variant: null,
-      titleFont: this.titleFont || 'Playfair Display',
-      textFont: this.textFont || 'Playfair Display',
-      titleColor: this.fixColor(this.titleColor),
-      textColor: this.fixColor(this.textColor),
-    };
+    this.savePage();
 
+    const page = this.createEmptyPage();
     this.pages.push(page);
     this.currentPageIndex = this.pages.length - 1;
     this.loadPage();
@@ -366,16 +317,34 @@ quis nostrud exercitation ullamco.`;
     const p = this.pages[this.currentPageIndex];
     if (!p) return;
 
+    this.syncingFromPage = true;
+
     this.title = p.title || '';
     this.text = p.text || '';
+
     this.selectedTemplate = p.template || 'Default';
     this.selectedVariant = p.variant || null;
+
+    this.activeMode = p.activeMode === 'preset' ? 'preset' : 'template';
+
+    this.selectedPreset = p.preset
+      ? typeof p.preset === 'object'
+        ? p.preset
+        : {
+            name: p.preset,
+            template: p.template,
+            variant: p.variant,
+          }
+      : null;
 
     this.titleFont = p.titleFont || 'Playfair Display';
     this.textFont = p.textFont || 'Playfair Display';
 
     this.titleColor = this.fixColor(p.titleColor, '#000000');
     this.textColor = this.fixColor(p.textColor, '#000000');
+
+    this.syncingFromPage = false;
+    this.cd.detectChanges();
   }
 
   loadBook(id: string) {
@@ -426,13 +395,15 @@ quis nostrud exercitation ullamco.`;
       text: p.text || '',
       template: p.template || 'Default',
       variant: p.variant || null,
+      preset: p.preset || null,
+      activeMode: p.activeMode || (p.preset ? 'preset' : 'template'),
       titleFont: p.titleFont || 'Playfair Display',
       textFont: p.textFont || 'Playfair Display',
       titleColor: this.fixColor(p.titleColor, '#000000'),
       textColor: this.fixColor(p.textColor, '#000000'),
     }));
 
-    this.selectedTheme = book.selected_theme || '';
+    this.selectedTheme = book.selected_theme || book.selectedTheme || '';
     this.currentPageIndex = 0;
 
     if (!this.pages.length) {
@@ -461,14 +432,19 @@ quis nostrud exercitation ullamco.`;
       return;
     }
 
-    p.title = this.title || '';
-    p.text = this.text || '';
-    p.template = this.selectedTemplate || 'Default';
-    p.variant = this.selectedVariant || null;
-    p.titleFont = this.titleFont || 'Playfair Display';
-    p.textFont = this.textFont || 'Playfair Display';
-    p.titleColor = this.fixColor(this.titleColor, '#000000');
-    p.textColor = this.fixColor(this.textColor, '#000000');
+    this.pages[this.currentPageIndex] = {
+      ...p,
+      title: this.title || '',
+      text: this.text || '',
+      template: this.selectedTemplate || 'Default',
+      variant: this.selectedVariant || null,
+      preset: this.selectedPreset ? { ...this.selectedPreset } : null,
+      activeMode: this.activeMode,
+      titleFont: this.titleFont || 'Playfair Display',
+      textFont: this.textFont || 'Playfair Display',
+      titleColor: this.fixColor(this.titleColor, '#000000'),
+      textColor: this.fixColor(this.textColor, '#000000'),
+    };
   }
 
   nextPage() {
@@ -495,27 +471,73 @@ quis nostrud exercitation ullamco.`;
   }
 
   applyTemplate(template: string) {
+    const p = this.pages[this.currentPageIndex];
+    if (!p) return;
+
+    this.activeMode = 'template';
+    this.selectedPreset = null;
+
     this.selectedTemplate = template;
     this.selectedVariant = null;
 
-    const p = this.pages[this.currentPageIndex];
-    if (p) {
-      p.template = template;
-      p.variant = null;
-    }
+    p.template = template;
+    p.variant = null;
+    p.preset = null;
+    p.activeMode = 'template';
 
     this.savePage();
+    this.storage.savePages(this.pages);
+    this.cd.detectChanges();
   }
 
   applyVariant(variant: any) {
-    this.selectedVariant = variant;
-
     const p = this.pages[this.currentPageIndex];
-    if (p) {
-      p.variant = variant;
+    if (!p) return;
+
+    this.selectedVariant = variant;
+    this.activeMode = 'template';
+    this.selectedPreset = null;
+
+    p.variant = variant;
+    p.preset = null;
+    p.activeMode = 'template';
+
+    this.savePage();
+    this.storage.savePages(this.pages);
+    this.cd.detectChanges();
+  }
+
+  applyPreset(p: any) {
+    const current = this.pages[this.currentPageIndex];
+    if (!current) return;
+
+    this.activeMode = 'preset';
+    this.selectedPreset = p;
+
+    this.selectedTemplate = p.template;
+    this.selectedVariant = p.variant;
+
+    current.template = p.template;
+    current.variant = p.variant;
+    current.preset = { ...p };
+    current.activeMode = 'preset';
+
+    if (p.titleFont) this.titleFont = p.titleFont;
+    if (p.textFont) this.textFont = p.textFont;
+    if (p.textColor) this.textColor = this.fixColor(p.textColor);
+    if (p.titleColor) this.titleColor = this.fixColor(p.titleColor);
+
+    if (p.autoFormat) {
+      this.text = this.formatting.formatText(this.text, p.autoFormat);
+    }
+
+    if (p.autoFormat === 'advanced') {
+      this.text = this.formatting.formatPoemAdvanced(this.text);
     }
 
     this.savePage();
+    this.storage.savePages(this.pages);
+    this.cd.detectChanges();
   }
 
   createNewBook() {
@@ -559,12 +581,14 @@ quis nostrud exercitation ullamco.`;
 
     const fixedPages = this.pages.map((p) => ({
       ...p,
+      template: p.template || 'Default',
+      variant: p.variant || null,
+      preset: p.preset || null,
+      activeMode: p.activeMode || (p.preset ? 'preset' : 'template'),
       titleColor: this.fixColor(p.titleColor, '#000000'),
       textColor: this.fixColor(p.textColor, '#000000'),
       titleFont: p.titleFont || 'Playfair Display',
       textFont: p.textFont || 'Playfair Display',
-      template: p.template || 'Default',
-      variant: p.variant || null,
     }));
 
     const payload = {
@@ -581,10 +605,6 @@ quis nostrud exercitation ullamco.`;
       },
       pages: fixedPages,
       selectedTheme: this.selectedTheme || '',
-      activeMode: this.activeMode,
-      selectedPreset: this.selectedPreset?.name || null,
-      selectedTemplate: this.selectedTemplate || 'Default',
-      selectedVariant: this.selectedVariant || null,
     };
 
     console.log('💾 SAVE PAYLOAD:', payload);
