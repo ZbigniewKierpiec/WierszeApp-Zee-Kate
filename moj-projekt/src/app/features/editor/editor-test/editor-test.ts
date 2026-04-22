@@ -1,5 +1,5 @@
 import { EditorApiService } from './../../../services/editor-api';
-import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Topbar } from '../topbar/topbar';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../sidebar/sidebar';
@@ -27,6 +27,17 @@ import { EditorStateService } from '../sidebar/editor-state-service';
   styleUrl: './editor-test.scss',
 })
 export class EditorTest implements OnInit, OnDestroy {
+
+@ViewChild(Gu) gu?: Gu;
+
+@HostListener('document:click', ['$event'])
+
+
+
+
+
+
+
   title = '';
   text = '';
 

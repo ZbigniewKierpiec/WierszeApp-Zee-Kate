@@ -1,13 +1,13 @@
-/* container */
+// /* container */
 
-.editor-page {
-  position: relative;
-}
+// .editor-page {
+//   position: relative;
+// }
 
 .gooey-menu {
-  position: fixed;
-  top: 50%;
-  left: 50%;
+  // position: fixed;
+  // top: 30%;
+  // left: 50%;
 
   width: 0;
   height: 0;
@@ -95,6 +95,8 @@
   position: fixed;
   right: 80px;
   bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 0;
   height: 0;
   z-index: 1000;
@@ -234,7 +236,6 @@ app-gu.visible {
   pointer-events: auto;
 }
 
-
 .hamburger {
   position: absolute;
   width: 26px;
@@ -261,7 +262,6 @@ app-gu.visible {
 .hamburger-3 {
   transform: translate(-50%, 10px);
 }
-
 
 .gooey-menu.open .hamburger-1 {
   transform: translate(-50%, 0) rotate(45deg);

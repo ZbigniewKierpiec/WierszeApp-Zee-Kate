@@ -279,3 +279,64 @@
   background: rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
 }
+.dashboard {
+  background: var(--dashboard-bg);
+  color: var(--text-main);
+}
+.book-card {
+  background: var(--card-bg);
+  box-shadow: 0 10px 30px var(--card-shadow);
+}
+
+.book-card:hover {
+  box-shadow: 0 18px 45px var(--card-shadow-hover);
+}
+
+.subtitle,
+.preview-text,
+.meta {
+  color: var(--text-muted);
+}
+
+.tag {
+  background: var(--tag-bg);
+  color: var(--text-main);
+}
+
+.meta {
+  border-top: 1px solid var(--border);
+}
+
+.continue-btn {
+  background: var(--btn-dark-bg);
+  color: white;
+}
+
+.continue-btn:hover {
+  background: var(--btn-dark-hover);
+}
+
+.back-btn {
+  background: var(--btn-dark-bg);
+  color: white;
+}
+
+.back-btn:hover {
+  background: var(--btn-dark-hover);
+}
+
+.delete-btn {
+  background: var(--card-bg);
+  color: var(--text-main);
+}
+
+.dashboard,
+.book-card,
+.tag,
+.meta,
+button {
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border 0.25s ease;
+}

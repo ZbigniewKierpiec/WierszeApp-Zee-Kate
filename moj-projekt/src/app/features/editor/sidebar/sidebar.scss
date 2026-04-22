@@ -168,3 +168,58 @@
   max-width: 600px;
   width: 90%;
 }
+
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  box-sizing: border-box;
+
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* CARD */
+.card {
+  background: var(--card-bg);
+  color: var(--sidebar-text);
+}
+
+.card:hover {
+  background: var(--card-hover);
+}
+
+.card.active {
+  background: var(--card-active);
+  color: white;
+}
+
+/* VARIANT */
+.variant {
+  background: var(--variant-bg);
+  color: var(--sidebar-text);
+}
+
+.variant:hover {
+  background: var(--variant-hover);
+  color: white;
+}
+
+/* ACTIONS */
+.actions button {
+  background: var(--card-bg);
+  color: var(--sidebar-text);
+}
+
+.actions button:hover {
+  background: var(--card-hover);
+}
+
+

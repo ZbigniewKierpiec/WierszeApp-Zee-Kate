@@ -9,6 +9,7 @@ import { BooksService } from './../../../services/books-service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageSwitcher } from './language-switcher/language-switcher';
 import { EditorEventsService } from '../../../shared/editor-events-service';
+import { ToggleTheme } from "./toggle-theme/toggle-theme";
 
 @Component({
   selector: 'app-topbar',
@@ -19,7 +20,8 @@ import { EditorEventsService } from '../../../shared/editor-events-service';
     MatButtonModule,
     TranslateModule,
     LanguageSwitcher,
-  ],
+    ToggleTheme
+],
   templateUrl: './topbar.html',
   styleUrl: './topbar.scss',
 })

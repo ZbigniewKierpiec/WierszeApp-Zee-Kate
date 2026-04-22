@@ -1,17 +1,24 @@
 .layout {
   display: flex;
-  height: calc(100vh - 60px); // dopasuj do topbara
+  height: calc(100vh - 60px); /* 🔥 dopasuj do topbara */
+  overflow: hidden;
 }
 
 /* SIDEBAR */
 app-sidebar {
   width: 260px;
   flex-shrink: 0;
+  height: 100%;
 }
 
 /* CONTENT */
 .content {
   flex: 1;
-  overflow: auto;
+
+  overflow-y: auto; /* 🔥 scroll tylko w pionie */
+  overflow-x: hidden;
+
   padding: 20px;
+
+  background: var(--editor-bg); /* 🔥 theme */
 }

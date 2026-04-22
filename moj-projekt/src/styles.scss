@@ -97,3 +97,93 @@ body {
     background: rgba(255, 255, 255, 0.08);
   }
 }
+/////////////////////
+/* 🌞 LIGHT */
+body.light {
+  /* SIDEBAR */
+  --sidebar-bg: #f9fafb;
+  --sidebar-text: #111827;
+
+  /* TOPBAR */
+  --topbar-bg: #ffffff;
+  --topbar-text: #111827;
+  --topbar-border: #e5e7eb;
+
+  /* DASHBOARD */
+  --dashboard-bg: #ffffff;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(0, 0, 0, 0.08);
+
+  /* TEXT */
+  --text-main: #111827;
+  --text-muted: #6b7280;
+
+  /* BUTTONS */
+  --btn-bg: #f3f4f6;
+  --btn-hover: #e5e7eb;
+  --btn-text: #111827;
+
+  /* EDITOR */
+  --editor-bg: #f9fafb;
+  --toolbar-bg: #ffffff;
+  --poem-bg: #ffffff;
+
+  /* EXTRA */
+  --border: #e5e7eb;
+  --tag-bg: #f1f5f9;
+}
+
+/* 🌙 DARK */
+body.dark {
+  /* SIDEBAR */
+  --sidebar-bg: #111827;
+  --sidebar-text: #f9fafb;
+
+  /* TOPBAR */
+  --topbar-bg: #111827;
+  --topbar-text: #f9fafb;
+  --topbar-border: #1f2937;
+
+  /* DASHBOARD */
+  --dashboard-bg: #0f172a;
+  --card-bg: #1f2937;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+
+  /* TEXT */
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+
+  /* BUTTONS */
+  --btn-bg: #1f2937;
+  --btn-hover: #374151;
+  --btn-text: #ffffff;
+
+  /* EDITOR */
+  --editor-bg: #0f172a;
+  --toolbar-bg: #1f2937;
+  --poem-bg: #1f2937;
+
+  /* EXTRA */
+  --border: #374151;
+  --tag-bg: #374151;
+}
+
+app-gu {
+  display: block; /* 🔥 ważne dla animacji */
+
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  pointer-events: none;
+
+  will-change: opacity, transform; /* 🔥 płynność */
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+app-gu.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}

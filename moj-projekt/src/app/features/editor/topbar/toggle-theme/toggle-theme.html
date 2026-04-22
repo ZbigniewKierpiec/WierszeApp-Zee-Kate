@@ -1,0 +1,6 @@
+<!-- <button (click)="toggleTheme()">
+  {{ theme.get() === 'dark' ? '☀️' : '🌙' }}
+</button> -->
+<div class="toggle" (click)="toggleTheme()">
+  <span [class.checked]="theme.mode() === 'dark'"></span>
+</div>
