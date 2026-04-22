@@ -21,6 +21,21 @@
     "EXPORT": "Export"
   },
 
+  "DASHBOARD": {
+    "TITLE": "Your books",
+    "BOOKS": "books",
+    "BACK": "Back to editor",
+    "CONTINUE": "Continue",
+    "NEW_BOOK": "New Book",
+    "LOADING": "Loading your books...",
+    "EMPTY_TITLE": "Start your first book",
+    "EMPTY_SUBTITLE": "Your stories will appear here",
+    "CREATE_FIRST": "Create your first book",
+    "UNTITLED": "Untitled",
+    "NO_TITLE": "No title",
+    "DEFAULT": "Default"
+  },
+
   "Romantic": "Romantic",
   "Minimal": "Minimal",
   "Dark Poetry": "Dark Poetry",

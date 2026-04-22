@@ -21,6 +21,21 @@
     "EXPORT": "Eksport"
   },
 
+  "DASHBOARD": {
+    "TITLE": "Twoje książki",
+    "BOOKS": "książek",
+    "BACK": "Wróć do edytora",
+    "CONTINUE": "Kontynuuj",
+    "NEW_BOOK": "Nowa książka",
+    "LOADING": "Ładowanie książek...",
+    "EMPTY_TITLE": "Zacznij swoją pierwszą książkę",
+    "EMPTY_SUBTITLE": "Twoje historie pojawią się tutaj",
+    "CREATE_FIRST": "Utwórz pierwszą książkę",
+    "UNTITLED": "Bez tytułu",
+    "NO_TITLE": "Brak tytułu",
+    "DEFAULT": "Domyślny"
+  },
+
   "Romantic": "Romantyczny",
   "Minimal": "Minimalistyczny",
   "Dark Poetry": "Mroczna poezja",

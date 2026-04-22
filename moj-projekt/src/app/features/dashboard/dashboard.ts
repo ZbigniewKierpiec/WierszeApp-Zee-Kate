@@ -10,10 +10,11 @@ import { finalize } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 import { BooksService } from '../../services/books-service';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

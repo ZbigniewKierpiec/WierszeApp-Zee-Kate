@@ -1,116 +1,101 @@
 <div class="dashboard">
 
-  <!-- HEADER -->
-  
+  <div class="header">
+    <div class="left">
+      <h1>📚 {{ 'DASHBOARD.TITLE' | translate }}</h1>
+      <p class="subtitle">
+        {{ books.length }} {{ 'DASHBOARD.BOOKS' | translate }}
+      </p>
+    </div>
 
+    <div class="actions">
+      <button class="back-btn" (click)="goBackToEditor()">
+        ⬅️ {{ 'DASHBOARD.BACK' | translate }}
+      </button>
 
-<div class="header">
-  <div class="left">
-    <h1>📚 Your books</h1>
-    <p class="subtitle">
-      {{ books.length }} books
-    </p>
+      <button 
+        class="continue-btn"
+        *ngIf="lastBookId"
+        (click)="goToLastBook()"
+      >
+        ✍️ {{ 'DASHBOARD.CONTINUE' | translate }}
+      </button>
+
+      <button class="create-btn" (click)="createBook()">
+        ➕ {{ 'DASHBOARD.NEW_BOOK' | translate }}
+      </button>
+    </div>
   </div>
-
-  <div class="actions">
-<button 
-  class="back-btn"
-  (click)="goBackToEditor()"
->
-  ⬅️ Back to editor
-</button>
-
-    <button 
-      class="continue-btn"
-      *ngIf="lastBookId"
-      (click)="goToLastBook()"
-    >
-      ✍️ Continue
-    </button>
-
-    <button class="create-btn" (click)="createBook()">
-      ➕ New Book
-    </button>
-  </div>
-</div>
-
-
-
-
-
-
-
-
 
   <!-- STATES -->
   <div class="state" *ngIf="loading">
     <div class="loader"></div>
-    <p>Loading your books...</p>
+    <p>{{ 'DASHBOARD.LOADING' | translate }}</p>
   </div>
 
   <div class="state empty" *ngIf="!loading && books.length === 0">
-    <h2>📖 Start your first book</h2>
-    <p>Your stories will appear here</p>
+    <h2>📖 {{ 'DASHBOARD.EMPTY_TITLE' | translate }}</h2>
+    <p>{{ 'DASHBOARD.EMPTY_SUBTITLE' | translate }}</p>
 
     <button class="create-btn big" (click)="createBook()">
-      ✨ Create your first book
+      ✨ {{ 'DASHBOARD.CREATE_FIRST' | translate }}
     </button>
   </div>
 
   <!-- GRID -->
   <div class="books-grid" *ngIf="!loading && books.length > 0">
-<!--  -->
-<div 
-  class="book-card"
-  *ngFor="let book of books; trackBy: trackById"
-  (click)="openBook(book)"
-  [class.active]="book.id === lastBookId"
->
-  <button 
-    type="button"
-    class="delete-btn"
-    (click)="deleteBook(book, $event)"
-  >
-    ✕
-  </button>
 
-  <div 
-    class="cover"
-    [style.background]="book.cover?.bgColor ?? '#000'"
-  >
-    <div class="cover-overlay"></div>
+    <div 
+      class="book-card"
+      *ngFor="let book of books; trackBy: trackById"
+      (click)="openBook(book)"
+      [class.active]="book.id === lastBookId"
+    >
+      <button 
+        type="button"
+        class="delete-btn"
+        (click)="deleteBook(book, $event)"
+      >
+        ✕
+      </button>
 
-    <div class="cover-content">
-      <h3>{{ book.title || 'Untitled' }}</h3>
-      <p>{{ book.cover?.author || '—' }}</p>
+      <div 
+        class="cover"
+        [style.background]="book.cover?.bgColor ?? '#000'"
+      >
+        <div class="cover-overlay"></div>
+
+        <div class="cover-content">
+          <h3>{{ book.title || ('DASHBOARD.UNTITLED' | translate) }}</h3>
+          <p>{{ book.cover?.author || '—' }}</p>
+        </div>
+      </div>
+
+      <div 
+        class="preview"
+        *ngIf="book.preview"
+        [ngStyle]="getVariantStylesForPreview(book.preview)"
+        [class.hearts]="book.preview?.variant?.name === 'Hearts'"
+      >
+        <div class="preview-header">
+          <strong>{{ book.preview.title || ('DASHBOARD.NO_TITLE' | translate) }}</strong>
+
+          <span class="tag">
+            🎨 {{ book.preview.template || ('DASHBOARD.DEFAULT' | translate) }}
+          </span>
+        </div>
+
+        <p class="preview-text">
+          {{ book.preview.text | slice:0:120 }}
+          <span *ngIf="book.preview.text?.length > 120">...</span>
+        </p>
+      </div>
+
+      <div class="meta">
+        <span>🕒 {{ book.updated_at | date:'short' }}</span>
+        <span>📄 {{ book.pages_count || 0 }}</span>
+      </div>
     </div>
+
   </div>
-
-  <div 
-    class="preview"
-    *ngIf="book.preview"
-    [ngStyle]="getVariantStylesForPreview(book.preview)"
-    [class.hearts]="book.preview?.variant?.name === 'Hearts'"
-  >
-    <div class="preview-header">
-      <strong>{{ book.preview.title || 'No title' }}</strong>
-
-      <span class="tag">
-        🎨 {{ book.preview.template || 'Default' }}
-      </span>
-    </div>
-
-    <p class="preview-text">
-      {{ book.preview.text | slice:0:120 }}
-      <span *ngIf="book.preview.text?.length > 120">...</span>
-    </p>
-  </div>
-
-  <div class="meta">
-    <span>🕒 {{ book.updated_at | date:'short' }}</span>
-    <span>📄 {{ book.pages_count || 0 }}</span>
-  </div>
-</div>
-  </div>
-
 </div>
