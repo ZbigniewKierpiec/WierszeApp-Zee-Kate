@@ -35,32 +35,32 @@
     "NO_TITLE": "Brak tytułu",
     "DEFAULT": "Domyślny"
   },
-"EDITOR": {
-  "LOREM": "Lorem",
-  "FORMAT_ADVANCED": "Format zaawansowany",
-  "AI_FORMAT": "Format AI",
+  "EDITOR": {
+    "LOREM": "Lorem",
+    "FORMAT_ADVANCED": "Format zaawansowany",
+    "AI_FORMAT": "Format AI",
 
-  "LEFT": "Lewo",
-  "CENTER": "Środek",
-  "RIGHT": "Prawo",
+    "LEFT": "Lewo",
+    "CENTER": "Środek",
+    "RIGHT": "Prawo",
 
-  "TEMPLATE": "Szablon",
+    "TEMPLATE": "Szablon",
+    "PRESET": "Preset",
+    "TITLE_PLACEHOLDER": "Tytuł wiersza...",
+    "TEXT_PLACEHOLDER": "Napisz swój wiersz...",
 
-  "TITLE_PLACEHOLDER": "Tytuł wiersza...",
-  "TEXT_PLACEHOLDER": "Napisz swój wiersz...",
+    "BACK": "Wstecz",
+    "PREVIEW": "Podgląd",
 
-  "BACK": "Wstecz",
-  "PREVIEW": "Podgląd",
+    "PAGE": "Strona",
+    "NEW_PAGE": "Nowa strona",
 
-  "PAGE": "Strona",
-  "NEW_PAGE": "Nowa strona",
+    "CLEARED": "Wyczyszczone",
 
-  "CLEARED": "Wyczyszczone",
-
-  "CLOSE": "Zamknij",
-  "PREV": "Poprzednia",
-  "NEXT": "Następna"
-},
+    "CLOSE": "Zamknij",
+    "PREV": "Poprzednia",
+    "NEXT": "Następna"
+  },
   "Romantic": "Romantyczny",
   "Minimal": "Minimalistyczny",
   "Dark Poetry": "Mroczna poezja",

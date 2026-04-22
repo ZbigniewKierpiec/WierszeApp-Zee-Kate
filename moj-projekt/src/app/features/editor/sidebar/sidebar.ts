@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EditorConfigService } from '../sidebar/editor-config-service';
 import { TranslateModule } from '@ngx-translate/core';
+import { EditorStateService } from './editor-state-service';
 
 @Component({
   selector: 'app-sidebar',
@@ -22,12 +23,15 @@ export class Sidebar {
   openTemplate: string | null = null;
   selectedPreset: string = '';
 
-  constructor(private config: EditorConfigService) {}
+  constructor(
+    private config: EditorConfigService,
+    private state: EditorStateService,
+  ) {}
 
   onPresetClick(p: any) {
     this.selectedPreset = p.name;
 
-    this.presetChange.emit(p);
+     this.state.preset$.next(p);
   }
 
   get themes() {
@@ -45,20 +49,38 @@ export class Sidebar {
   onThemeClick(name: string) {
     this.themeChange.emit(name);
   }
-  onTemplateClick(template: any) {
-    const isAlreadySelected = this.selectedTemplate === template.name;
+  // onTemplateClick(template: any) {
+  //   const isAlreadySelected = this.selectedTemplate === template.name;
 
-    this.templateChange.emit(template.name);
+  //  this.state.template$.next(template.name);
 
-    if (isAlreadySelected) {
-      this.openTemplate = this.openTemplate === template.name ? null : template.name;
-    } else {
-      this.openTemplate = null;
-    }
-  }
+  //   if (isAlreadySelected) {
+  //     this.openTemplate = this.openTemplate === template.name ? null : template.name;
+  //   } else {
+  //     this.openTemplate = null;
+  //   }
+  // }
+
+
+onTemplateClick(template: any) {
+  // 🔥 1. toggle dropdown (ZAWSZE)
+  this.openTemplate =
+    this.openTemplate === template.name ? null : template.name;
+
+  // 🔥 2. ustaw template (ale NIE wpływa na toggle)
+  this.state.template$.next(template.name);
+}
+
+
+
+
+
+
+
+
 
   onVariantClick(variant: any) {
-    this.variantChange.emit(variant);
+    this.state.variant$.next(variant);
   }
 
   onSave() {

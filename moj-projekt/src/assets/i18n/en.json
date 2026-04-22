@@ -36,36 +36,32 @@
     "DEFAULT": "Default"
   },
 
-"EDITOR": {
-  "LOREM": "Lorem",
-  "FORMAT_ADVANCED": "Format Advanced",
-  "AI_FORMAT": "AI Format",
+  "EDITOR": {
+    "LOREM": "Lorem",
+    "FORMAT_ADVANCED": "Format Advanced",
+    "AI_FORMAT": "AI Format",
 
-  "LEFT": "Left",
-  "CENTER": "Center",
-  "RIGHT": "Right",
+    "LEFT": "Left",
+    "CENTER": "Center",
+    "RIGHT": "Right",
 
-  "TEMPLATE": "Template",
+    "TEMPLATE": "Template",
+    "PRESET": "Preset",
+    "TITLE_PLACEHOLDER": "Poem title...",
+    "TEXT_PLACEHOLDER": "Write your poem...",
 
-  "TITLE_PLACEHOLDER": "Poem title...",
-  "TEXT_PLACEHOLDER": "Write your poem...",
+    "BACK": "Back",
+    "PREVIEW": "Preview",
 
-  "BACK": "Back",
-  "PREVIEW": "Preview",
+    "PAGE": "Page",
+    "NEW_PAGE": "New Page",
 
-  "PAGE": "Page",
-  "NEW_PAGE": "New Page",
+    "CLEARED": "Cleared",
 
-  "CLEARED": "Cleared",
-
-  "CLOSE": "Close",
-  "PREV": "Prev",
-  "NEXT": "Next"
-},
-
-
-
-
+    "CLOSE": "Close",
+    "PREV": "Prev",
+    "NEXT": "Next"
+  },
 
   "Romantic": "Romantic",
   "Minimal": "Minimal",

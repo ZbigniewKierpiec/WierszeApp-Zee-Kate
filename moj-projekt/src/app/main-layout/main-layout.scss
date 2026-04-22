@@ -1,0 +1,17 @@
+.layout {
+  display: flex;
+  height: calc(100vh - 60px); // dopasuj do topbara
+}
+
+/* SIDEBAR */
+app-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+}
+
+/* CONTENT */
+.content {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+}

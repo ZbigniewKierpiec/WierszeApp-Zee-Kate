@@ -7,9 +7,8 @@
   (goDashboard)="goDashboard()"
 ></app-topbar> -->
 
-<div class="layout">
-  <!-- SIDEBAR -->
-  <app-sidebar
+<!-- SIDEBAR -->
+<!-- <app-sidebar
     [selectedTemplate]="selectedTemplate"
     [selectedTheme]="selectedTheme"
     [selectedVariant]="selectedVariant"
@@ -19,81 +18,79 @@
     (presetChange)="applyPreset($event)"
     (save)="save()"
     (clear)="clear()"
-  ></app-sidebar>
+  ></app-sidebar> -->
 
-  <!-- EDITOR -->
-  <div class="editor-area">
-    <div class="toolbar">
-      <button (click)="fillLorem()">🧪 {{ 'EDITOR.LOREM' | translate }}</button>
+<!-- EDITOR -->
+<div class="editor-area">
+  <div class="toolbar">
+    <button (click)="fillLorem()">🧪 {{ 'EDITOR.LOREM' | translate }}</button>
 
-      <button type="button" (click)="formatAdvanced()">
-        ✨ {{ 'EDITOR.FORMAT_ADVANCED' | translate }}
-      </button>
+    <button type="button" (click)="formatAdvanced()">
+      ✨ {{ 'EDITOR.FORMAT_ADVANCED' | translate }}
+    </button>
 
-      <button (click)="formatAI()">
-        ✨ {{ 'EDITOR.AI_FORMAT' | translate }}
-      </button>
+    <button (click)="formatAI()">✨ {{ 'EDITOR.AI_FORMAT' | translate }}</button>
 
-      <select
-        [ngModel]="activeField === 'title' ? titleFont : textFont"
-        (ngModelChange)="onFontChange($event)"
-      >
-        <optgroup label="Serif (Book)">
-          <option value="'Playfair Display', serif">Playfair Display</option>
-          <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
-          <option value="'Cormorant', serif">Cormorant</option>
-          <option value="'EB Garamond', serif">EB Garamond</option>
-          <option value="'Libre Baskerville', serif">Libre Baskerville</option>
-          <option value="'Crimson Text', serif">Crimson Text</option>
-          <option value="'Merriweather', serif">Merriweather</option>
-          <option value="'Lora', serif">Lora</option>
-          <option value="'Spectral', serif">Spectral</option>
-          <option value="'Alegreya', serif">Alegreya</option>
-          <option value="'Source Serif 4', serif">Source Serif 4</option>
-          <option value="Georgia, serif">Georgia</option>
-        </optgroup>
+    <select
+      [ngModel]="activeField === 'title' ? titleFont : textFont"
+      (ngModelChange)="onFontChange($event)"
+    >
+      <optgroup label="Serif (Book)">
+        <option value="'Playfair Display', serif">Playfair Display</option>
+        <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+        <option value="'Cormorant', serif">Cormorant</option>
+        <option value="'EB Garamond', serif">EB Garamond</option>
+        <option value="'Libre Baskerville', serif">Libre Baskerville</option>
+        <option value="'Crimson Text', serif">Crimson Text</option>
+        <option value="'Merriweather', serif">Merriweather</option>
+        <option value="'Lora', serif">Lora</option>
+        <option value="'Spectral', serif">Spectral</option>
+        <option value="'Alegreya', serif">Alegreya</option>
+        <option value="'Source Serif 4', serif">Source Serif 4</option>
+        <option value="Georgia, serif">Georgia</option>
+      </optgroup>
 
-        <optgroup label="Display (Titles)">
-          <option value="'Cinzel', serif">Cinzel</option>
-          <option value="'DM Serif Display', serif">DM Serif Display</option>
-        </optgroup>
+      <optgroup label="Display (Titles)">
+        <option value="'Cinzel', serif">Cinzel</option>
+        <option value="'DM Serif Display', serif">DM Serif Display</option>
+      </optgroup>
 
-        <optgroup label="Sans-serif (UI)">
-          <option value="'Work Sans', sans-serif">Work Sans</option>
-          <option value="'Montserrat', sans-serif">Montserrat</option>
-          <option value="'Raleway', sans-serif">Raleway</option>
-          <option value="Arial, sans-serif">Arial</option>
-        </optgroup>
-      </select>
+      <optgroup label="Sans-serif (UI)">
+        <option value="'Work Sans', sans-serif">Work Sans</option>
+        <option value="'Montserrat', sans-serif">Montserrat</option>
+        <option value="'Raleway', sans-serif">Raleway</option>
+        <option value="Arial, sans-serif">Arial</option>
+      </optgroup>
+    </select>
 
-      <input
-        type="number"
-        [ngModel]="activeField === 'title' ? titleSize : textFontSize"
-        (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
-        min="12"
-        max="60"
-      />
+    <input
+      type="number"
+      [ngModel]="activeField === 'title' ? titleSize : textFontSize"
+      (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
+      min="12"
+      max="60"
+    />
 
-      <input
-        type="color"
-        [ngModel]="activeField === 'title' ? titleColor : textColor"
-        (ngModelChange)="activeField === 'title' ? (titleColor = $event) : (textColor = $event)"
-      />
+    <input
+      type="color"
+      [ngModel]="activeField === 'title' ? titleColor : textColor"
+      (ngModelChange)="activeField === 'title' ? (titleColor = $event) : (textColor = $event)"
+    />
 
-      <select
-        [ngModel]="activeField === 'title' ? titleAlign : textAlign"
-        (ngModelChange)="activeField === 'title' ? (titleAlign = $event) : (textAlign = $event)"
-      >
-        <option value="left">{{ 'EDITOR.LEFT' | translate }}</option>
-        <option value="center">{{ 'EDITOR.CENTER' | translate }}</option>
-        <option value="right">{{ 'EDITOR.RIGHT' | translate }}</option>
-      </select>
-    </div>
+    <select
+      [ngModel]="activeField === 'title' ? titleAlign : textAlign"
+      (ngModelChange)="activeField === 'title' ? (titleAlign = $event) : (textAlign = $event)"
+    >
+      <option value="left">{{ 'EDITOR.LEFT' | translate }}</option>
+      <option value="center">{{ 'EDITOR.CENTER' | translate }}</option>
+      <option value="right">{{ 'EDITOR.RIGHT' | translate }}</option>
+    </select>
+  </div>
 
-    <!-- TEMPLATE LABEL -->
-    <div class="template-label">
+  <!-- TEMPLATE LABEL -->
+  <!-- <div class="template-label">
       <span class="icon">
-        {{ templateIcons[selectedTemplate] || '📄' }}
+       {{ selectedTemplate || ('EDITOR.NO_TEMPLATE' | translate) }}
       </span>
 
       <span>
@@ -102,65 +99,86 @@
           • {{ selectedVariant.name | translate }}
         </span>
       </span>
-    </div>
+    </div> -->
 
-    <!-- POEM -->
-    <div
-      class="poem-container"
-      [class.hearts]="selectedVariant?.name === 'Hearts'"
-      [ngStyle]="getVariantStyles()"
-    >
-      <input
-        [(ngModel)]="title"
-        [placeholder]="'EDITOR.TITLE_PLACEHOLDER' | translate"
-        class="title"
-        (click)="activeField = 'title'"
-        [ngStyle]="{
-          'text-align': titleAlign,
-          'font-family': titleFont,
-          'font-size.px': titleSize,
-          color: titleColor
-        }"
-      />
+  <div class="template-label">
+    <span class="icon">
+      {{
+        activeMode === 'preset'
+          ? selectedPreset?.icon
+          : templateIcons[selectedTemplate ?? 'Default']
+      }}
+    </span>
 
-      <textarea
-        [(ngModel)]="text"
-        [placeholder]="'EDITOR.TEXT_PLACEHOLDER' | translate"
-        (click)="activeField = 'text'; onTextFocus()"
-        [ngStyle]="{
-          'text-align': textAlign,
-          'font-family': textFont,
-          'font-size.px': textFontSize,
-          color: textColor
-        }"
-      ></textarea>
+    <!-- 🔥 PRESET -->
+    <span *ngIf="activeMode === 'preset'">
+      {{ 'EDITOR.PRESET' | translate }}:
+      {{ selectedPreset?.name | translate }}
+    </span>
 
-      <app-gu [class.visible]="showGooey"></app-gu>
-    </div>
+    <!-- 🔥 TEMPLATE -->
+    <span *ngIf="activeMode === 'template'">
+      {{ 'EDITOR.TEMPLATE' | translate }}:
+      {{ selectedTemplate | translate }}
 
-    <!-- NAVIGATION -->
-    <div class="bottom-bar">
-      <button (click)="goBack()">← {{ 'EDITOR.BACK' | translate }}</button>
-      <button (click)="preview()">👁 {{ 'EDITOR.PREVIEW' | translate }}</button>
-    </div>
-
-    <!-- PAGE CONTROLS -->
-    <div class="page-controls">
-      <button (click)="prevPage()">⬅</button>
-
-      <span>
-        {{ 'EDITOR.PAGE' | translate }} {{ currentPageIndex + 1 }} / {{ pages.length }}
-      </span>
-
-      <button (click)="nextPage()">➡</button>
-
-      <button (click)="newPage()">➕ {{ 'EDITOR.NEW_PAGE' | translate }}</button>
-
-      <button *ngIf="pages.length > 1" (click)="deletePage()">🗑</button>
-    </div>
-
-    <div class="page-id">ID: {{ pages[currentPageIndex]?.id }}</div>
+      <span *ngIf="selectedVariant"> • {{ selectedVariant.name | translate }} </span>
+    </span>
   </div>
+
+  <!-- POEM -->
+  <div
+    class="poem-container"
+    [class.hearts]="selectedVariant?.name === 'Hearts'"
+    [ngStyle]="getVariantStyles()"
+  >
+    <input
+      [(ngModel)]="title"
+      [placeholder]="'EDITOR.TITLE_PLACEHOLDER' | translate"
+      class="title"
+      (click)="activeField = 'title'"
+      [ngStyle]="{
+        'text-align': titleAlign,
+        'font-family': titleFont,
+        'font-size.px': titleSize,
+        color: titleColor,
+      }"
+    />
+
+    <textarea
+      [(ngModel)]="text"
+      [placeholder]="'EDITOR.TEXT_PLACEHOLDER' | translate"
+      (click)="activeField = 'text'; onTextFocus()"
+      [ngStyle]="{
+        'text-align': textAlign,
+        'font-family': textFont,
+        'font-size.px': textFontSize,
+        color: textColor,
+      }"
+    ></textarea>
+
+    <app-gu [class.visible]="showGooey"></app-gu>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="bottom-bar">
+    <button (click)="goBack()">← {{ 'EDITOR.BACK' | translate }}</button>
+    <button (click)="preview()">👁 {{ 'EDITOR.PREVIEW' | translate }}</button>
+  </div>
+
+  <!-- PAGE CONTROLS -->
+  <div class="page-controls">
+    <button (click)="prevPage()">⬅</button>
+
+    <span> {{ 'EDITOR.PAGE' | translate }} {{ currentPageIndex + 1 }} / {{ pages.length }} </span>
+
+    <button (click)="nextPage()">➡</button>
+
+    <button (click)="newPage()">➕ {{ 'EDITOR.NEW_PAGE' | translate }}</button>
+
+    <button *ngIf="pages.length > 1" (click)="deletePage()">🗑</button>
+  </div>
+
+  <div class="page-id">ID: {{ pages[currentPageIndex]?.id }}</div>
 </div>
 
 <!-- TOASTS -->
@@ -168,17 +186,11 @@
   {{ savedMessageText }}
 </div>
 
-<div *ngIf="clearMessage" class="toast danger">
-  🧹 {{ 'EDITOR.CLEARED' | translate }}
-</div>
+<div *ngIf="clearMessage" class="toast danger">🧹 {{ 'EDITOR.CLEARED' | translate }}</div>
 
 <!-- PREVIEW -->
 <div *ngIf="isPreviewOpen" class="preview-overlay" (click)="closePreview($event)">
-  <button
-    type="button"
-    class="close-btn"
-    (click)="closePreview($event); $event.stopPropagation()"
-  >
+  <button type="button" class="close-btn" (click)="closePreview($event); $event.stopPropagation()">
     {{ 'EDITOR.CLOSE' | translate }}
   </button>
 
@@ -186,19 +198,13 @@
     <div id="paged-preview-host"></div>
 
     <div class="nav-buttons">
-      <button
-        type="button"
-        (click)="prevPreviewPage(); $event.stopPropagation()"
-      >
+      <button type="button" (click)="prevPreviewPage(); $event.stopPropagation()">
         ← {{ 'EDITOR.PREV' | translate }}
       </button>
 
       <span>{{ currentPreviewPage + 1 }}</span>
 
-      <button
-        type="button"
-        (click)="nextPreviewPage(); $event.stopPropagation()"
-      >
+      <button type="button" (click)="nextPreviewPage(); $event.stopPropagation()">
         {{ 'EDITOR.NEXT' | translate }} →
       </button>
     </div>
@@ -212,14 +218,14 @@
       class="cover"
       [ngStyle]="{
         background: cover.bgColor,
-        color: cover.textColor
+        color: cover.textColor,
       }"
     >
       <div
         class="cover-image"
         *ngIf="cover.image"
         [ngStyle]="{
-          'background-image': 'url(' + cover.image + ')'
+          'background-image': 'url(' + cover.image + ')',
         }"
       ></div>
 
@@ -229,11 +235,7 @@
       </div>
     </section>
 
-    <section
-      class="poem"
-      *ngFor="let p of pages"
-      [class.hearts]="p.variant?.name === 'Hearts'"
-    >
+    <section class="poem" *ngFor="let p of pages" [class.hearts]="p.variant?.name === 'Hearts'">
       <div class="poem-inner" [ngStyle]="getVariantStylesForPage(p)">
         <div
           class="title-preview"
@@ -241,7 +243,7 @@
             'text-align': titleAlign,
             'font-family': p.titleFont,
             'font-size.px': titleSize,
-            color: p.titleColor
+            color: p.titleColor,
           }"
         >
           {{ p.title }}
@@ -254,7 +256,7 @@
             'font-family': p.textFont,
             'font-size.px': textFontSize,
             color: p.textColor,
-            'white-space': 'pre-wrap'
+            'white-space': 'pre-wrap',
           }"
         >
           {{ p.text }}

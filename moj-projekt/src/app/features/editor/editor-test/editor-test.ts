@@ -18,6 +18,7 @@ import { Gu } from './gu/gu';
 import { EditorEventsService } from '../../../shared/editor-events-service';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
+import { EditorStateService } from '../sidebar/editor-state-service';
 
 @Component({
   selector: 'app-editor-test',
@@ -28,9 +29,13 @@ import { TranslateModule } from '@ngx-translate/core';
 export class EditorTest implements OnInit, OnDestroy {
   title = '';
   text = '';
+
   selectedTheme = '';
-  selectedTemplate = 'Default';
+  selectedTemplate: string | null = 'Default';
   selectedVariant: any = null;
+  selectedPreset: any = null;
+  activeMode: 'preset' | 'template' = 'template';
+
   bookId = '';
 
   textFont = 'Playfair Display';
@@ -92,6 +97,7 @@ export class EditorTest implements OnInit, OnDestroy {
     private theme: ThemeService,
     private booksService: BooksService,
     private events: EditorEventsService,
+    private state: EditorStateService,
   ) {}
 
   @HostListener('document:click', ['$event'])
@@ -110,6 +116,9 @@ export class EditorTest implements OnInit, OnDestroy {
       return;
     }
 
+    this.bindEditorState();
+    this.bindEditorEvents();
+
     this.api.getUserBooksFull(user.id).subscribe({
       next: (books) => {
         this.booksCount = books.length;
@@ -127,20 +136,68 @@ export class EditorTest implements OnInit, OnDestroy {
     } else {
       this.initEmptyEditor();
     }
-
-    this.events.save$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      console.log('SAVE kliknięty');
-      this.save();
-    });
-
-    this.events.clear$.pipe(takeUntil(this.destroy$)).subscribe(() => this.clear());
-    this.events.export$.pipe(takeUntil(this.destroy$)).subscribe(() => this.exportPDF());
-    this.events.coverEdit$.pipe(takeUntil(this.destroy$)).subscribe(() => this.openCoverEditor());
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private bindEditorState() {
+    this.state.template$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((t) => {
+        if (!t) return;
+
+        this.activeMode = 'template';
+        this.selectedTemplate = t;
+        this.selectedPreset = null;
+        this.selectedVariant = null;
+
+        this.applyTemplate(t);
+      });
+
+    this.state.variant$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((v) => {
+        if (!v) return;
+
+        this.selectedVariant = v;
+        this.applyVariant(v);
+      });
+
+    this.state.preset$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((p) => {
+        if (!p) return;
+
+        this.activeMode = 'preset';
+        this.selectedPreset = p;
+        this.selectedTemplate = p.template;
+        this.selectedVariant = p.variant;
+
+        this.applyPreset(p);
+      });
+  }
+
+  private bindEditorEvents() {
+    this.events.save$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.save();
+      });
+
+    this.events.clear$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.clear());
+
+    this.events.export$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.exportPDF());
+
+    this.events.coverEdit$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.openCoverEditor());
   }
 
   get canSave(): boolean {
@@ -452,6 +509,12 @@ quis nostrud exercitation ullamco.`;
 
   applyVariant(variant: any) {
     this.selectedVariant = variant;
+
+    const p = this.pages[this.currentPageIndex];
+    if (p) {
+      p.variant = variant;
+    }
+
     this.savePage();
   }
 
@@ -500,6 +563,8 @@ quis nostrud exercitation ullamco.`;
       textColor: this.fixColor(p.textColor, '#000000'),
       titleFont: p.titleFont || 'Playfair Display',
       textFont: p.textFont || 'Playfair Display',
+      template: p.template || 'Default',
+      variant: p.variant || null,
     }));
 
     const payload = {
@@ -516,7 +581,13 @@ quis nostrud exercitation ullamco.`;
       },
       pages: fixedPages,
       selectedTheme: this.selectedTheme || '',
+      activeMode: this.activeMode,
+      selectedPreset: this.selectedPreset?.name || null,
+      selectedTemplate: this.selectedTemplate || 'Default',
+      selectedVariant: this.selectedVariant || null,
     };
+
+    console.log('💾 SAVE PAYLOAD:', payload);
 
     this.api.saveBook(payload).subscribe({
       next: (res: any) => {
@@ -526,7 +597,6 @@ quis nostrud exercitation ullamco.`;
         }
 
         if (isNew && res?.id) {
-          console.log('🆕 Book created:', res.id);
           this.booksService.increment();
           this.showMessage('📚 Book created!');
         } else {
@@ -563,6 +633,8 @@ quis nostrud exercitation ullamco.`;
     this.text = '';
     this.selectedTemplate = 'Default';
     this.selectedVariant = null;
+    this.selectedPreset = null;
+    this.activeMode = 'template';
 
     this.savePage();
 
@@ -663,11 +735,12 @@ quis nostrud exercitation ullamco.`;
   }
 
   getVariantStyles() {
-    return this.theme.getVariantStyles(this.selectedTemplate, this.selectedVariant?.name);
+    const template = this.selectedTemplate ?? 'Default';
+    return this.theme.getVariantStyles(template, this.selectedVariant?.name);
   }
 
   getVariantStylesForPage(p: any) {
-    return this.theme.getVariantStyles(p.template, p.variant?.name);
+    return this.theme.getVariantStyles(p.template || 'Default', p.variant?.name);
   }
 
   getHeartPattern() {

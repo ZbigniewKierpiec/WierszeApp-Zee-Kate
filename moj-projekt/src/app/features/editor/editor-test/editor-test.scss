@@ -1,10 +1,10 @@
 /* ============================= */
 /* 🧱 LAYOUT */
 /* ============================= */
-.layout {
-  display: grid;
-  grid-template-columns: 260px 1fr; /* sidebar + editor */
-}
+// .layout {
+//   display: grid;
+//   grid-template-columns: 260px 1fr; /* sidebar + editor */
+// }
 
 /* ============================= */
 /* 🔔 TOAST (powiadomienia) */
@@ -517,3 +517,12 @@ app-gu.visible {
   opacity: 1;
   pointer-events: auto;
 }
+
+.editor-area {
+  padding: 24px;
+  background: #f9fafb;
+
+  height: 100%;
+  overflow: auto;
+}
+
