@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EditorConfigService } from '../sidebar/editor-config-service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
 })

@@ -10,5 +10,54 @@
     "LOGIN": "Login",
     "REGISTER": "Register",
     "SETTINGS": "Settings"
-  }
+  },
+
+  "SIDEBAR": {
+    "PRESETS": "Presets",
+    "TEMPLATE": "Template",
+    "SAVE": "Save",
+    "CLEAR": "Clear",
+    "PREVIEW": "Preview",
+    "EXPORT": "Export"
+  },
+
+  "Romantic": "Romantic",
+  "Minimal": "Minimal",
+  "Dark Poetry": "Dark Poetry",
+
+  "Default": "Default",
+  "Floral": "Floral",
+  "Vintage": "Vintage",
+  "Dark": "Dark",
+
+  "Clean": "Clean",
+  "Paper": "Paper",
+  "Soft": "Soft",
+  "Classic": "Classic",
+  "Elegant": "Elegant",
+  "Frame": "Frame",
+  "Garden": "Garden",
+  "Old Paper": "Old Paper",
+  "Gold Frame": "Gold Frame",
+  "Classic Ink": "Classic Ink",
+  "Retro": "Retro",
+  "Hearts": "Hearts",
+  "Soft Love": "Soft Love",
+  "Poetry": "Poetry",
+  "Rose": "Rose",
+  "Deep Night": "Deep Night",
+  "Soft Dark": "Soft Dark",
+  "Neon": "Neon",
+  "Midnight": "Midnight",
+  "Line": "Line",
+  "Soft Line": "Soft Line",
+  "Clean Space": "Clean Space",
+  "Mono": "Mono",
+
+  "Minimal Clean": "Minimal Clean",
+  "Vintage Book": "Vintage Book",
+  "Floral Soft": "Floral Soft",
+  "Classic Poetry": "Classic Poetry",
+  "Elegant Book": "Elegant Book",
+  "Soft Journal": "Soft Journal"
 }

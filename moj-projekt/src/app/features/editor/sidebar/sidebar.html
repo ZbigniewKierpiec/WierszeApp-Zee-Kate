@@ -1,4 +1,4 @@
-<aside class="sidebar">
+<!-- <aside class="sidebar">
  <div class="section">
   <h3>✨ Presets</h3>
 
@@ -40,5 +40,49 @@
     <button type="button" (click)="onClear()">🧹 Clear</button>
     <button type="button" (click)="onPreview()">📖 Preview</button>
     <button type="button" (click)="onExport()">📥 Export</button>
+  </div>
+</aside> -->
+<aside class="sidebar">
+  <div class="section">
+    <h3>✨ {{ 'SIDEBAR.PRESETS' | translate }}</h3>
+
+    <div
+      class="card"
+      *ngFor="let p of presets"
+      [class.active]="selectedPreset === p.name"
+      (click)="onPresetClick(p)"
+    >
+      {{ p.icon }} {{ p.name | translate }}
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>📐 {{ 'SIDEBAR.TEMPLATE' | translate }}</h3>
+
+    <div *ngFor="let t of templates" class="template-group">
+      <div class="card" [class.active]="selectedTemplate === t.name" (click)="onTemplateClick(t)">
+        <span>{{ t.icon }} {{ t.name | translate }}</span>
+        <span *ngIf="t.variants?.length" class="arrow">
+          {{ openTemplate === t.name ? '▾' : '▸' }}
+        </span>
+      </div>
+
+      <div class="variants" [class.open]="openTemplate === t.name">
+        <div
+          class="variant"
+          *ngFor="let v of t.variants"
+          (click)="onVariantClick(v); $event.stopPropagation()"
+        >
+          • {{ v.name | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section actions">
+    <button type="button" (click)="onSave()">💾 {{ 'SIDEBAR.SAVE' | translate }}</button>
+    <button type="button" (click)="onClear()">🧹 {{ 'SIDEBAR.CLEAR' | translate }}</button>
+    <button type="button" (click)="onPreview()">📖 {{ 'SIDEBAR.PREVIEW' | translate }}</button>
+    <button type="button" (click)="onExport()">📥 {{ 'SIDEBAR.EXPORT' | translate }}</button>
   </div>
 </aside>

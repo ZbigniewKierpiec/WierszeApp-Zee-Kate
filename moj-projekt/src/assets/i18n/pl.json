@@ -4,11 +4,60 @@
     "DASHBOARD": "Panel",
     "SAVE": "Zapisz",
     "CLEAR": "Wyczyść",
-    "EXPORT": "Eksportuj",
+    "EXPORT": "Eksport",
     "NEW_BOOK": "Nowa książka",
     "LOGOUT": "Wyloguj",
     "LOGIN": "Zaloguj",
     "REGISTER": "Rejestracja",
     "SETTINGS": "Ustawienia"
-  }
+  },
+
+  "SIDEBAR": {
+    "PRESETS": "Presety",
+    "TEMPLATE": "Szablon",
+    "SAVE": "Zapisz",
+    "CLEAR": "Wyczyść",
+    "PREVIEW": "Podgląd",
+    "EXPORT": "Eksport"
+  },
+
+  "Romantic": "Romantyczny",
+  "Minimal": "Minimalistyczny",
+  "Dark Poetry": "Mroczna poezja",
+
+  "Default": "Domyślny",
+  "Floral": "Kwiatowy",
+  "Vintage": "Vintage",
+  "Dark": "Ciemny",
+
+  "Clean": "Czysty",
+  "Paper": "Papier",
+  "Soft": "Miękki",
+  "Classic": "Klasyczny",
+  "Elegant": "Elegancki",
+  "Frame": "Ramka",
+  "Garden": "Ogród",
+  "Old Paper": "Stary papier",
+  "Gold Frame": "Złota ramka",
+  "Classic Ink": "Klasyczny atrament",
+  "Retro": "Retro",
+  "Hearts": "Serca",
+  "Soft Love": "Delikatna miłość",
+  "Poetry": "Poezja",
+  "Rose": "Róża",
+  "Deep Night": "Głęboka noc",
+  "Soft Dark": "Miękki mrok",
+  "Neon": "Neon",
+  "Midnight": "Północ",
+  "Line": "Linia",
+  "Soft Line": "Miękka linia",
+  "Clean Space": "Czysta przestrzeń",
+  "Mono": "Mono",
+
+  "Minimal Clean": "Minimalistyczny czysty",
+  "Vintage Book": "Stara księga",
+  "Floral Soft": "Kwiatowy miękki",
+  "Classic Poetry": "Klasyczna poezja",
+  "Elegant Book": "Elegancka książka",
+  "Soft Journal": "Delikatny dziennik"
 }
