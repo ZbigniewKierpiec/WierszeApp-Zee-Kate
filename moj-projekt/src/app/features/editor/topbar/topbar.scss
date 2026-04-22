@@ -52,7 +52,7 @@
   white-space: nowrap;
 
   /* 🔥 soft effect */
-  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 .btn:hover {
@@ -115,14 +115,14 @@
 
   /* 🔥 soft glass */
   backdrop-filter: blur(14px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 
   transition: all 0.25s ease;
 }
 
 .lang-dropdown:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
 }
 
 /* MENU */
@@ -139,7 +139,7 @@
   background: var(--dropdown-bg);
   border: 1px solid var(--topbar-border);
 
-  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
 }
 
 /* ITEMS */
@@ -177,10 +177,40 @@
   display: block;
   width: 140px;
 }
+// .divider {
+//   width: 1px;
+//   height: 24px;
+// background-color: black;
+//   opacity: 0.5;
+// }
+
+
+.divider {
+  width: 1px;
+  height: 24px;
+
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--divider),
+    transparent
+  );
+
+  opacity: 0.8;
+}
+
+
+
+
+
+
 
 /* ================= TRANSITIONS ================= */
 .topbar,
 .btn,
 .lang-dropdown {
-  transition: background 0.25s ease, color 0.25s ease, border 0.25s ease;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border 0.25s ease;
 }
