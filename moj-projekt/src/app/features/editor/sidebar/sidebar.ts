@@ -53,29 +53,6 @@ export class Sidebar implements OnInit, OnDestroy {
     private state: EditorStateService,
   ) {}
 
-  /* ============================= */
-  /* 🔥 INIT */
-  /* ============================= */
-  // ngOnInit() {
-  //   this.state.template$
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe(t => {
-  //       if (!t) return;
-
-  //       this.selectedTemplate = t;
-  //       this.openTemplate = t;
-  //       this.lastClickedTemplate = t;
-
-  //       this.updateIndicatorFromState();
-  //     });
-
-  //   this.state.variant$
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe(v => {
-  //       this.selectedVariant = v;
-  //       this.updateIndicatorFromState();
-  //     });
-  // }
 
   ngOnInit() {
     this.state.template$.pipe(takeUntil(this.destroy$)).subscribe((t) => {
@@ -174,23 +151,60 @@ openCustomize() {
     indicator.style.height = `${el.offsetHeight}px`;
   }
 
-  updateIndicatorFromState() {
-    requestAnimationFrame(() => {
-      let el: HTMLElement | null = null;
+  // updateIndicatorFromState() {
+  //   requestAnimationFrame(() => {
+  //     let el: HTMLElement | null = null;
 
-      // 🔥 PRIORYTET → variant
-      if (this.selectedVariant) {
-        el = this.sidebar.nativeElement.querySelector('.variant.active');
-      }
+  //     // 🔥 PRIORYTET → variant
+  //     if (this.selectedVariant) {
+  //       el = this.sidebar.nativeElement.querySelector('.variant.active');
+  //     }
 
-      // 🔥 fallback → template
-      if (!el) {
-        el = this.sidebar.nativeElement.querySelector('.card.active');
-      }
+  //     // 🔥 fallback → template
+  //     if (!el) {
+  //       el = this.sidebar.nativeElement.querySelector('.card.active');
+  //     }
 
-      if (el) this.moveIndicator(el);
-    });
-  }
+  //     if (el) this.moveIndicator(el);
+  //   });
+  // }
+
+updateIndicatorFromState() {
+  requestAnimationFrame(() => {
+    let el: HTMLElement | null = null;
+
+    if (this.selectedVariant) {
+      el = this.sidebar.nativeElement.querySelector('.variant.active');
+    }
+
+    if (!el) {
+      el = this.sidebar.nativeElement.querySelector('.card.active');
+    }
+
+    const indicator = this.indicator?.nativeElement as HTMLElement;
+
+    // 🔥 JEŚLI NIC NIE MA → UKRYJ
+    if (!el) {
+      indicator.style.opacity = '0';
+      indicator.style.height = '0px';
+      return;
+    }
+
+    // 🔥 POKAŻ + PRZESUŃ
+    indicator.style.opacity = '1';
+    this.moveIndicator(el);
+  });
+}
+
+
+
+
+
+
+
+
+
+
 
   /* ============================= */
   /* 🔥 PRESET */

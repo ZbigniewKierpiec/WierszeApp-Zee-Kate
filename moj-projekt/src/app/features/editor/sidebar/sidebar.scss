@@ -313,3 +313,11 @@ button.ghost.active::before {
 button.ghost {
   position: relative;
 }
+.active-indicator {
+  transition: all 0.25s ease, opacity 0.2s ease;
+}
+
+.active-indicator.hidden {
+  opacity: 0;
+  transform: scaleY(0);
+}

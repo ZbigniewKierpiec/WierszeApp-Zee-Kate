@@ -1,7 +1,7 @@
 <aside class="sidebar" #sidebar>
 
   <!-- INDICATOR -->
-  <div class="active-indicator" #indicator></div>
+  <div class="active-indicator"  [class.hidden]="!isCustomizeOpen"        #indicator></div>
 
   <!-- PRESETS -->
   <div class="section">
