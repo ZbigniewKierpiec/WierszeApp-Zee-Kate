@@ -13,14 +13,29 @@ export class Auth {
   register(data: { email: string; password: string }) {
     return this.http.post(`${this.api}/register`, data);
   }
-  login(data: { email: string; password: string }) {
-    return this.http.post(`${this.api}/login`, data).pipe(
-      tap((user: any) => {
-        this.setUser(user); // 🔥 KLUCZ
-        localStorage.removeItem('bookId');
-      }),
-    );
-  }
+ 
+
+login(data: { email: string; password: string }) {
+  return this.http.post<any>(`${this.api}/login`, data).pipe(
+    tap((res) => {
+
+      // 🔥 ZAPIS TOKENÓW
+      localStorage.setItem('accessToken', res.accessToken);
+      localStorage.setItem('refreshToken', res.refreshToken);
+
+      // 🔥 ZAPIS USERA
+      localStorage.setItem('user', JSON.stringify(res.user));
+
+      localStorage.removeItem('bookId');
+    }),
+  );
+}
+
+
+
+
+
+
 
   setUser(user: any) {
     localStorage.setItem('user', JSON.stringify(user));
@@ -30,14 +45,18 @@ export class Auth {
     return JSON.parse(localStorage.getItem('user') || 'null');
   }
 
-  logout() {
-    localStorage.removeItem('user');
-  }
+logout() {
+  localStorage.clear(); 
+}
+
+
 
 
 getUserId(): string | null {
-    return localStorage.getItem('user_id');
-  }
+  const user = this.getUser();
+  return user?.id || null;
+}
+
 
 
 

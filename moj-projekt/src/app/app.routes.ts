@@ -6,29 +6,38 @@ import { Login } from './features/editor/login/login';
 import { Register } from './features/editor/register/register';
 import { Dashboard } from './features/dashboard/dashboard';
 import { MainLayout } from './main-layout/main-layout';
-// export const routes: Routes = [
-//   { path: '', component: Home },
+import { AuthGuard } from './services/auth-guard';
 
+// export const routes: Routes = [
+//   // 🔓 bez layoutu
+//   { path: '', component: Home },
 //   { path: 'login', component: Login },
 //   { path: 'register', component: Register },
 
+//   // 🔒 layout tylko dla wybranych tras
 //   {
-//     path: 'editor/:id',
-//     component: EditorTest,
+//     path: '',
+//     component: MainLayout,
+//     children: [
+//       { path: 'dashboard', component: Dashboard },
+//       { path: 'editor', component: EditorTest },
+//       { path: 'editor/:id', component: EditorTest },
+//     ],
 //   },
-//   { path: 'editor', component: EditorTest },
-//   { path: 'dashboard', component: Dashboard },
 // ];
+
+
 export const routes: Routes = [
-  // 🔓 bez layoutu
+  // 🔓 public
   { path: '', component: Home },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
 
-  // 🔒 layout tylko dla wybranych tras
+  // 🔒 protected
   {
     path: '',
     component: MainLayout,
+    canActivate: [AuthGuard], 
     children: [
       { path: 'dashboard', component: Dashboard },
       { path: 'editor', component: EditorTest },
