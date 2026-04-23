@@ -135,56 +135,156 @@ body {
 //   --divider: #353638;
 // }
 
+// body.light {
+//   /* SIDEBAR */
+//   // --sidebar-bg: #f4f5f7;
+//   // --sidebar-text: #1f2937;
+//  --sidebar-bg: #eef0f2;
+
+//   --card-bg: #e4e6ea;
+//   --card-hover: #d6d9de;
+//   --card-active: #c7ccd4;
+
+//   --variant-bg: #e4e6ea;
+//   --variant-hover: #d6d9de;
+
+//   --sidebar-text: #1f2937;
+
+//   --accent: #6366f1;
+
+
+//   /* TOPBAR */
+//   --topbar-bg: #f6f6f6;
+//   --topbar-text: #1f2937;
+//   --topbar-border: #e2e3e5;
+
+//   /* DASHBOARD */
+//   --dashboard-bg: #ececec;
+//   --card-bg: #f5f5f5;
+//   --card-shadow: rgba(0, 0, 0, 0.05);
+
+//   /* TEXT */
+//   --text-main: #1f2937;
+//   --text-muted: #6b7280;
+
+//   /* BUTTONS */
+//   --btn-bg: #e5e7eb;
+//   --btn-hover: #d1d5db;
+//   --btn-text: #1f2937;
+
+//   /* EDITOR */
+//   --editor-bg: #e9eaec; /* 🔥 tło bardziej szare */
+//   --toolbar-bg: #f0f0f0;
+//   --poem-bg: #f2f2f2; /* 🔥 papier – miękki, NIE biały */
+
+//   --sidebar-active: #e5e7eb; /* 🔥 ciemniejsze niż sidebar */
+//   --sidebar-active-text: #111827;
+
+//   /* EXTRA */
+//   --border: #d6d6d6;
+//   --tag-bg: #e5e7eb;
+//   --divider: #d1d5db;
+// }
+
+
+// body.light {
+//   /* SIDEBAR */
+//   --sidebar-bg: #e4e3df; 
+//   --sidebar-text: #262626;
+
+//   --card-bg: #dad9d4;
+//   --card-hover: #cecdc7;
+//   --card-active: #c2c1bb;
+
+//   --variant-bg: #dad9d4;
+//   --variant-hover: #cecdc7;
+
+//   --accent: #6f6258; /* bardziej przygaszony */
+//   --accent-hover: #5e534a;
+
+//   /* TOPBAR */
+//   --topbar-bg: #ebeae6;
+//   --topbar-text: #262626;
+//   --topbar-border: #d6d5cf;
+
+//   /* DASHBOARD */
+//   --dashboard-bg: #e7e6e2;
+//   --card-bg: #dfded9;
+//   --card-shadow: rgba(0, 0, 0, 0.05);
+
+//   /* TEXT */
+//   --text-main: #262626;
+//   --text-muted: #5f5f5f;
+
+//   /* BUTTONS */
+//   --btn-bg: #d0cfca;
+//   --btn-hover: #c2c1bb;
+//   --btn-text: #262626;
+
+//   /* EDITOR */
+//   --editor-bg: #ebe9e4;   /* 🔥 ciemniejszy papier */
+//   --toolbar-bg: #e1e0db;
+//   --poem-bg: #f2f1ec;     /* 🔥 nadal jasne, ale już nie „białe” */
+
+//   --sidebar-active: #d0cfca;
+//   --sidebar-active-text: #1c1c1c;
+
+//   /* EXTRA */
+//   --border: #cdcbc5;
+//   --tag-bg: #d0cfca;
+//   --divider: #cdcbc5;
+// }
+
+
 body.light {
-  /* SIDEBAR */
-  // --sidebar-bg: #f4f5f7;
-  // --sidebar-text: #1f2937;
- --sidebar-bg: #eef0f2;
+  /* SIDEBAR (ciemniejszy – tworzy ramę) */
+  --sidebar-bg: #d6d3cd;
+  --sidebar-text: #1f1f1f;
 
-  --card-bg: #e4e6ea;
-  --card-hover: #d6d9de;
-  --card-active: #c7ccd4;
+  --card-bg: #e0ddd7;
+  --card-hover: #d4d1ca;
+  --card-active: #c6c3bc;
 
-  --variant-bg: #e4e6ea;
-  --variant-hover: #d6d9de;
+  --variant-bg: #e0ddd7;
+  --variant-hover: #d4d1ca;
 
-  --sidebar-text: #1f2937;
+  --accent: #6b5f55;
+  --accent-hover: #5a5047;
 
-  --accent: #6366f1;
+  /* TOPBAR (ciemniejszy niż content – oddziela przestrzeń) */
+  --topbar-bg: #ddd9d2;
+  --topbar-text: #1f1f1f;
+  --topbar-border: #c8c4bc;
 
-
-  /* TOPBAR */
-  --topbar-bg: #f6f6f6;
-  --topbar-text: #1f2937;
-  --topbar-border: #e2e3e5;
-
-  /* DASHBOARD */
-  --dashboard-bg: #ececec;
-  --card-bg: #f5f5f5;
+  /* DASHBOARD (jaśniejszy środek) */
+  --dashboard-bg: #ebe9e4;
+  --card-bg: #e5e3de;
   --card-shadow: rgba(0, 0, 0, 0.05);
 
   /* TEXT */
-  --text-main: #1f2937;
-  --text-muted: #6b7280;
+  --text-main: #222222;
+  --text-muted: #5c5c5c;
 
   /* BUTTONS */
-  --btn-bg: #e5e7eb;
-  --btn-hover: #d1d5db;
-  --btn-text: #1f2937;
+  --btn-bg: #d4d1ca;
+  --btn-hover: #c6c3bc;
+  --btn-text: #1f1f1f;
 
-  /* EDITOR */
-  --editor-bg: #e9eaec; /* 🔥 tło bardziej szare */
-  --toolbar-bg: #f0f0f0;
-  --poem-bg: #f2f2f2; /* 🔥 papier – miękki, NIE biały */
+  /* EDITOR (najważniejszy – najczystszy) */
+  --editor-bg: #f1efe9;
+  --toolbar-bg: #e5e3de;
+  --poem-bg: #f7f5f1;
 
-  --sidebar-active: #e5e7eb; /* 🔥 ciemniejsze niż sidebar */
-  --sidebar-active-text: #111827;
+  --sidebar-active: #cfcac2;
+  --sidebar-active-text: #141414;
 
   /* EXTRA */
-  --border: #d6d6d6;
-  --tag-bg: #e5e7eb;
-  --divider: #d1d5db;
+  --border: #c9c5bd;
+  --tag-bg: #d4d1ca;
+  --divider: #c9c5bd;
 }
+
+
 
 /* 🌙 DARK */
 body.dark {
