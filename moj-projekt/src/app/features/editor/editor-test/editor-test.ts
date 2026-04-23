@@ -393,36 +393,75 @@ quis nostrud exercitation ullamco.`;
   //   this.cd.detectChanges();
   // }
 
-  loadPage() {
-    const p = this.pages[this.currentPageIndex];
-    if (!p) return;
+  // loadPage() {
+  //   const p = this.pages[this.currentPageIndex];
+  //   if (!p) return;
 
-    this.syncingFromPage = true;
+  //   this.syncingFromPage = true;
 
-    this.title = p.title || '';
-    this.text = p.text || '';
+  //   this.title = p.title || '';
+  //   this.text = p.text || '';
 
-    this.selectedTemplate = p.template || 'Default';
-    this.selectedVariant = p.variant || null;
+  //   this.selectedTemplate = p.template || 'Default';
+  //   this.selectedVariant = p.variant || null;
 
-    this.activeMode = p.activeMode === 'preset' ? 'preset' : 'template';
+  //   this.activeMode = p.activeMode === 'preset' ? 'preset' : 'template';
 
-    this.selectedPreset = p.preset || null;
+  //   this.selectedPreset = p.preset || null;
 
-    this.titleFont = p.titleFont || 'Playfair Display';
-    this.textFont = p.textFont || 'Playfair Display';
+  //   this.titleFont = p.titleFont || 'Playfair Display';
+  //   this.textFont = p.textFont || 'Playfair Display';
 
-    this.titleColor = this.fixColor(p.titleColor, '#000000');
-    this.textColor = this.fixColor(p.textColor, '#000000');
+  //   this.titleColor = this.fixColor(p.titleColor, '#000000');
+  //   this.textColor = this.fixColor(p.textColor, '#000000');
 
+  //   this.syncingFromPage = false;
+
+  //   // 🔥 KLUCZOWE
+  //   this.state.template$.next(this.selectedTemplate);
+  //   this.state.variant$.next(this.selectedVariant);
+  //   this.state.preset$.next(this.selectedPreset);
+  //   this.cd.detectChanges();
+  // }
+
+loadPage() {
+  const p = this.pages[this.currentPageIndex];
+  if (!p) return;
+
+  this.syncingFromPage = true;
+
+  this.title = p.title || '';
+  this.text = p.text || '';
+
+  this.selectedTemplate = p.template || 'Default';
+  this.selectedVariant = p.variant || null;
+  this.selectedPreset = p.preset || null;
+  this.activeMode = p.activeMode === 'preset' ? 'preset' : 'template';
+
+  this.titleFont = p.titleFont || 'Playfair Display';
+  this.textFont = p.textFont || 'Playfair Display';
+
+  this.titleColor = this.fixColor(p.titleColor, '#000000');
+  this.textColor = this.fixColor(p.textColor, '#000000');
+
+  // emituj do sidebar/state nadal w trybie sync
+  this.state.template$.next(this.selectedTemplate);
+  this.state.variant$.next(this.selectedVariant);
+  this.state.preset$.next(this.selectedPreset);
+
+  this.cd.detectChanges();
+
+  // dopiero po wszystkim odblokuj
+  queueMicrotask(() => {
     this.syncingFromPage = false;
+  });
+}
 
-    // 🔥 KLUCZOWE
-    this.state.template$.next(this.selectedTemplate);
-    this.state.variant$.next(this.selectedVariant);
-    this.state.preset$.next(this.selectedPreset);
-    this.cd.detectChanges();
-  }
+
+
+
+
+
 
   loadBook(id: string) {
     const user = this.auth.getUser();

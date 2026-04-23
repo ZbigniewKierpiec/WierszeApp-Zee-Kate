@@ -151,50 +151,50 @@ openCustomize() {
     indicator.style.height = `${el.offsetHeight}px`;
   }
 
-  // updateIndicatorFromState() {
-  //   requestAnimationFrame(() => {
-  //     let el: HTMLElement | null = null;
+  updateIndicatorFromState() {
+    requestAnimationFrame(() => {
+      let el: HTMLElement | null = null;
 
-  //     // 🔥 PRIORYTET → variant
-  //     if (this.selectedVariant) {
-  //       el = this.sidebar.nativeElement.querySelector('.variant.active');
-  //     }
+      // 🔥 PRIORYTET → variant
+      if (this.selectedVariant) {
+        el = this.sidebar.nativeElement.querySelector('.variant.active');
+      }
 
-  //     // 🔥 fallback → template
-  //     if (!el) {
-  //       el = this.sidebar.nativeElement.querySelector('.card.active');
-  //     }
+      // 🔥 fallback → template
+      if (!el) {
+        el = this.sidebar.nativeElement.querySelector('.card.active');
+      }
 
-  //     if (el) this.moveIndicator(el);
-  //   });
-  // }
+      if (el) this.moveIndicator(el);
+    });
+  }
 
-updateIndicatorFromState() {
-  requestAnimationFrame(() => {
-    let el: HTMLElement | null = null;
+// updateIndicatorFromState() {
+//   requestAnimationFrame(() => {
+//     let el: HTMLElement | null = null;
 
-    if (this.selectedVariant) {
-      el = this.sidebar.nativeElement.querySelector('.variant.active');
-    }
+//     if (this.selectedVariant) {
+//       el = this.sidebar.nativeElement.querySelector('.variant.active');
+//     }
 
-    if (!el) {
-      el = this.sidebar.nativeElement.querySelector('.card.active');
-    }
+//     if (!el) {
+//       el = this.sidebar.nativeElement.querySelector('.card.active');
+//     }
 
-    const indicator = this.indicator?.nativeElement as HTMLElement;
+//     const indicator = this.indicator?.nativeElement as HTMLElement;
 
-    // 🔥 JEŚLI NIC NIE MA → UKRYJ
-    if (!el) {
-      indicator.style.opacity = '0';
-      indicator.style.height = '0px';
-      return;
-    }
+//     // 🔥 JEŚLI NIC NIE MA → UKRYJ
+//     if (!el) {
+//       indicator.style.opacity = '0';
+//       indicator.style.height = '0px';
+//       return;
+//     }
 
-    // 🔥 POKAŻ + PRZESUŃ
-    indicator.style.opacity = '1';
-    this.moveIndicator(el);
-  });
-}
+//     // 🔥 POKAŻ + PRZESUŃ
+//     indicator.style.opacity = '1';
+//     this.moveIndicator(el);
+//   });
+// }
 
 
 
