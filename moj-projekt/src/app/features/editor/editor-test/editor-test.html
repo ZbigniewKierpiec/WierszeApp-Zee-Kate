@@ -22,203 +22,79 @@
 
 <!-- EDITOR -->
 <div class="editor-area">
-  <!-- <div class="toolbar">
-    <button (click)="fillLorem()">🧪 {{ 'EDITOR.LOREM' | translate }}</button>
+  <div class="toolbar">
+    <div class="toolbar-safe">
+      <!-- BASIC -->
+      <div class="toolbar-basic">
+        <button (click)="fillLorem()">🧪 {{ 'EDITOR.LOREM' | translate }}</button>
 
-    <button type="button" (click)="formatAdvanced()">
-      ✨ {{ 'EDITOR.FORMAT_ADVANCED' | translate }}
-    </button>
+        <button type="button" (click)="toggleCustomize()">
+          ✨ {{ 'EDITOR.FORMAT_ADVANCED' | translate }}
+        </button>
 
-    <button (click)="formatAI()">✨ {{ 'EDITOR.AI_FORMAT' | translate }}</button>
+        <button (click)="formatAI()">✨ {{ 'EDITOR.AI_FORMAT' | translate }}</button>
+      </div>
 
-    <select
-      [ngModel]="activeField === 'title' ? titleFont : textFont"
-      (ngModelChange)="onFontChange($event)"
-    >
-      <optgroup label="Serif (Book)">
-        <option value="'Playfair Display', serif">Playfair Display</option>
-        <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
-        <option value="'Cormorant', serif">Cormorant</option>
-        <option value="'EB Garamond', serif">EB Garamond</option>
-        <option value="'Libre Baskerville', serif">Libre Baskerville</option>
-        <option value="'Crimson Text', serif">Crimson Text</option>
-        <option value="'Merriweather', serif">Merriweather</option>
-        <option value="'Lora', serif">Lora</option>
-        <option value="'Spectral', serif">Spectral</option>
-        <option value="'Alegreya', serif">Alegreya</option>
-        <option value="'Source Serif 4', serif">Source Serif 4</option>
-        <option value="Georgia, serif">Georgia</option>
-      </optgroup>
+      <!-- ADVANCED -->
+      <div class="toolbar-advanced" [class.open]="isCustomizeOpen">
+        <button class="back" (click)="toggleCustomize()">←</button>
 
-      <optgroup label="Display (Titles)">
-        <option value="'Cinzel', serif">Cinzel</option>
-        <option value="'DM Serif Display', serif">DM Serif Display</option>
-      </optgroup>
+        <!-- FONT -->
+        <select
+          class="font-select"
+          [ngModel]="activeField === 'title' ? titleFont : textFont"
+          (ngModelChange)="onFontChange($event)"
+        >
+          <optgroup label="Serif (Book)">
+            <option value="'Playfair Display', serif">Playfair Display</option>
+            <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+            <option value="'EB Garamond', serif">EB Garamond</option>
+            <option value="'Libre Baskerville', serif">Libre Baskerville</option>
+            <option value="'Crimson Text', serif">Crimson Text</option>
+            <option value="'Merriweather', serif">Merriweather</option>
+            <option value="'Lora', serif">Lora</option>
+          </optgroup>
 
-      <optgroup label="Sans-serif (UI)">
-        <option value="'Work Sans', sans-serif">Work Sans</option>
-        <option value="'Montserrat', sans-serif">Montserrat</option>
-        <option value="'Raleway', sans-serif">Raleway</option>
-        <option value="Arial, sans-serif">Arial</option>
-      </optgroup>
-    </select>
+          <optgroup label="Display">
+            <option value="'Cinzel', serif">Cinzel</option>
+            <option value="'DM Serif Display', serif">DM Serif Display</option>
+          </optgroup>
 
-    <input
-      type="number"
-      [ngModel]="activeField === 'title' ? titleSize : textFontSize"
-      (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
-      min="12"
-      max="60"
-    />
+          <optgroup label="Sans">
+            <option value="'Work Sans', sans-serif">Work Sans</option>
+            <option value="'Montserrat', sans-serif">Montserrat</option>
+            <option value="Arial, sans-serif">Arial</option>
+          </optgroup>
+        </select>
 
-    <input
-      type="color"
-      [ngModel]="activeField === 'title' ? titleColor : textColor"
-      (ngModelChange)="activeField === 'title' ? (titleColor = $event) : (textColor = $event)"
-    />
+        <!-- SIZE -->
+        <input
+          type="number"
+          [ngModel]="activeField === 'title' ? titleSize : textFontSize"
+          (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
+          min="12"
+          max="60"
+        />
 
-    <select
-      [ngModel]="activeField === 'title' ? titleAlign : textAlign"
-      (ngModelChange)="activeField === 'title' ? (titleAlign = $event) : (textAlign = $event)"
-    >
-      <option value="left">{{ 'EDITOR.LEFT' | translate }}</option>
-      <option value="center">{{ 'EDITOR.CENTER' | translate }}</option>
-      <option value="right">{{ 'EDITOR.RIGHT' | translate }}</option>
-    </select>
-  </div> -->
+        <!-- COLOR -->
+        <input
+          type="color"
+          [ngModel]="activeField === 'title' ? titleColor : textColor"
+          (ngModelChange)="activeField === 'title' ? (titleColor = $event) : (textColor = $event)"
+        />
 
-
-<!-- 
-<div class="toolbar">
-
-
-  <div class="toolbar-basic">
-
-    <button (click)="fillLorem()">
-      🧪 {{ 'EDITOR.LOREM' | translate }}
-    </button>
-
-    <button type="button" (click)="formatAdvanced()">
-      ✨ {{ 'EDITOR.FORMAT_ADVANCED' | translate }}
-    </button>
-
-    <button (click)="formatAI()">
-      ✨ {{ 'EDITOR.AI_FORMAT' | translate }}
-    </button>
-
-  </div>
-
-  <div class="toolbar-advanced" [class.open]="isCustomizeOpen">
-
-    <button class="back" (click)="toggleCustomize()">←</button>
->
-    <select
-      [ngModel]="activeField === 'title' ? titleFont : textFont"
-      (ngModelChange)="onFontChange($event)"
-    >
-   
-    </select>
-
-    <input
-      type="number"
-      [ngModel]="activeField === 'title' ? titleSize : textFontSize"
-      (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
-      min="12"
-      max="60"
-    />
-
-    <input
-      type="color"
-      [ngModel]="activeField === 'title' ? titleColor : textColor"
-      (ngModelChange)="activeField === 'title' ? (titleColor = $event) : (textColor = $event)"
-    />
-
-    <select
-      [ngModel]="activeField === 'title' ? titleAlign : textAlign"
-      (ngModelChange)="activeField === 'title' ? (titleAlign = $event) : (textAlign = $event)"
-    >
-      <option value="left">⬅</option>
-      <option value="center">⬍</option>
-      <option value="right">➡</option>
-    </select>
-
-  </div>
-
-</div>
- -->
-
-
-<div class="toolbar">
-
-  <div class="toolbar-safe">
-
-    <!-- 🔹 BASIC -->
-    <div class="toolbar-basic">
-
-      <button (click)="fillLorem()">
-        🧪 {{ 'EDITOR.LOREM' | translate }}
-      </button>
-
-      <button type="button" (click)="formatAdvanced()">
-        ✨ {{ 'EDITOR.FORMAT_ADVANCED' | translate }}
-      </button>
-
-      <button (click)="formatAI()">
-        ✨ {{ 'EDITOR.AI_FORMAT' | translate }}
-      </button>
-
+        <!-- ALIGN -->
+        <select
+          [ngModel]="activeField === 'title' ? titleAlign : textAlign"
+          (ngModelChange)="activeField === 'title' ? (titleAlign = $event) : (textAlign = $event)"
+        >
+          <option value="left">⬅</option>
+          <option value="center">⬍</option>
+          <option value="right">➡</option>
+        </select>
+      </div>
     </div>
-
-    <!-- 🔥 ADVANCED -->
-    <div class="toolbar-advanced" [class.open]="isCustomizeOpen">
-
-      <button id="back" class="back" (click)="toggleCustomize()">←</button>
-
-      <select
-        [ngModel]="activeField === 'title' ? titleFont : textFont"
-        (ngModelChange)="onFontChange($event)"
-      >
-        <!-- zostaje jak masz -->
-      </select>
-
-      <input
-        type="number"
-        [ngModel]="activeField === 'title' ? titleSize : textFontSize"
-        (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
-        min="12"
-        max="60"
-      />
-
-      <input
-        type="color"
-        [ngModel]="activeField === 'title' ? titleColor : textColor"
-        (ngModelChange)="activeField === 'title' ? (titleColor = $event) : (textColor = $event)"
-      />
-
-      <select
-        [ngModel]="activeField === 'title' ? titleAlign : textAlign"
-        (ngModelChange)="activeField === 'title' ? (titleAlign = $event) : (textAlign = $event)"
-      >
-        <option value="left">⬅</option>
-        <option value="center">⬍</option>
-        <option value="right">➡</option>
-      </select>
-
-    </div>
-
   </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
 
   <div class="template-label">
     <span class="icon">
@@ -259,7 +135,7 @@
         'text-align': titleAlign,
         'font-family': titleFont,
         'font-size.px': titleSize,
-        color: titleColor,
+        color: titleColor || 'var(--text-main)',
       }"
     />
 
@@ -271,7 +147,7 @@
         'text-align': textAlign,
         'font-family': textFont,
         'font-size.px': textFontSize,
-        color: textColor,
+        color: textColor || 'var(--text-main)',
       }"
     ></textarea>
 

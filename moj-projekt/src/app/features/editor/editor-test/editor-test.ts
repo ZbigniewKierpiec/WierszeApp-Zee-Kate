@@ -26,6 +26,7 @@ import { EditorEventsService } from '../../../shared/editor-events-service';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditorStateService } from '../sidebar/editor-state-service';
+import { ThemeModeService } from '../../../services/theme-mode-service';
 
 @Component({
   selector: 'app-editor-test',
@@ -109,6 +110,7 @@ export class EditorTest implements OnInit, OnDestroy {
     private booksService: BooksService,
     private events: EditorEventsService,
     private state: EditorStateService,
+    private themeMode: ThemeModeService,
   ) {}
 
   @HostListener('document:click', ['$event'])
@@ -129,6 +131,11 @@ export class EditorTest implements OnInit, OnDestroy {
   //////////////////////////////
   ngOnInit() {
     const user = this.auth.getUser();
+
+    this.themeMode.theme$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.reapplyPresetColors(); // 🔥 KLUCZ
+    });
+
     this.state.isCustomizeOpen$.subscribe((v) => (this.isCustomizeOpen = v));
     if (!user?.id) {
       this.router.navigate(['/login']);
@@ -162,6 +169,41 @@ export class EditorTest implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  // reapplyPresetColors() {
+  //   const current = this.pages[this.currentPageIndex];
+  //   if (!current || !current.preset) return;
+
+  //   const p = current.preset;
+
+  //   if (p.textColor) {
+  //     const fixed = this.fixColor(p.textColor);
+  //     this.textColor = this.getAdaptiveColor(fixed);
+  //   }
+
+  //   if (p.titleColor) {
+  //     const fixed = this.fixColor(p.titleColor);
+  //     this.titleColor = this.getAdaptiveColor(fixed);
+  //   }
+
+  //   this.cd.detectChanges();
+  // }
+  reapplyPresetColors() {
+    const current = this.pages[this.currentPageIndex];
+    if (!current || !current.preset) return;
+
+    const rawText = current.rawTextColor || current.preset.textColor;
+    const rawTitle = current.rawTitleColor || current.preset.titleColor;
+
+    if (rawText) {
+      this.textColor = this.getAdaptiveColor(this.fixColor(rawText));
+    }
+
+    if (rawTitle) {
+      this.titleColor = this.getAdaptiveColor(this.fixColor(rawTitle));
+    }
+
+    this.cd.detectChanges();
+  }
   private bindEditorState() {
     this.state.template$.pipe(takeUntil(this.destroy$)).subscribe((template) => {
       if (!template || this.syncingFromPage) return;
@@ -542,6 +584,39 @@ quis nostrud exercitation ullamco.`;
     this.cd.detectChanges();
   }
 
+  // applyPreset(p: any) {
+  //   const current = this.pages[this.currentPageIndex];
+  //   if (!current) return;
+
+  //   this.activeMode = 'preset';
+  //   this.selectedPreset = p;
+
+  //   this.selectedTemplate = p.template;
+  //   this.selectedVariant = p.variant;
+
+  //   current.template = p.template;
+  //   current.variant = p.variant;
+  //   current.preset = { ...p };
+  //   current.activeMode = 'preset';
+
+  //   if (p.titleFont) this.titleFont = p.titleFont;
+  //   if (p.textFont) this.textFont = p.textFont;
+  //   if (p.textColor) this.textColor = this.fixColor(p.textColor);
+  //   if (p.titleColor) this.titleColor = this.fixColor(p.titleColor);
+
+  //   if (p.autoFormat) {
+  //     this.text = this.formatting.formatText(this.text, p.autoFormat);
+  //   }
+
+  //   if (p.autoFormat === 'advanced') {
+  //     this.text = this.formatting.formatPoemAdvanced(this.text);
+  //   }
+
+  //   this.savePage();
+  //   this.storage.savePages(this.pages);
+  //   this.cd.detectChanges();
+  // }
+
   applyPreset(p: any) {
     const current = this.pages[this.currentPageIndex];
     if (!current) return;
@@ -559,20 +634,46 @@ quis nostrud exercitation ullamco.`;
 
     if (p.titleFont) this.titleFont = p.titleFont;
     if (p.textFont) this.textFont = p.textFont;
-    if (p.textColor) this.textColor = this.fixColor(p.textColor);
-    if (p.titleColor) this.titleColor = this.fixColor(p.titleColor);
 
-    if (p.autoFormat) {
-      this.text = this.formatting.formatText(this.text, p.autoFormat);
+    if (p.textColor) {
+      const fixed = this.fixColor(p.textColor);
+      current.rawTextColor = fixed; // 🔥 KLUCZ
+      this.textColor = this.getAdaptiveColor(fixed);
     }
 
-    if (p.autoFormat === 'advanced') {
-      this.text = this.formatting.formatPoemAdvanced(this.text);
+    if (p.titleColor) {
+      const fixed = this.fixColor(p.titleColor);
+      current.rawTitleColor = fixed; // 🔥 KLUCZ
+      this.titleColor = this.getAdaptiveColor(fixed);
     }
 
     this.savePage();
     this.storage.savePages(this.pages);
     this.cd.detectChanges();
+  }
+
+  getAdaptiveColor(color: string): string {
+    const isDark = document.body.classList.contains('dark');
+
+    const c = color.replace('#', '');
+
+    const r = parseInt(c.substring(0, 2), 16);
+    const g = parseInt(c.substring(2, 4), 16);
+    const b = parseInt(c.substring(4, 6), 16);
+
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+    // 🔥 DARK MODE → rozjaśnij jeśli za ciemny
+    if (isDark && brightness < 140) {
+      return '#f9fafb'; // jasny tekst
+    }
+
+    // 🔥 LIGHT MODE → przyciemnij jeśli za jasny
+    if (!isDark && brightness > 220) {
+      return '#111111';
+    }
+
+    return color;
   }
 
   createNewBook() {

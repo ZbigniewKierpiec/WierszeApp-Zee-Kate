@@ -152,7 +152,6 @@ body {
 
 //   --accent: #6366f1;
 
-
 //   /* TOPBAR */
 //   --topbar-bg: #f6f6f6;
 //   --topbar-text: #1f2937;
@@ -186,10 +185,9 @@ body {
 //   --divider: #d1d5db;
 // }
 
-
 // body.light {
 //   /* SIDEBAR */
-//   --sidebar-bg: #e4e3df; 
+//   --sidebar-bg: #e4e3df;
 //   --sidebar-text: #262626;
 
 //   --card-bg: #dad9d4;
@@ -235,7 +233,6 @@ body {
 //   --divider: #cdcbc5;
 // }
 
-
 body.light {
   /* SIDEBAR (ciemniejszy – tworzy ramę) */
   --sidebar-bg: #d6d3cd;
@@ -274,7 +271,7 @@ body.light {
   --editor-bg: #f1efe9;
   --toolbar-bg: #e5e3de;
   --poem-bg: #f7f5f1;
-
+  --poem-text: #2a2a2a;
   --sidebar-active: #cfcac2;
   --sidebar-active-text: #141414;
 
@@ -283,8 +280,6 @@ body.light {
   --tag-bg: #d4d1ca;
   --divider: #c9c5bd;
 }
-
-
 
 /* 🌙 DARK */
 body.dark {
@@ -315,7 +310,7 @@ body.dark {
   --editor-bg: #0f172a;
   --toolbar-bg: #1f2937;
   --poem-bg: #1f2937;
-
+  --poem-text: #f5f5f5;
   /* EXTRA */
   --border: #374151;
   --tag-bg: #374151;
