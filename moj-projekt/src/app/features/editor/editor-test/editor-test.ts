@@ -118,10 +118,18 @@ export class EditorTest implements OnInit, OnDestroy {
       this.hideGooey();
     }
   }
+  //////////////////////////////
 
+  isCustomizeOpen = false;
+
+  toggleCustomize() {
+    this.isCustomizeOpen = !this.isCustomizeOpen;
+  }
+
+  //////////////////////////////
   ngOnInit() {
     const user = this.auth.getUser();
-
+    this.state.isCustomizeOpen$.subscribe((v) => (this.isCustomizeOpen = v));
     if (!user?.id) {
       this.router.navigate(['/login']);
       return;

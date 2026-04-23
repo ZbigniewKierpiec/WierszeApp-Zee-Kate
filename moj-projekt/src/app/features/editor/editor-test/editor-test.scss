@@ -433,3 +433,275 @@ button,
 //   background: #ffffff; /* 🔥 zawsze biały */
 //   color: #000000;
 // }
+/* CONTAINER */
+/* container */
+/* container */
+/* ========================= */
+/* 🔹 TOOLBAR */
+/* ========================= */
+.toolbar {
+  display: flex;
+  align-items: center;
+ overflow-x: auto;
+  height: 38px;
+  padding: 0 12px;
+flex-wrap: nowrap; 
+  border-bottom: 1px solid var(--border);
+  background: var(--toolbar-bg);
+}
+
+/* ========================= */
+/* 🔹 BASIC */
+/* ========================= */
+.toolbar-basic {
+  display: flex;
+  align-items: center;
+ flex-shrink: 0;
+
+  gap: 6px;
+}
+
+/* BUTTONS */
+.toolbar-basic button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 6px 10px;
+  border-radius: 8px;
+
+  border: none;
+  background: transparent;
+
+  font-size: 12px;
+  color: var(--text-muted);
+
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toolbar-basic button:hover {
+  background: var(--card-hover);
+  color: var(--text-main);
+}
+
+/* ========================= */
+/* 🔥 ADVANCED (INLINE) */
+/* ========================= */
+.toolbar-advanced {
+  display: none;
+  align-items: center;
+  gap: 8px;
+
+  margin-left: 12px;
+  padding-left: 12px;
+
+  border-left: 1px solid var(--border);
+}
+
+/* OPEN */
+.toolbar-advanced.open {
+  display: flex;
+}
+
+/* ========================= */
+/* 🔹 BACK BTN */
+/* ========================= */
+.toolbar-advanced .back {
+  width: 28px;
+  height: 28px;
+
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.toolbar-advanced .back:hover {
+  background: var(--card-hover);
+  opacity: 1;
+}
+
+/* ========================= */
+/* 🔹 INPUTS */
+/* ========================= */
+.toolbar-advanced select,
+.toolbar-advanced input {
+  height: 28px;
+  padding: 0 6px;
+
+  border-radius: 6px;
+  border: 1px solid var(--border);
+
+  background: var(--card-bg);
+  color: var(--text-main);
+
+  font-size: 12px;
+}
+
+.toolbar-advanced select:hover,
+.toolbar-advanced input:hover {
+  border-color: var(--accent);
+}
+
+.toolbar-advanced select:focus,
+.toolbar-advanced input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.toolbar-advanced input[type="color"] {
+  width: 32px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  overflow-x: auto;
+}
+
+.toolbar-basic {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 1;
+}
+
+.toolbar-advanced {
+  display: none;
+  align-items: center;
+  gap: 8px;
+
+  margin-left: 12px;
+
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.toolbar-advanced.open {
+  display: flex;
+}
+
+
+.toolbar {
+  height: 38px;
+  border-bottom: 1px solid var(--border);
+  background: var(--toolbar-bg);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.toolbar-safe {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+
+  height: 100%;
+  min-width: max-content;
+  padding: 0 12px;
+}
+
+.toolbar-basic {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.toolbar-basic button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.toolbar-basic button:hover {
+  background: var(--card-hover);
+  color: var(--text-main);
+}
+
+.toolbar-advanced {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.toolbar-advanced.open {
+  display: flex;
+}
+
+.toolbar-advanced .back {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.toolbar-advanced .back:hover {
+  background: var(--card-hover);
+  opacity: 1;
+}
+
+.toolbar-advanced select,
+.toolbar-advanced input {
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-main);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.toolbar-advanced select:hover,
+.toolbar-advanced input:hover {
+  border-color: var(--accent);
+}
+
+.toolbar-advanced select:focus,
+.toolbar-advanced input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.toolbar-advanced input[type="color"] {
+  width: 32px;
+  padding: 0;
+  cursor: pointer;
+}
+
+

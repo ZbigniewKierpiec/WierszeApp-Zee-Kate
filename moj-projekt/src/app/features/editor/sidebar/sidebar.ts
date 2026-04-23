@@ -5,7 +5,7 @@ import {
   ViewChild,
   ElementRef,
   OnInit,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,7 +22,6 @@ import { EditorStateService } from './editor-state-service';
   styleUrl: './sidebar.scss',
 })
 export class Sidebar implements OnInit, OnDestroy {
-
   @ViewChild('indicator') indicator!: ElementRef;
   @ViewChild('sidebar') sidebar!: ElementRef;
 
@@ -41,7 +40,8 @@ export class Sidebar implements OnInit, OnDestroy {
   /* ============================= */
   selectedTemplate: string = '';
   selectedVariant: any = null;
-
+  isCustomizeMode = false;
+  isCustomizeOpen = false;
   openTemplate: string | null = null;
   selectedPreset: string = '';
   private lastClickedTemplate: string | null = null;
@@ -77,11 +77,8 @@ export class Sidebar implements OnInit, OnDestroy {
   //     });
   // }
 
-
-ngOnInit() {
-  this.state.template$
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(t => {
+  ngOnInit() {
+    this.state.template$.pipe(takeUntil(this.destroy$)).subscribe((t) => {
       if (!t) return;
 
       this.selectedTemplate = t;
@@ -91,17 +88,13 @@ ngOnInit() {
       this.updateIndicatorFromState();
     });
 
-  this.state.variant$
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(v => {
+    this.state.variant$.pipe(takeUntil(this.destroy$)).subscribe((v) => {
       this.selectedVariant = v;
       this.updateIndicatorFromState();
     });
 
-  // 🔥 DODAJ TUTAJ
-  this.state.preset$
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(p => {
+    // 🔥 DODAJ TUTAJ
+    this.state.preset$.pipe(takeUntil(this.destroy$)).subscribe((p) => {
       this.selectedPreset = p?.name || '';
 
       // 🔥 opcjonalnie: otwórz template z preset
@@ -110,24 +103,28 @@ ngOnInit() {
         this.lastClickedTemplate = p.template;
       }
     });
-}
-
-
-
-
-
-
-
-
-
-
-
-
+  }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+
+
+// openCustomize() {
+//   this.isCustomizeOpen = !this.isCustomizeOpen;
+// }
+
+
+openCustomize() {
+  this.isCustomizeOpen = !this.isCustomizeOpen;
+
+  this.state.isCustomizeOpen$.next(this.isCustomizeOpen);
+}
+
+
+
 
   /* ============================= */
   /* 🔥 GETTERS */
@@ -214,8 +211,7 @@ ngOnInit() {
     this.lastClickedTemplate = template.name;
 
     if (isSame) {
-      this.openTemplate =
-        this.openTemplate === template.name ? null : template.name;
+      this.openTemplate = this.openTemplate === template.name ? null : template.name;
     } else {
       this.openTemplate = template.name;
     }

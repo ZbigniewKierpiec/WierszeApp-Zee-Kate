@@ -8,4 +8,5 @@ export class EditorStateService {
   template$ = new BehaviorSubject<string | null>(null);
   variant$ = new BehaviorSubject<any>(null);
   preset$ = new BehaviorSubject<any>(null);
+  isCustomizeOpen$ = new BehaviorSubject<boolean>(false);
 }

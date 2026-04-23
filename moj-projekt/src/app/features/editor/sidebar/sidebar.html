@@ -1,5 +1,6 @@
 <aside class="sidebar" #sidebar>
-  <!-- 🔥 INDICATOR -->
+
+  <!-- INDICATOR -->
   <div class="active-indicator" #indicator></div>
 
   <!-- PRESETS -->
@@ -16,12 +17,34 @@
     </div>
   </div>
 
-  <!-- TEMPLATE -->
+  <!-- CUSTOMIZE TOGGLE -->
   <div class="section">
-    <h3>📐 {{ 'SIDEBAR.TEMPLATE' | translate }}</h3>
+    <!-- <button
+      type="button"
+      class="ghost"
+      [class.active]="isCustomizeOpen"
+      (click)="openCustomize()"
+    >
+      <span>⚙ Customize</span>
+      <span>{{ isCustomizeOpen ? '▾' : '▸' }}</span>
+    </button> -->
+    <button
+  type="button"
+  class="ghost"
+  [class.active]="isCustomizeOpen"
+  (click)="openCustomize()"
+>
+  <span>⚙ Customize</span>
+  <span>{{ isCustomizeOpen ? '▾' : '▸' }}</span>
+</button>
+  </div>
+
+  <!-- TEMPLATE (ROZWIJANE - POPRAWNIE OPKOWANE) -->
+  <div class="section customize" [class.open]="isCustomizeOpen">
 
     <div *ngFor="let t of templates" class="template-group">
-      <!-- TEMPLATE CARD -->
+
+      <!-- TEMPLATE -->
       <div
         class="card"
         #cardEl
@@ -29,64 +52,33 @@
         (click)="onTemplateClick(t, cardEl)"
       >
         <span>{{ t.icon }} {{ t.name | translate }}</span>
+
         <span *ngIf="t.variants?.length" class="arrow">
           {{ openTemplate === t.name ? '▾' : '▸' }}
         </span>
       </div>
 
       <!-- VARIANTS -->
-      <!-- <div class="variants" [class.open]="openTemplate === t.name">
+      <div class="variants" [class.open]="openTemplate === t.name">
         <div
           class="variant"
           #variantEl
           *ngFor="let v of t.variants"
-          [class.active]="selectedVariant?.name === v.name"
+          [class.active]="selectedVariant === v.name || selectedVariant?.name === v.name"
           (click)="onVariantClick(v, variantEl); $event.stopPropagation()"
         >
           • {{ v.name | translate }}
         </div>
-
-
-
-
-      </div> -->
-
-
-
-<div class="variants" [class.open]="openTemplate === t.name">
-  <div
-    class="variant"
-    #variantEl
-    *ngFor="let v of t.variants"
-  
-[class.active]="
-  selectedVariant === v.name ||
-  selectedVariant?.name === v.name
-"
-
-
-
-    (click)="onVariantClick(v, variantEl); $event.stopPropagation()"
-  >
-    • {{ v.name | translate }}
-  </div>
-</div>
-
-
-
-
-
-
-
+      </div>
 
     </div>
+
   </div>
 
   <!-- ACTIONS -->
   <div class="section actions">
     <button type="button" (click)="onSave()">💾 {{ 'SIDEBAR.SAVE' | translate }}</button>
     <button type="button" (click)="onClear()">🧹 {{ 'SIDEBAR.CLEAR' | translate }}</button>
-    <!-- <button type="button" (click)="onPreview()">📖 {{ 'SIDEBAR.PREVIEW' | translate }}</button>
-    <button type="button" (click)="onExport()">📥 {{ 'SIDEBAR.EXPORT' | translate }}</button> -->
   </div>
+
 </aside>

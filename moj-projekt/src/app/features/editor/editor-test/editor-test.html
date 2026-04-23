@@ -22,7 +22,7 @@
 
 <!-- EDITOR -->
 <div class="editor-area">
-  <div class="toolbar">
+  <!-- <div class="toolbar">
     <button (click)="fillLorem()">🧪 {{ 'EDITOR.LOREM' | translate }}</button>
 
     <button type="button" (click)="formatAdvanced()">
@@ -85,21 +85,140 @@
       <option value="center">{{ 'EDITOR.CENTER' | translate }}</option>
       <option value="right">{{ 'EDITOR.RIGHT' | translate }}</option>
     </select>
+  </div> -->
+
+
+<!-- 
+<div class="toolbar">
+
+
+  <div class="toolbar-basic">
+
+    <button (click)="fillLorem()">
+      🧪 {{ 'EDITOR.LOREM' | translate }}
+    </button>
+
+    <button type="button" (click)="formatAdvanced()">
+      ✨ {{ 'EDITOR.FORMAT_ADVANCED' | translate }}
+    </button>
+
+    <button (click)="formatAI()">
+      ✨ {{ 'EDITOR.AI_FORMAT' | translate }}
+    </button>
+
   </div>
 
-  <!-- TEMPLATE LABEL -->
-  <!-- <div class="template-label">
-      <span class="icon">
-       {{ selectedTemplate || ('EDITOR.NO_TEMPLATE' | translate) }}
-      </span>
+  <div class="toolbar-advanced" [class.open]="isCustomizeOpen">
 
-      <span>
-        {{ 'EDITOR.TEMPLATE' | translate }}: {{ selectedTemplate | translate }}
-        <span *ngIf="selectedVariant" class="variant">
-          • {{ selectedVariant.name | translate }}
-        </span>
-      </span>
-    </div> -->
+    <button class="back" (click)="toggleCustomize()">←</button>
+>
+    <select
+      [ngModel]="activeField === 'title' ? titleFont : textFont"
+      (ngModelChange)="onFontChange($event)"
+    >
+   
+    </select>
+
+    <input
+      type="number"
+      [ngModel]="activeField === 'title' ? titleSize : textFontSize"
+      (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
+      min="12"
+      max="60"
+    />
+
+    <input
+      type="color"
+      [ngModel]="activeField === 'title' ? titleColor : textColor"
+      (ngModelChange)="activeField === 'title' ? (titleColor = $event) : (textColor = $event)"
+    />
+
+    <select
+      [ngModel]="activeField === 'title' ? titleAlign : textAlign"
+      (ngModelChange)="activeField === 'title' ? (titleAlign = $event) : (textAlign = $event)"
+    >
+      <option value="left">⬅</option>
+      <option value="center">⬍</option>
+      <option value="right">➡</option>
+    </select>
+
+  </div>
+
+</div>
+ -->
+
+
+<div class="toolbar">
+
+  <div class="toolbar-safe">
+
+    <!-- 🔹 BASIC -->
+    <div class="toolbar-basic">
+
+      <button (click)="fillLorem()">
+        🧪 {{ 'EDITOR.LOREM' | translate }}
+      </button>
+
+      <button type="button" (click)="formatAdvanced()">
+        ✨ {{ 'EDITOR.FORMAT_ADVANCED' | translate }}
+      </button>
+
+      <button (click)="formatAI()">
+        ✨ {{ 'EDITOR.AI_FORMAT' | translate }}
+      </button>
+
+    </div>
+
+    <!-- 🔥 ADVANCED -->
+    <div class="toolbar-advanced" [class.open]="isCustomizeOpen">
+
+      <button class="back" (click)="toggleCustomize()">←</button>
+
+      <select
+        [ngModel]="activeField === 'title' ? titleFont : textFont"
+        (ngModelChange)="onFontChange($event)"
+      >
+        <!-- zostaje jak masz -->
+      </select>
+
+      <input
+        type="number"
+        [ngModel]="activeField === 'title' ? titleSize : textFontSize"
+        (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
+        min="12"
+        max="60"
+      />
+
+      <input
+        type="color"
+        [ngModel]="activeField === 'title' ? titleColor : textColor"
+        (ngModelChange)="activeField === 'title' ? (titleColor = $event) : (textColor = $event)"
+      />
+
+      <select
+        [ngModel]="activeField === 'title' ? titleAlign : textAlign"
+        (ngModelChange)="activeField === 'title' ? (titleAlign = $event) : (textAlign = $event)"
+      >
+        <option value="left">⬅</option>
+        <option value="center">⬍</option>
+        <option value="right">➡</option>
+      </select>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
 
   <div class="template-label">
     <span class="icon">
