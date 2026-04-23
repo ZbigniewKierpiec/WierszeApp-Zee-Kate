@@ -172,7 +172,7 @@
     <!-- 🔥 ADVANCED -->
     <div class="toolbar-advanced" [class.open]="isCustomizeOpen">
 
-      <button class="back" (click)="toggleCustomize()">←</button>
+      <button id="back" class="back" (click)="toggleCustomize()">←</button>
 
       <select
         [ngModel]="activeField === 'title' ? titleFont : textFont"
