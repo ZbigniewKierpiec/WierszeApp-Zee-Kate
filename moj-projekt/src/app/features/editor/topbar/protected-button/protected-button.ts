@@ -39,8 +39,6 @@ export class ProtectedButton {
     return this.auth.getUserRole() === this.requiredRole;
   }
 
- 
-
   // handleClick() {
   //   if (!this.isLoggedIn) {
   //     this.dialog
@@ -65,20 +63,17 @@ export class ProtectedButton {
 
   //   this.action.emit();
   // }
-
-
 handleClick() {
   if (!this.isLoggedIn) {
-
     this.dialog
       .open(UiDialog, {
         data: {
           icon: '🔒',
-          title: this.title || 'Wymagane logowanie',
-          message: this.message || 'Zaloguj się aby użyć tej funkcji.',
-          confirmText: 'Zaloguj się',
-          cancelText: 'Anuluj',
-        }
+          title: this.title || 'DIALOG.SAVE_TITLE',
+          message: this.message || 'DIALOG.SAVE_MESSAGE',
+          confirmText: 'DIALOG.LOGIN',
+          cancelText: 'DIALOG.CANCEL',
+        },
       })
       .afterClosed()
       .subscribe((result) => {
@@ -97,10 +92,6 @@ handleClick() {
 
   this.action.emit();
 }
-
-
-
-
 
   get iconToShow(): string {
     if (!this.isLoggedIn) return '🔒';

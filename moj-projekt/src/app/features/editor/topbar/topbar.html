@@ -101,13 +101,13 @@
     <!-- <button class="btn primary" (click)="save()">
       💾 <span>{{ 'TOPBAR.SAVE' | translate }}</span>
     </button> -->
+
     <app-protected-button
-      [attr.data-id]="'save'"
       variant="primary"
       label="TOPBAR.SAVE"
       icon="💾"
-      title="Zapis niedostępny"
-      message="Aby zapisać swój wiersz, musisz być zalogowany."
+      [title]="'DIALOG.SAVE_TITLE'"
+      [message]="'DIALOG.SAVE_MESSAGE'"
       (action)="save()"
     ></app-protected-button>
 
@@ -119,12 +119,11 @@
       📥 <span>{{ 'TOPBAR.EXPORT' | translate }}</span>
     </button> -->
     <app-protected-button
-      [attr.data-id]="'export'"
-      variant="primary"
+     variant="primary"
       label="TOPBAR.EXPORT"
       icon="📥"
-      title="Eksport niedostępny"
-      message="Zaloguj się, aby pobrać swój tomik jako PDF."
+      [title]="'DIALOG.EXPORT_TITLE'"
+      [message]="'DIALOG.EXPORT_MESSAGE'"
       (action)="export()"
     ></app-protected-button>
 

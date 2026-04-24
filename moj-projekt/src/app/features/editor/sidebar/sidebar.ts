@@ -54,7 +54,7 @@ export class Sidebar implements OnInit, OnDestroy {
     private config: EditorConfigService,
     private state: EditorStateService,
     private auth: AuthService,
-    private dialog: MatDialog  
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit() {
@@ -109,40 +109,32 @@ export class Sidebar implements OnInit, OnDestroy {
   //   this.state.isCustomizeOpen$.next(this.isCustomizeOpen);
   // }
 
+  openCustomize() {
+    if (!this.isLoggedIn) {
+      this.dialog
+        .open(UiDialog, {
+          data: {
+            icon: '🔒',
+            title: 'DIALOG.CUSTOMIZE_TITLE',
+            message: 'DIALOG.CUSTOMIZE_MESSAGE',
+            confirmText: 'DIALOG.LOGIN',
+            cancelText: 'DIALOG.CANCEL',
+          },
+        })
 
-openCustomize() {
-  if (!this.isLoggedIn) {
+        .afterClosed()
+        .subscribe((res) => {
+          if (res) {
+            window.location.href = '/login'; // lub router.navigate
+          }
+        });
 
-    this.dialog.open(UiDialog, {
-      data: {
-        icon: '🔒',
-        title: 'Personalizacja niedostępna',
-        message: 'Zaloguj się, aby dostosować styl swojego wiersza.',
-        confirmText: 'Zaloguj się',
-        cancelText: 'Anuluj'
-      }
-    })
-    .afterClosed()
-    .subscribe(res => {
-      if (res) {
-        window.location.href = '/login'; // lub router.navigate
-      }
-    });
+      return;
+    }
 
-    return;
+    this.isCustomizeOpen = !this.isCustomizeOpen;
+    this.state.isCustomizeOpen$.next(this.isCustomizeOpen);
   }
-
-  this.isCustomizeOpen = !this.isCustomizeOpen;
-  this.state.isCustomizeOpen$.next(this.isCustomizeOpen);
-}
-
-
-
-
-
-
-
-
 
   get isLoggedIn(): boolean {
     return this.auth.isLoggedIn();

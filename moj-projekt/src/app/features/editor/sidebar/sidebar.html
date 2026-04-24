@@ -38,13 +38,13 @@
   <span>{{ isCustomizeOpen ? '▾' : '▸' }}</span> -->
 
 <span>
-  <ng-container *ngIf="isLoggedIn; else locked">
-    ⚙ Customize
-  </ng-container>
+ <ng-container *ngIf="isLoggedIn; else locked">
+  ⚙ {{ 'SIDEBAR.CUSTOMIZE' | translate }}
+</ng-container>
 
-  <ng-template #locked>
-    🔒 Customize
-  </ng-template>
+<ng-template #locked>
+  🔒 {{ 'SIDEBAR.CUSTOMIZE' | translate }}
+</ng-template>
 </span>
 
 

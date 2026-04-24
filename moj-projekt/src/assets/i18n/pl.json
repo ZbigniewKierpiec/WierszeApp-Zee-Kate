@@ -18,7 +18,8 @@
     "SAVE": "Zapisz",
     "CLEAR": "Wyczyść",
     "PREVIEW": "Podgląd",
-    "EXPORT": "Eksport"
+    "EXPORT": "Eksport",
+    "CUSTOMIZE": "Dostosuj"
   },
 
   "DASHBOARD": {
@@ -61,6 +62,21 @@
     "PREV": "Poprzednia",
     "NEXT": "Następna"
   },
+
+  "DIALOG": {
+    "SAVE_TITLE": "Zapis niedostępny",
+    "SAVE_MESSAGE": "Zaloguj się, aby zapisać swój wiersz.",
+
+    "EXPORT_TITLE": "Eksport niedostępny",
+    "EXPORT_MESSAGE": "Zaloguj się, aby pobrać swój tomik jako PDF.",
+
+    "CUSTOMIZE_TITLE": "Personalizacja niedostępna",
+    "CUSTOMIZE_MESSAGE": "Zaloguj się, aby dostosować wygląd wiersza.",
+
+    "LOGIN": "Zaloguj się",
+    "CANCEL": "Anuluj"
+  },
+
   "Romantic": "Romantyczny",
   "Minimal": "Minimalistyczny",
   "Dark Poetry": "Mroczna poezja",

@@ -18,7 +18,8 @@
     "SAVE": "Save",
     "CLEAR": "Clear",
     "PREVIEW": "Preview",
-    "EXPORT": "Export"
+    "EXPORT": "Export",
+    "CUSTOMIZE": "Customize"
   },
 
   "DASHBOARD": {
@@ -61,6 +62,20 @@
     "CLOSE": "Close",
     "PREV": "Prev",
     "NEXT": "Next"
+  },
+
+  "DIALOG": {
+    "SAVE_TITLE": "Save unavailable",
+    "SAVE_MESSAGE": "You need to be logged in to save your poem.",
+
+    "EXPORT_TITLE": "Export unavailable",
+    "EXPORT_MESSAGE": "Log in to download your book as a PDF.",
+
+    "CUSTOMIZE_TITLE": "Customization unavailable",
+    "CUSTOMIZE_MESSAGE": "Log in to customize your poem.",
+
+    "LOGIN": "Log in",
+    "CANCEL": "Cancel"
   },
 
   "Romantic": "Romantic",
