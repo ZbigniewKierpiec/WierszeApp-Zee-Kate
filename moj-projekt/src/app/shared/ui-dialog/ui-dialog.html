@@ -1,19 +1,25 @@
-<div class="dialog">
-  <div class="icon">{{ data.icon || '🔒' }}</div>
+<div class="dialog-backdrop" (click)="close()"></div>
+
+<div class="dialog" (click)="$event.stopPropagation()">
+
+  <div class="top-glow"></div>
+
+  <div class="icon-wrapper">
+    <div class="icon">{{ data.icon || '🔒' }}</div>
+  </div>
 
   <h2>{{ data.title | translate }}</h2>
 
-  <p>
-    {{ data.message | translate }}
-  </p>
+  <p>{{ data.message | translate }}</p>
 
   <div class="actions">
     <button class="btn subtle" (click)="close()">
-      {{ data.cancelText || 'DIALOG.CANCEL' | translate }}
+      {{ (data.cancelText || 'DIALOG.CANCEL') | translate }}
     </button>
 
     <button class="btn primary" (click)="confirm()">
-      {{ data.confirmText || 'DIALOG.LOGIN' | translate }}
+      {{ (data.confirmText || 'DIALOG.LOGIN') | translate }}
     </button>
   </div>
+
 </div>
