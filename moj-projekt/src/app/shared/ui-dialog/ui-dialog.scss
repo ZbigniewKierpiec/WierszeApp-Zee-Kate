@@ -1,34 +1,43 @@
+/* ================= BACKDROP ================= */
 .dialog-backdrop {
   position: fixed;
   inset: 0;
+
   background:
-    radial-gradient(circle at top, rgba(99, 102, 241, 0.18), transparent 35%),
-    rgba(0, 0, 0, 0.48);
-  backdrop-filter: blur(12px);
-  animation: fadeIn 0.22s ease;
+    radial-gradient(circle at top, rgba(99, 102, 241, 0.12), transparent 40%), rgba(0, 0, 0, 0.42);
+
+  backdrop-filter: blur(10px);
+
+  animation: fadeIn 0.18s ease;
   z-index: 1000;
 }
 
+/* ================= MAIN ================= */
 .dialog {
   position: fixed;
   top: 50%;
   left: 50%;
+
   width: 380px;
   max-width: 92vw;
+
   padding: 34px 30px;
   border-radius: 26px;
+
   text-align: center;
   overflow: hidden;
   isolation: isolate;
 
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--topbar-bg), white 8%),
-      var(--topbar-bg)
-    );
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--topbar-bg), white 8%),
+    var(--topbar-bg)
+  );
+
   color: var(--topbar-text);
+
   border: 1px solid color-mix(in srgb, var(--border), white 18%);
+
   backdrop-filter: blur(24px);
 
   box-shadow:
@@ -36,53 +45,65 @@
     0 12px 35px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
-  transform: translate(-50%, -45%) scale(0.94);
+  /* 🔥 SMOOTH (bez bounce) */
+  transform: translate(-50%, -48%) scale(0.97);
   opacity: 0;
-  animation: dialogSpring 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: dialogFade 0.22s ease-out forwards;
+
   z-index: 1001;
 }
 
+/* ================= GLASS OVERLAY ================= */
 .dialog::before {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.16),
-      transparent 35%
-    );
+
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 40%);
+
   pointer-events: none;
   z-index: -1;
 }
 
+/* INNER BORDER */
 .dialog::after {
   content: '';
   position: absolute;
   inset: 1px;
   border-radius: 25px;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   pointer-events: none;
 }
 
+/* ================= GLOW ================= */
 .top-glow {
   position: absolute;
   top: -60px;
   left: 50%;
+
   width: 220px;
   height: 120px;
+
   transform: translateX(-50%);
+
   background: radial-gradient(
     ellipse at center,
     color-mix(in srgb, var(--accent), transparent 35%),
     transparent 70%
   );
+
   filter: blur(34px);
-  opacity: 0.85;
+  opacity: 0;
+
   pointer-events: none;
   z-index: -1;
+
+  animation: glowFade 0.35s ease forwards;
+  animation-delay: 0.08s;
 }
 
+/* ================= ICON ================= */
 .icon-wrapper {
   display: flex;
   justify-content: center;
@@ -92,27 +113,30 @@
 .icon {
   width: 66px;
   height: 66px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   border-radius: 22px;
   font-size: 30px;
 
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--accent), white 18%),
-      var(--accent-hover)
-    );
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent), white 18%),
+    var(--accent-hover)
+  );
+
   color: white;
 
   box-shadow:
     0 14px 35px color-mix(in srgb, var(--accent), transparent 45%),
     inset 0 1px 0 rgba(255, 255, 255, 0.28);
 
-  animation: iconPop 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: iconFade 0.25s ease;
 }
 
+/* ================= TITLE ================= */
 h2 {
   margin: 0;
   font-size: 21px;
@@ -120,30 +144,38 @@ h2 {
   letter-spacing: -0.02em;
 }
 
+/* ================= TEXT ================= */
 p {
   margin: 14px auto 26px;
   max-width: 290px;
+
   font-size: 14.5px;
   line-height: 1.65;
+
   color: var(--text-muted);
 }
 
+/* ================= ACTIONS ================= */
 .actions {
   display: flex;
   justify-content: center;
   gap: 12px;
 }
 
+/* ================= BUTTON BASE ================= */
 .btn {
   position: relative;
   overflow: hidden;
+
   min-width: 104px;
+
   display: flex;
   align-items: center;
   justify-content: center;
 
   padding: 10px 18px;
   border-radius: 14px;
+
   border: none;
   cursor: pointer;
 
@@ -151,7 +183,7 @@ p {
   font-weight: 600;
 
   transition:
-    transform 0.2s ease,
+    transform 0.18s ease,
     background 0.2s ease,
     box-shadow 0.2s ease,
     opacity 0.2s ease;
@@ -160,26 +192,34 @@ p {
   color: var(--btn-text);
 }
 
+/* CLICK RIPPLE */
 .btn::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(255,255,255,0.35), transparent 40%);
+
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.35), transparent 40%);
+
   transform: scale(0);
   opacity: 0;
-  transition: transform 0.35s ease, opacity 0.45s ease;
+
+  transition:
+    transform 0.35s ease,
+    opacity 0.45s ease;
 }
 
 .btn:active::after {
-  transform: scale(2.8);
+  transform: scale(2.6);
   opacity: 1;
   transition: 0s;
 }
 
+/* HOVER */
 .btn:hover {
   transform: translateY(-1px);
 }
 
+/* ================= SUBTLE ================= */
 .btn.subtle {
   border: 1px solid var(--border);
   background: color-mix(in srgb, var(--btn-bg), transparent 12%);
@@ -191,54 +231,58 @@ p {
   opacity: 1;
 }
 
+/* ================= PRIMARY ================= */
 .btn.primary {
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--accent), white 12%),
-      var(--accent-hover)
-    );
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent), white 12%),
+    var(--accent-hover)
+  );
+
   color: white;
-  box-shadow:
-    0 10px 26px color-mix(in srgb, var(--accent), transparent 50%);
+
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--accent), transparent 50%);
 }
 
 .btn.primary:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow:
-    0 16px 36px color-mix(in srgb, var(--accent), transparent 42%);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--accent), transparent 42%);
 }
 
-@keyframes dialogSpring {
-  0% {
+/* ================= ANIMATIONS ================= */
+@keyframes dialogFade {
+  from {
     opacity: 0;
-    transform: translate(-50%, -42%) scale(0.92);
+    transform: translate(-50%, -46%) scale(0.96);
   }
-  70% {
-    opacity: 1;
-    transform: translate(-50%, -51%) scale(1.015);
-  }
-  100% {
+  to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes iconPop {
-  0% {
-    transform: scale(0.65) rotate(-8deg);
+  from {
     opacity: 0;
   }
-  70% {
-    transform: scale(1.08) rotate(2deg);
+  to {
     opacity: 1;
   }
-  100% {
-    transform: scale(1) rotate(0);
+}
+
+@keyframes glowFade {
+  to {
+    opacity: 0.85;
+  }
+}
+
+@keyframes iconFade {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
