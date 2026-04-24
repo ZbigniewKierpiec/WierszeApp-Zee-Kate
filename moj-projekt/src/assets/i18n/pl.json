@@ -63,6 +63,16 @@
     "NEXT": "Następna"
   },
 
+  "AUTH": {
+    "LOGIN_SUCCESS": "Zalogowano 🎉",
+    "LOGIN_ERROR": "Niepoprawne dane logowania",
+    "LOGOUT": "Wylogowano 👋",
+
+    "REGISTER_SUCCESS": "Konto utworzone 🎉",
+    "REGISTER_ERROR": "Błąd rejestracji ❌",
+    "EMAIL_EXISTS": "Ten email już istnieje"
+  },
+
   "DIALOG": {
     "SAVE_TITLE": "Zapis niedostępny",
     "SAVE_MESSAGE": "Zaloguj się, aby zapisać swój wiersz.",

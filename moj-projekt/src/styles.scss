@@ -434,4 +434,29 @@ app-gu.visible {
 //   background: #991b1b;
 // }
 
-/* ================= DROPDOWN ================= */
+/* ================= SUCCESS ================= */
+
+/* SUCCESS */
+.snack-success .mdc-snackbar__surface {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: white !important;
+}
+
+/* ERROR */
+.snack-error .mdc-snackbar__surface {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  color: white !important;
+}
+
+/* INFO */
+.snack-info .mdc-snackbar__surface {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  color: white !important;
+}
+
+/* COMMON */
+.mdc-snackbar__surface {
+  border-radius: 12px !important;
+  padding: 12px 18px !important;
+  font-weight: 500;
+}

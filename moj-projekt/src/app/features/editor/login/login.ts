@@ -3,10 +3,12 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EditorApiService } from './../../../services/editor-api';
-import  { AuthService } from '../../../services/auth-service';
+import { AuthService } from '../../../services/auth-service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateModule,  TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,TranslateModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -18,33 +20,78 @@ export class Login {
     private auth: AuthService,
     private router: Router,
     private api: EditorApiService,
+    private snack: MatSnackBar,
+      private translate: TranslateService
   ) {}
 
+  // login() {
+  //   const data = {
+  //     email: this.email,
+  //     password: this.password,
+  //   };
 
+  //   this.auth.login(data).subscribe((res: any) => {
 
-// login() {
-//   const data = {
-//     email: this.email,
-//     password: this.password,
-//   };
+  //     console.log('✅ LOGIN:', res);
 
-//   this.auth.login(data).subscribe((user: any) => {
+  //     // 🔥 jeśli chcesz ręcznie (ale nie musisz)
+  //     localStorage.setItem('user_id', res.user.id);
 
-//     console.log('✅ LOGIN:', user);
+  //     const lastBookId = localStorage.getItem('bookId');
 
-//     // 🔥 KLUCZOWE — ZAPISZ USER ID
-//     localStorage.setItem('user_id', user.id);
+  //     if (lastBookId) {
+  //       console.log('📌 Last book exists:', lastBookId);
+  //     }
 
-//     const lastBookId = localStorage.getItem('bookId');
+  //     this.router.navigate(['/editor']);
+  //   });
+  // }
 
-//     if (lastBookId) {
-//       console.log('📌 Last book exists:', lastBookId);
-//     }
+  // login() {
+  //   const data = {
+  //     email: this.email,
+  //     password: this.password,
+  //   };
 
-//     this.router.navigate(['/dashboard']);
-//   });
-// }
+  //   this.auth.login(data).subscribe({
+  //     next: (res: any) => {
+  //       console.log('✅ LOGIN:', res);
 
+  //       // (opcjonalne — jeśli gdzieś używasz)
+  //       localStorage.setItem('user_id', res.user.id);
+
+  //       // 🔥 SUCCESS MESSAGE
+  //       // this.snack.open('Zalogowano pomyślnie 🎉', '', {
+  //       //   duration: 2500,
+  //       //   panelClass: ['snack-success'],
+  //       // });
+  //       this.snack.open('Zalogowano 🎉', '', {
+  //         duration: 2500,
+  //         panelClass: ['snack-success'],
+  //         horizontalPosition: 'center',
+  //         verticalPosition: 'top', // albo 'bottom'
+  //       });
+  //       // 🔥 redirect logic
+  //       const lastBookId = localStorage.getItem('bookId');
+
+  //       if (lastBookId) {
+  //         console.log('📌 Last book exists:', lastBookId);
+  //         this.router.navigate(['/editor']);
+  //       } else {
+  //         this.router.navigate(['/dashboard']);
+  //       }
+  //     },
+
+  //     error: (err) => {
+  //       console.error('❌ LOGIN ERROR:', err);
+
+  //       this.snack.open('Błędny email lub hasło ❌', '', {
+  //         duration: 2500,
+  //         panelClass: ['snack-error'],
+  //       });
+  //     },
+  //   });
+  // }
 
 
 
@@ -54,25 +101,41 @@ login() {
     password: this.password,
   };
 
-  this.auth.login(data).subscribe((res: any) => {
+  this.auth.login(data).subscribe({
+    next: (res: any) => {
 
-    console.log('✅ LOGIN:', res);
+      this.snack.open(
+        this.translate.instant('AUTH.LOGIN_SUCCESS'),
+        '',
+        {
+          duration: 2500,
+          panelClass: ['snack-success'],
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        }
+      );
 
-    // 🔥 jeśli chcesz ręcznie (ale nie musisz)
-    localStorage.setItem('user_id', res.user.id);
+      const lastBookId = localStorage.getItem('bookId');
 
-    const lastBookId = localStorage.getItem('bookId');
+      this.router.navigate([
+        lastBookId ? '/editor' : '/dashboard'
+      ]);
+    },
 
-    if (lastBookId) {
-      console.log('📌 Last book exists:', lastBookId);
+    error: () => {
+      this.snack.open(
+        this.translate.instant('AUTH.LOGIN_ERROR'),
+        '',
+        {
+          duration: 2500,
+          panelClass: ['snack-error'],
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        }
+      );
     }
-
-    this.router.navigate(['/editor']);
   });
 }
-
-
-
 
 
 

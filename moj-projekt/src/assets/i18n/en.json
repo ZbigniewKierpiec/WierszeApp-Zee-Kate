@@ -64,6 +64,16 @@
     "NEXT": "Next"
   },
 
+  "AUTH": {
+    "LOGIN_SUCCESS": "Logged in 🎉",
+    "LOGIN_ERROR": "Invalid login credentials",
+    "LOGOUT": "Logged out 👋",
+
+    "REGISTER_SUCCESS": "Account created 🎉",
+    "REGISTER_ERROR": "Registration failed ❌",
+    "EMAIL_EXISTS": "This email already exists"
+  },
+
   "DIALOG": {
     "SAVE_TITLE": "Save unavailable",
     "SAVE_MESSAGE": "You need to be logged in to save your poem.",

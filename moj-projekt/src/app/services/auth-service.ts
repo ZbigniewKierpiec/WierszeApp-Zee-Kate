@@ -2,46 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-
-// private api = 'http://localhost:3000/api/auth';
-
-//   constructor(private http: HttpClient) {}
-
-//   login(email: string, password: string) {
-//     return this.http.post<any>(`${this.api}/login`, { email, password }).pipe(
-//       tap(res => {
-//         console.log('🔥 LOGIN RESPONSE', res);
-
-//         localStorage.setItem('accessToken', res.accessToken);
-//         localStorage.setItem('refreshToken', res.refreshToken);
-//       })
-//     );
-//   }
-
-//   refresh() {
-//     const refreshToken = localStorage.getItem('refreshToken');
-
-//     return this.http.post<any>(`${this.api}/refresh`, { refreshToken }).pipe(
-//       tap(res => {
-//         localStorage.setItem('accessToken', res.accessToken);
-//       })
-//     );
-//   }
-
-//   getToken() {
-//     return localStorage.getItem('accessToken');
-//   }
-
-//   logout() {
-//     localStorage.clear();
-//   }
-////////////////////////////////////////////////////////////////////////////
-
- private api = 'http://localhost:3000/api/auth';
+  private api = 'http://localhost:3000/api/auth';
 
   constructor(private http: HttpClient) {}
 
@@ -62,7 +28,7 @@ export class AuthService {
         }
 
         localStorage.removeItem('bookId');
-      })
+      }),
     );
   }
 
@@ -73,7 +39,7 @@ export class AuthService {
     return this.http.post<any>(`${this.api}/refresh`, { refreshToken }).pipe(
       tap((res) => {
         localStorage.setItem('accessToken', res.accessToken);
-      })
+      }),
     );
   }
 
@@ -119,11 +85,4 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
   }
-
-
-
-
-
-
-
 }
