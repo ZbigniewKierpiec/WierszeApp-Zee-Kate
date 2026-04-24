@@ -66,8 +66,21 @@
       📕 <span>{{ 'TOPBAR.COVER' | translate }}</span>
     </button>
   </div>
+  <!-- 
+  <button
+    class="dashboard-btn"
+    mat-raised-button
+    color="primary"
+    (click)="goDashboard()"
+    [matBadge]="(booksCount$ | async) || 0"
+    matBadgeColor="accent"
+    matBadgeOverlap="false"
+  >
+    🏠 {{ 'TOPBAR.DASHBOARD' | translate }}
+  </button> -->
 
   <button
+    *ngIf="user"
     class="dashboard-btn"
     mat-raised-button
     color="primary"
@@ -85,17 +98,35 @@
   </div>
 
   <div class="right">
-    <button class="btn primary" (click)="save()">
+    <!-- <button class="btn primary" (click)="save()">
       💾 <span>{{ 'TOPBAR.SAVE' | translate }}</span>
-    </button>
+    </button> -->
+    <app-protected-button
+      [attr.data-id]="'save'"
+      variant="primary"
+      label="TOPBAR.SAVE"
+      icon="💾"
+      title="Zapis niedostępny"
+      message="Aby zapisać swój wiersz, musisz być zalogowany."
+      (action)="save()"
+    ></app-protected-button>
 
     <button class="btn danger" (click)="clear()">
       🧹 <span>{{ 'TOPBAR.CLEAR' | translate }}</span>
     </button>
-
+    <!-- 
     <button (click)="export()" class="btn">
       📥 <span>{{ 'TOPBAR.EXPORT' | translate }}</span>
-    </button>
+    </button> -->
+    <app-protected-button
+      [attr.data-id]="'export'"
+      variant="primary"
+      label="TOPBAR.EXPORT"
+      icon="📥"
+      title="Eksport niedostępny"
+      message="Zaloguj się, aby pobrać swój tomik jako PDF."
+      (action)="export()"
+    ></app-protected-button>
 
     <ng-container *ngIf="user; else guest">
       <span class="user">👤 {{ user.email }}</span>
@@ -105,10 +136,7 @@
       </button>
     </ng-container>
 
-
- <span class="divider"></span>
-
-
+    <span class="divider"></span>
 
     <app-toggle-theme></app-toggle-theme>
     <ng-template #guest>
@@ -123,10 +151,4 @@
 
     <button class="btn icon">⚙️</button>
   </div>
-
-
-
-
-
-
 </header>

@@ -34,8 +34,20 @@
   [class.active]="isCustomizeOpen"
   (click)="openCustomize()"
 >
-  <span>⚙ Customize</span>
-  <span>{{ isCustomizeOpen ? '▾' : '▸' }}</span>
+  <!-- <span>⚙ Customize</span>
+  <span>{{ isCustomizeOpen ? '▾' : '▸' }}</span> -->
+
+<span>
+  <ng-container *ngIf="isLoggedIn; else locked">
+    ⚙ Customize
+  </ng-container>
+
+  <ng-template #locked>
+    🔒 Customize
+  </ng-template>
+</span>
+
+
 </button>
   </div>
 

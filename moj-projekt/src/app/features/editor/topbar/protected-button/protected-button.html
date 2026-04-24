@@ -1,0 +1,23 @@
+<!-- 
+<button
+  class="btn"
+  [class.locked]="!hasAccess"
+  (click)="handleClick()"
+  [title]="tooltip"
+>
+  <span class="icon">{{ iconToShow }}</span>
+
+  <span class="label">
+    {{ label | translate }}
+  </span>
+</button> -->
+<button
+  class="btn"
+  [ngClass]="variant"
+  [class.locked]="!hasAccess"
+  (click)="handleClick()"
+  [title]="tooltip"
+>
+  <span class="icon">{{ iconToShow }}</span>
+  <span class="label">{{ label | translate }}</span>
+</button>

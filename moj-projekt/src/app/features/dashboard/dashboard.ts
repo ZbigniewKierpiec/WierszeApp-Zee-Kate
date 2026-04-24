@@ -2,7 +2,7 @@ import { routes } from './../../app.routes';
 
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { Auth } from '../../services/auth';
+
 import { EditorApiService } from '../../services/editor-api';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 import { BooksService } from '../../services/books-service';
 import { TranslateModule } from '@ngx-translate/core';
+import  { AuthService } from '../../services/auth-service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -24,7 +25,7 @@ export class Dashboard implements OnInit {
   lastBookId = localStorage.getItem('bookId');
   constructor(
     private api: EditorApiService,
-    private auth: Auth,
+   private auth: AuthService,
     private router: Router,
     private cd: ChangeDetectorRef,
     private dialog: MatDialog,

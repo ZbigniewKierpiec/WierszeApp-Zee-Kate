@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Auth } from './../../../services/auth';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import  { AuthService } from '../../../services/auth-service';
 @Component({
   selector: 'app-register',
   imports: [CommonModule,FormsModule],
@@ -15,7 +15,7 @@ export class Register {
 email = '';
   password = '';
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   register() {
     this.auth.register({
@@ -23,7 +23,7 @@ email = '';
       password: this.password,
     }).subscribe({
       next: (user: any) => {
-        this.auth.setUser(user); // 🔥 auto login
+        // this.auth.setUser(user); // 🔥 auto login
         this.router.navigate(['/editor']);
       },
       error: () => alert('Błąd rejestracji'),

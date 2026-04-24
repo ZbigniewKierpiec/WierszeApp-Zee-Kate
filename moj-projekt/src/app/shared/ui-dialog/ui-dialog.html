@@ -1,0 +1,21 @@
+<div class="dialog">
+
+  <div class="icon">{{ data.icon || '🔒' }}</div>
+
+  <h2>{{ title }}</h2>
+
+  <p>
+    {{ message }}
+  </p>
+
+  <div class="actions">
+    <button class="btn subtle" (click)="close()">
+      {{ data.cancelText || 'Anuluj' }}
+    </button>
+
+    <button class="btn primary" (click)="confirm()">
+      {{ data.confirmText || 'Zaloguj się' }}
+    </button>
+  </div>
+
+</div>

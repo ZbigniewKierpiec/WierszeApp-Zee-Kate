@@ -25,23 +25,23 @@ import { AuthGuard } from './services/auth-guard';
 //     ],
 //   },
 // ];
-
-
 export const routes: Routes = [
-  // 🔓 public
+  // 🔓 public bez layoutu
   { path: '', component: Home },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
 
-  // 🔒 protected
+  // 🔓 cała aplikacja z layoutem (BEZ guard)
   {
     path: '',
     component: MainLayout,
-    canActivate: [AuthGuard], 
     children: [
-      { path: 'dashboard', component: Dashboard },
       { path: 'editor', component: EditorTest },
       { path: 'editor/:id', component: EditorTest },
+      { path: 'dashboard', component: Dashboard },
     ],
   },
+
+  // fallback
+  { path: '**', redirectTo: '' }
 ];

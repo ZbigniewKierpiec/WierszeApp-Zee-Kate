@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Auth } from './../../../services/auth';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { EditorApiService } from './../../../services/editor-api';
+import  { AuthService } from '../../../services/auth-service';
 @Component({
   selector: 'app-login',
   imports: [CommonModule, FormsModule],
@@ -16,7 +15,7 @@ export class Login {
   password = '';
 
   constructor(
-    private auth: Auth,
+    private auth: AuthService,
     private router: Router,
     private api: EditorApiService,
   ) {}

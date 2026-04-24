@@ -10,9 +10,11 @@ import {
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
-
 import { EditorConfigService } from '../sidebar/editor-config-service';
 import { EditorStateService } from './editor-state-service';
+import { AuthService } from '../../../services/auth-service';
+import { MatDialog } from '@angular/material/dialog';
+import { UiDialog } from '../../../shared/ui-dialog/ui-dialog';
 
 @Component({
   selector: 'app-sidebar',
@@ -51,8 +53,9 @@ export class Sidebar implements OnInit, OnDestroy {
   constructor(
     private config: EditorConfigService,
     private state: EditorStateService,
+    private auth: AuthService,
+    private dialog: MatDialog  
   ) {}
-
 
   ngOnInit() {
     this.state.template$.pipe(takeUntil(this.destroy$)).subscribe((t) => {
@@ -87,21 +90,63 @@ export class Sidebar implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  // openCustomize() {
+  //   this.isCustomizeOpen = !this.isCustomizeOpen;
+  // }
 
+  // openCustomize() {
+  //   this.isCustomizeOpen = !this.isCustomizeOpen;
 
-// openCustomize() {
-//   this.isCustomizeOpen = !this.isCustomizeOpen;
-// }
+  //   this.state.isCustomizeOpen$.next(this.isCustomizeOpen);
+  // }
+
+  // openCustomize() {
+  //   if (!this.isLoggedIn) {
+  //     return;
+  //   }
+
+  //   this.isCustomizeOpen = !this.isCustomizeOpen;
+  //   this.state.isCustomizeOpen$.next(this.isCustomizeOpen);
+  // }
 
 
 openCustomize() {
-  this.isCustomizeOpen = !this.isCustomizeOpen;
+  if (!this.isLoggedIn) {
 
+    this.dialog.open(UiDialog, {
+      data: {
+        icon: '🔒',
+        title: 'Personalizacja niedostępna',
+        message: 'Zaloguj się, aby dostosować styl swojego wiersza.',
+        confirmText: 'Zaloguj się',
+        cancelText: 'Anuluj'
+      }
+    })
+    .afterClosed()
+    .subscribe(res => {
+      if (res) {
+        window.location.href = '/login'; // lub router.navigate
+      }
+    });
+
+    return;
+  }
+
+  this.isCustomizeOpen = !this.isCustomizeOpen;
   this.state.isCustomizeOpen$.next(this.isCustomizeOpen);
 }
 
 
 
+
+
+
+
+
+
+  get isLoggedIn(): boolean {
+    return this.auth.isLoggedIn();
+  }
 
   /* ============================= */
   /* 🔥 GETTERS */
@@ -169,42 +214,32 @@ openCustomize() {
     });
   }
 
-// updateIndicatorFromState() {
-//   requestAnimationFrame(() => {
-//     let el: HTMLElement | null = null;
+  // updateIndicatorFromState() {
+  //   requestAnimationFrame(() => {
+  //     let el: HTMLElement | null = null;
 
-//     if (this.selectedVariant) {
-//       el = this.sidebar.nativeElement.querySelector('.variant.active');
-//     }
+  //     if (this.selectedVariant) {
+  //       el = this.sidebar.nativeElement.querySelector('.variant.active');
+  //     }
 
-//     if (!el) {
-//       el = this.sidebar.nativeElement.querySelector('.card.active');
-//     }
+  //     if (!el) {
+  //       el = this.sidebar.nativeElement.querySelector('.card.active');
+  //     }
 
-//     const indicator = this.indicator?.nativeElement as HTMLElement;
+  //     const indicator = this.indicator?.nativeElement as HTMLElement;
 
-//     // 🔥 JEŚLI NIC NIE MA → UKRYJ
-//     if (!el) {
-//       indicator.style.opacity = '0';
-//       indicator.style.height = '0px';
-//       return;
-//     }
+  //     // 🔥 JEŚLI NIC NIE MA → UKRYJ
+  //     if (!el) {
+  //       indicator.style.opacity = '0';
+  //       indicator.style.height = '0px';
+  //       return;
+  //     }
 
-//     // 🔥 POKAŻ + PRZESUŃ
-//     indicator.style.opacity = '1';
-//     this.moveIndicator(el);
-//   });
-// }
-
-
-
-
-
-
-
-
-
-
+  //     // 🔥 POKAŻ + PRZESUŃ
+  //     indicator.style.opacity = '1';
+  //     this.moveIndicator(el);
+  //   });
+  // }
 
   /* ============================= */
   /* 🔥 PRESET */

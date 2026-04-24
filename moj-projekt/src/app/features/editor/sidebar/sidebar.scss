@@ -321,3 +321,8 @@ button.ghost {
   opacity: 0;
   transform: scaleY(0);
 }
+
+.section.locked {
+  opacity: 0.5;
+  pointer-events: none;
+}

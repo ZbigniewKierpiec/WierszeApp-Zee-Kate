@@ -13,7 +13,6 @@ import { Sidebar } from '../sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { CoverEditor } from '../../cover-editor/cover-editor';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Auth } from './../../../services/auth';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { FormattingService } from './../../../services/formatting-service';
@@ -27,6 +26,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditorStateService } from '../sidebar/editor-state-service';
 import { ThemeModeService } from '../../../services/theme-mode-service';
+import  { AuthService } from '../../../services/auth-service';
 
 @Component({
   selector: 'app-editor-test',
@@ -100,7 +100,7 @@ export class EditorTest implements OnInit, OnDestroy {
     private api: EditorApiService,
     private route: ActivatedRoute,
     private router: Router,
-    private auth: Auth,
+   private auth: AuthService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private formatting: FormattingService,
@@ -129,22 +129,56 @@ export class EditorTest implements OnInit, OnDestroy {
   }
 
   //////////////////////////////
-  ngOnInit() {
-    const user = this.auth.getUser();
+  // ngOnInit() {
+  //   const user = this.auth.getUser();
 
-    this.themeMode.theme$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.reapplyPresetColors(); // 🔥 KLUCZ
-    });
+  //   this.themeMode.theme$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+  //     this.reapplyPresetColors(); // 🔥 KLUCZ
+  //   });
 
-    this.state.isCustomizeOpen$.subscribe((v) => (this.isCustomizeOpen = v));
-    if (!user?.id) {
-      this.router.navigate(['/login']);
-      return;
-    }
+  //   this.state.isCustomizeOpen$.subscribe((v) => (this.isCustomizeOpen = v));
+  //   // if (!user?.id) {
+  //   //   this.router.navigate(['/login']);
+  //   //   return;
+  //   // }
 
-    this.bindEditorState();
-    this.bindEditorEvents();
+  //   this.bindEditorState();
+  //   this.bindEditorEvents();
 
+  //   this.api.getUserBooksFull(user.id).subscribe({
+  //     next: (books) => {
+  //       this.booksCount = books.length;
+  //     },
+  //     error: (err) => {
+  //       console.error('❌ BOOKS COUNT ERROR:', err);
+  //     },
+  //   });
+
+  //   const idFromStorage = this.storage.getBookId();
+
+  //   if (idFromStorage && typeof idFromStorage === 'string' && idFromStorage.trim()) {
+  //     this.bookId = idFromStorage;
+  //     this.loadBook(this.bookId);
+  //   } else {
+  //     this.initEmptyEditor();
+  //   }
+  // }
+
+
+ngOnInit() {
+  const user = this.auth.getUser();
+
+  this.themeMode.theme$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.reapplyPresetColors();
+  });
+
+  this.state.isCustomizeOpen$.subscribe((v) => (this.isCustomizeOpen = v));
+
+  this.bindEditorState();
+  this.bindEditorEvents();
+
+  // 🔐 tylko dla zalogowanego
+  if (user?.id) {
     this.api.getUserBooksFull(user.id).subscribe({
       next: (books) => {
         this.booksCount = books.length;
@@ -153,16 +187,30 @@ export class EditorTest implements OnInit, OnDestroy {
         console.error('❌ BOOKS COUNT ERROR:', err);
       },
     });
+  }
 
-    const idFromStorage = this.storage.getBookId();
+  const idFromStorage = this.storage.getBookId();
 
-    if (idFromStorage && typeof idFromStorage === 'string' && idFromStorage.trim()) {
-      this.bookId = idFromStorage;
+  if (idFromStorage && typeof idFromStorage === 'string' && idFromStorage.trim()) {
+    this.bookId = idFromStorage;
+
+    // 🔐 tylko jeśli user istnieje → pobieraj z backendu
+    if (user?.id) {
       this.loadBook(this.bookId);
     } else {
-      this.initEmptyEditor();
+      this.initEmptyEditor(); // 👈 guest mode
     }
+
+  } else {
+    this.initEmptyEditor();
   }
+}
+
+
+
+
+
+
 
   ngOnDestroy() {
     this.destroy$.next();

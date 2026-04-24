@@ -10,12 +10,4 @@ export class EditorEventsService {
   export$ = new Subject<void>();
   newBook$ = new Subject<void>();
   coverEdit$ = new Subject<void>();
-
-
-
-
-
-
-
-
 }

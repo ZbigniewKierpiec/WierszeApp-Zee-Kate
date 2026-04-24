@@ -1,0 +1,37 @@
+.dialog {
+  text-align: center;
+  padding: 24px 28px;
+
+  border-radius: 16px;
+
+  background: var(--topbar-bg);
+  color: var(--topbar-text);
+
+  backdrop-filter: blur(16px);
+}
+
+/* ICON */
+.icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+/* TITLE */
+h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* TEXT */
+p {
+  margin: 12px 0 20px;
+  opacity: 0.75;
+}
+
+/* BUTTONS */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}

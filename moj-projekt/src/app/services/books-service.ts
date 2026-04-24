@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EditorApiService, type Book } from './editor-api';
 
-import { Auth } from './auth';
+
 @Injectable({
   providedIn: 'root',
 })
