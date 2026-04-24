@@ -1,181 +1,224 @@
-/* BACKDROP */
 .dialog-backdrop {
   position: fixed;
   inset: 0;
-
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(10px);
-
-  animation: fadeIn 0.25s ease;
+  background:
+    radial-gradient(circle at top, rgba(99, 102, 241, 0.18), transparent 35%),
+    rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(12px);
+  animation: fadeIn 0.22s ease;
   z-index: 1000;
 }
 
-/* MAIN */
 .dialog {
   position: fixed;
   top: 50%;
   left: 50%;
+  width: 380px;
+  max-width: 92vw;
+  padding: 34px 30px;
+  border-radius: 26px;
+  text-align: center;
+  overflow: hidden;
+  isolation: isolate;
 
-  transform: translate(-50%, -50%) scale(0.96);
-  opacity: 0;
-
-  width: 360px;
-  max-width: 90vw;
-
-  padding: 32px 28px;
-  border-radius: 22px;
-
-  /* 🔥 KLUCZ — używamy Twojego theme */
-  background: var(--topbar-bg);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--topbar-bg), white 8%),
+      var(--topbar-bg)
+    );
   color: var(--topbar-text);
-
-  border: 1px solid var(--border);
-
-  backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in srgb, var(--border), white 18%);
+  backdrop-filter: blur(24px);
 
   box-shadow:
-    0 25px 70px rgba(0, 0, 0, 0.35);
+    0 34px 90px rgba(0, 0, 0, 0.38),
+    0 12px 35px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
-  text-align: center;
-
-  animation: dialogEnter 0.3s ease forwards;
-
+  transform: translate(-50%, -45%) scale(0.94);
+  opacity: 0;
+  animation: dialogSpring 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   z-index: 1001;
 }
 
-/* SUBTLE INNER GLOW */
-.dialog::after {
+.dialog::before {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 22px;
-
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.16),
+      transparent 35%
+    );
   pointer-events: none;
-
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+  z-index: -1;
 }
 
-/* GLOW ACCENT */
+.dialog::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 25px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  pointer-events: none;
+}
+
 .top-glow {
   position: absolute;
-  top: -30px;
+  top: -60px;
   left: 50%;
+  width: 220px;
+  height: 120px;
   transform: translateX(-50%);
-
-  width: 160px;
-  height: 60px;
-
   background: radial-gradient(
     ellipse at center,
-    rgba(99, 102, 241, 0.25),
+    color-mix(in srgb, var(--accent), transparent 35%),
     transparent 70%
   );
-
-  filter: blur(25px);
+  filter: blur(34px);
+  opacity: 0.85;
   pointer-events: none;
+  z-index: -1;
 }
 
-/* ICON */
 .icon-wrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .icon {
-  width: 58px;
-  height: 58px;
-
+  width: 66px;
+  height: 66px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 22px;
+  font-size: 30px;
 
-  border-radius: 50%;
-
-  font-size: 26px;
-
-  background: var(--btn-bg);
-
-  color: var(--btn-text);
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent), white 18%),
+      var(--accent-hover)
+    );
+  color: white;
 
   box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.2);
+    0 14px 35px color-mix(in srgb, var(--accent), transparent 45%),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 
-  animation: iconPop 0.35s ease;
+  animation: iconPop 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* TITLE */
 h2 {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-/* TEXT */
 p {
-  margin: 14px 0 24px;
+  margin: 14px auto 26px;
+  max-width: 290px;
   font-size: 14.5px;
-  line-height: 1.6;
-
+  line-height: 1.65;
   color: var(--text-muted);
 }
 
-/* ACTIONS */
 .actions {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-/* BUTTON BASE — spójne z topbar */
 .btn {
+  position: relative;
+  overflow: hidden;
+  min-width: 104px;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: 9px 16px;
-  border-radius: 12px;
-
-  font-size: 14px;
-  font-weight: 500;
-
+  padding: 10px 18px;
+  border-radius: 14px;
   border: none;
   cursor: pointer;
 
-  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
 
   background: var(--btn-bg);
   color: var(--btn-text);
 }
 
-/* HOVER */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.35), transparent 40%);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.45s ease;
+}
+
+.btn:active::after {
+  transform: scale(2.8);
+  opacity: 1;
+  transition: 0s;
+}
+
 .btn:hover {
   transform: translateY(-1px);
-  background: var(--btn-hover);
 }
 
-/* SUBTLE */
 .btn.subtle {
   border: 1px solid var(--border);
-  opacity: 0.9;
+  background: color-mix(in srgb, var(--btn-bg), transparent 12%);
+  opacity: 0.92;
 }
 
-/* PRIMARY */
-.btn.primary {
-  background: var(--accent);
-  color: white;
+.btn.subtle:hover {
+  background: var(--btn-hover);
+  opacity: 1;
+}
 
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+.btn.primary {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent), white 12%),
+      var(--accent-hover)
+    );
+  color: white;
+  box-shadow:
+    0 10px 26px color-mix(in srgb, var(--accent), transparent 50%);
 }
 
 .btn.primary:hover {
-  background: var(--accent-hover);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 16px 36px color-mix(in srgb, var(--accent), transparent 42%);
 }
 
-/* ANIMATIONS */
-@keyframes dialogEnter {
-  to {
+@keyframes dialogSpring {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -42%) scale(0.92);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, -51%) scale(1.015);
+  }
+  100% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
@@ -187,12 +230,15 @@ p {
 }
 
 @keyframes iconPop {
-  from {
-    transform: scale(0.7);
+  0% {
+    transform: scale(0.65) rotate(-8deg);
     opacity: 0;
   }
-  to {
-    transform: scale(1);
+  70% {
+    transform: scale(1.08) rotate(2deg);
     opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
   }
 }
