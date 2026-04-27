@@ -1,25 +1,21 @@
 :host {
- 
-   display: flex;             
-  justify-content: center;   
-  align-items: center;       
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-
-  background: #05070b;        /* zamiast czerwonego */
- 
+  background: #05070b; /* zamiast czerwonego */
 }
 
 /* ===== LAYOUT ===== */
 .editor-shell {
   width: 80%;
-  // height: 100vh;
+  height: 100vh;
+ 
   display: grid;
-align-content: center;
+  align-content: center;
   /* 🔥 lewy panel jak mobile preview */
   grid-template-columns: 50% 1fr;
-//   background: #05070b;
-
- 
+  //   background: #05070b;
 }
 
 /* ===== PHONE ===== */
@@ -37,29 +33,19 @@ align-content: center;
   border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-
-
 .topbar {
-  height: 80px;           /* 🔥 było ~64 → teraz większy */
+  height: 80px; /* 🔥 było ~64 → teraz większy */
   flex: 0 0 80px;
 
-  padding: 0 36px;        /* 🔥 więcej miejsca po bokach */
+  padding: 0 36px; /* 🔥 więcej miejsca po bokach */
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   background: rgba(10, 15, 20, 0.92);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-
-
-
-
-
-
-
-
 
 .topbar .left,
 .topbar .right {
@@ -103,13 +89,12 @@ align-content: center;
   display: flex;
   align-items: center;
   justify-content: center;
-margin: 30px 0;
-
+  margin: 30px 0;
 }
 .paper {
   aspect-ratio: 0.75; /* 🔥 lekko szersza niż wcześniej */
 
-  width: 72%;        /* 🔥 minimalnie więcej */
+  width: 72%; /* 🔥 minimalnie więcej */
   max-width: 640px;
 
   background: #f7efe6;
@@ -129,12 +114,7 @@ margin: 30px 0;
     inset 0 0 60px rgba(150, 100, 70, 0.2);
 }
 
-
-
-
 /* ===== TEXT ===== */
-
-
 
 .poem {
   white-space: pre-line;
@@ -150,15 +130,10 @@ margin: 30px 0;
 }
 
 .poem br {
-  content: "";
+  content: '';
   display: block;
   margin-bottom: 8px; /* 🔥 odstęp między linijkami */
 }
-
-
-
-
-
 
 .separator {
   display: block;
@@ -170,8 +145,6 @@ margin: 30px 0;
   font-weight: 600;
 }
 
-
-
 // .separator {
 //   display: block;
 
@@ -181,31 +154,23 @@ margin: 30px 0;
 //   color: #d58c7c;
 // }
 
-
-
-
-
-
-
-
-
-.flowers {   display: block;
+.flowers {
+  display: block;
   margin-top: 18px;
-  color: #d58c7c;   font-size: 18px; }
+  color: #d58c7c;
+  font-size: 18px;
+}
 
-/* ===== DECORATIONS ===== */ .flower {
+/* ===== DECORATIONS ===== */
+.flower {
   position: absolute;
-  opacity: 0.35;   color: #df9a91; }
-
+  opacity: 0.35;
+  color: #df9a91;
+}
 
 .paper {
   letter-spacing: 0.3px;
 }
-
-
-
-
-
 
 .flower::before {
   content: '❀\A ❀\A ❀\A ❀\A ❀';
@@ -262,7 +227,7 @@ margin: 30px 0;
 
   background: transparent;
   color: #d1d5db;
- padding: 0 22px;
+  padding: 0 22px;
 
   cursor: pointer;
 }
@@ -282,8 +247,6 @@ margin: 30px 0;
 }
 //////////////////////////////////
 /* ===== SIDE PANEL ===== */
-.side-panel{
-width: 100%;
-
-
+.side-panel {
+  width: 100%;
 }

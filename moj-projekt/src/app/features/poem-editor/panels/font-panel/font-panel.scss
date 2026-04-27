@@ -1,5 +1,5 @@
 // Główny kontener komponentu – dopasowany do panelu bocznego
-.color-picker-container {
+.font-picker-container {
   width: 100%;
   height: 100%;
   padding: 24px;
@@ -14,7 +14,9 @@
   background: rgba(13, 20, 27, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 14px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 // Nagłówek
@@ -90,17 +92,21 @@
   }
 }
 
-// Siatka kolorów - DODANA PROPORCJA 2/2
-.colors-grid {
+// Siatka czcionek - NAPRAWIONE ROZMIARY
+.fonts-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   flex: 1;
-  
-  // Wymagana proporcja
-  aspect-ratio: 2 / 2;
+  aspect-ratio: 2/2;
+  // Zamiast wymuszonego współczynnika proporcji, ustawiamy minimalną i maksymalną wysokość
+  min-height: 180px;
+  max-height: 320px;
   width: 100%;
-  
+
+  // Wyrównanie elementów do góry, aby nie rozciągały się przy małej liczbie pozycji
+  align-content: start;
+
   overflow-y: auto;
   padding: 8px;
   box-sizing: border-box;
@@ -127,8 +133,10 @@
     }
   }
 
-  .color-item {
-    aspect-ratio: 2/2;
+  .font-item {
+    // Ustawiamy stałą proporcję, aby elementy zawsze miały taki sam kształt i rozmiar
+    aspect-ratio: 2 / 2;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -137,9 +145,6 @@
     border-radius: 10px;
     cursor: pointer;
     transition: background 0.2s;
-    
-    // Dopasowanie wewnętrznych elementów do nowej proporcji
-    height: 100%;
     box-sizing: border-box;
 
     &:hover {
@@ -151,15 +156,19 @@
       box-shadow: inset 0 -2px 0 #c98765;
     }
 
-    .color-swatch {
+    .font-swatch {
       width: 100%;
-      height: calc(100% - 24px);
+      height: 100%;
       border-radius: 8px;
       position: relative;
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
 
-      .color-number {
+      .font-number {
         position: absolute;
         top: 6px;
         left: 6px;
@@ -168,14 +177,11 @@
         color: #ffffff;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
       }
-    }
 
-    .color-name {
-      font-size: 11px;
-      color: #d1d5db;
-      text-align: center;
-      line-height: 1.3;
-      min-height: 14px;
+      .font-preview-text {
+        font-size: 1.8rem;
+        color: #ffffff;
+      }
     }
   }
 }
@@ -194,19 +200,22 @@
   }
 
   .preview-box {
-    // width: 100%;
+    height: 1.5rem;
     padding: 16px 20px;
     background: rgba(10, 15, 20, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    .preview-text {
+    .font-preview {
       margin: 0;
-      font-size: 15px;
-      font-style: italic;
+      font-size: 1.2rem;
       text-align: center;
       line-height: 1.6;
-      transition: color 0.2s;
+      color: #ffffff;
+      transition: all 0.2s;
     }
   }
 }
@@ -234,4 +243,31 @@
   &:active {
     background: #c98765;
   }
+}
+
+
+
+.fonts-grid {
+  
+display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  flex: 1;
+  
+  // Wymagana proporcja
+  aspect-ratio: 2 / 2;
+  width: 100%;
+  
+  overflow-y: auto;
+  padding: 8px;
+  box-sizing: border-box;
+  background: rgba(10, 15, 20, 0.4);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+
+}
+
+.font-item {
+  aspect-ratio: 1 / 1; // ✔ tutaj OK
 }

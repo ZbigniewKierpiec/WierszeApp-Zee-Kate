@@ -1,0 +1,62 @@
+<div class="font-picker-container">
+  <!-- Nagłówek -->
+  <div class="picker-header">
+    <div>
+      <h2 class="picker-title">Czcionki</h2>
+      <p class="picker-subtitle">Wybierz styl czcionki</p>
+    </div>
+    <button class="close-button" (click)="close()">×</button>
+  </div>
+
+  <!-- Zakładki -->
+  <div class="categories-tabs">
+    <button
+      *ngFor="let category of categories"
+      class="tab-button"
+      [class.active]="activeCategory === category.name"
+      (click)="activeCategory = category.name"
+    >
+      {{ category.label }}
+    </button>
+  </div>
+
+  <!-- GRID -->
+  <div class="fonts-grid">
+    <div
+      *ngFor="let font of currentCategory.fonts"
+      class="font-item"
+      [class.selected]="selectedFont?.id === font.id"
+      (click)="selectFont(font)"
+    >
+      <div class="font-swatch">
+        <span class="font-number">{{ font.id }}</span>
+        <span 
+          class="font-preview-text"
+          [style.font-family]="font.fontFamily"
+          [style.font-weight]="font.fontWeight || 'normal'"
+          [style.font-style]="font.fontStyle || 'normal'"
+        >
+          Abc
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-section">
+    <h3 class="preview-label">Podgląd</h3>
+    <div class="preview-box">
+      <div 
+        class="font-preview"
+        [style.font-family]="selectedFont ? selectedFont.fontFamily : '&quot;Playfair Display&quot;, serif'"
+        [style.font-weight]="selectedFont?.fontWeight || 'normal'"
+        [style.font-style]="selectedFont?.fontStyle || 'normal'"
+      >
+        Gdy zamknę oczy, widzę tylko Ciebie.
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLY -->
+  <button class="apply-button" (click)="applyFont()">✓ Zastosuj czcionkę</button>
+</div>

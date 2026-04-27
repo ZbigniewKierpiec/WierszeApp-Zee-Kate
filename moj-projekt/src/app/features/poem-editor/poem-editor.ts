@@ -5,10 +5,12 @@ import { BackgroundPanel } from './panels/background-panel/background-panel';
 import { FontsPanel } from './panels/fonts-panel/fonts-panel';
 import { DecorationsPanel } from './panels/decorations-panel/decorations-panel';
 import { TextPanel } from "./panels/text-panel/text-panel";
+import { SeparatorPanel } from "./panels/separator-panel/separator-panel";
+import { FontPanel } from './panels/font-panel/font-panel';
 
 @Component({
   selector: 'app-poem-editor',
-  imports: [CommonModule, ColorsPanel, TextPanel],
+  imports: [CommonModule, ColorsPanel, TextPanel, SeparatorPanel,FontPanel],
   templateUrl: './poem-editor.html',
   styleUrl: './poem-editor.scss',
 })
@@ -28,14 +30,34 @@ export class PoemEditor {
     { id: 'decorations', label: 'Dekoracje', icon: '❀' },
     { id: 'settings', label: 'Ustawienia', icon: '⚙' },
   ];
+ 
+
+ // Poprawione mapowanie identyfikatorów zakładek na odpowiednie komponenty
   panelMap: Record<string, Type<any>> = {
+   
     colors: ColorsPanel,
     background: BackgroundPanel,
-    fonts: FontsPanel,
-    DecorationsPanel,
+    fonts: FontPanel,
+    decorations: SeparatorPanel,
+    separators: SeparatorPanel,
+   
   };
 
+  // Pobieramy aktualnie wybrany komponent
   get currentPanel() {
     return this.panelMap[this.activePanel];
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

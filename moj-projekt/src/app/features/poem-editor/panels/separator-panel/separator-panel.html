@@ -1,0 +1,51 @@
+<div class="color-picker-container">
+  <!-- Nagłówek -->
+  <div class="picker-header">
+    <div>
+      <h2 class="picker-title">Separatory</h2>
+      <p class="picker-subtitle">Wybierz separator</p>
+    </div>
+    <button class="close-button" (click)="close()">×</button>
+  </div>
+
+  <!-- Zakładki -->
+  <div class="categories-tabs">
+    <button
+      *ngFor="let category of categories"
+      class="tab-button"
+      [class.active]="activeCategory === category.name"
+      (click)="activeCategory = category.name"
+    >
+      {{ category.label }}
+    </button>
+  </div>
+
+  <!-- GRID -->
+  <div class="colors-grid">
+    <div
+      *ngFor="let sep of currentCategory.separators"
+      class="color-item"
+      [class.selected]="selectedSeparator?.id === sep.id"
+      (click)="selectSeparator(sep)"
+    >
+      <div class="color-swatch symbol">
+        <span class="color-number">{{ sep.id }}</span>
+
+        {{ sep.symbol }}
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-section">
+    <h3 class="preview-label">Podgląd</h3>
+    <div class="preview-box">
+      <div class="separator-preview">
+        {{ selectedSeparator?.symbol }}
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLY -->
+  <button class="apply-button" (click)="applySeparator()">✓ Zastosuj separator</button>
+</div>
