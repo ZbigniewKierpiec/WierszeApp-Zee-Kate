@@ -1,0 +1,55 @@
+<div class="color-picker-container">
+  <!-- Nagłówek -->
+  <div class="picker-header">
+    <div>
+      <h2 class="picker-title">Kolory tekstu</h2>
+      <p class="picker-subtitle">Wybierz kolor tekstu</p>
+    </div>
+    <button class="close-button" (click)="close()">×</button>
+  </div>
+
+  <!-- Zakładki kategorii -->
+  <div class="categories-tabs">
+    <button 
+      *ngFor="let category of categories"
+      class="tab-button" 
+      [class.active]="activeCategory === category.name"
+      (click)="activeCategory = category.name"
+    >
+      {{ category.label }}
+    </button>
+  </div>
+
+  <!-- Siatka kolorów -->
+  <div class="colors-grid">
+    <div 
+      *ngFor="let color of currentCategory.colors"
+      class="color-item"
+      [class.selected]="selectedColor?.id === color.id"
+      (click)="selectColor(color)"
+    >
+      <div class="color-swatch" [style.background-color]="color.hex">
+        <span class="color-number">{{ color.id }}</span>
+      </div>
+      <span class="color-name">{{ color.name }}</span>
+    </div>
+  </div>
+
+  <!-- Podgląd -->
+  <div class="preview-section">
+    <h3 class="preview-label">Podgląd na żywo</h3>
+    <div class="preview-box">
+      <p 
+        class="preview-text"
+        [style.color]="selectedColor ? selectedColor.hex : '#3b2a20'"
+      >
+        Gdy zamknę oczy, widzę tylko Ciebie.
+      </p>
+    </div>
+  </div>
+
+  <!-- Przycisk akcji -->
+  <button class="apply-button" (click)="applyColor()">
+    ✓ Zastosuj wybrany kolor
+  </button>
+</div>
