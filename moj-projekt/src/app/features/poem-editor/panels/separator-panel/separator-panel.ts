@@ -21,7 +21,7 @@ interface SeparatorCategory {
   styleUrl: './separator-panel.scss',
 })
 export class SeparatorPanel {
-  activeCategory = 'klasyczne';
+  activeCategory = 'wszystkie';
 
   selectedSeparator: SeparatorOption | null = null;
 

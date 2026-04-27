@@ -100,14 +100,15 @@
   flex: 1;
   aspect-ratio: 2/2;
   // Zamiast wymuszonego współczynnika proporcji, ustawiamy minimalną i maksymalną wysokość
-  min-height: 180px;
-  max-height: 320px;
+//   min-height: 180px;
+//   max-height: 320px;
   width: 100%;
 
   // Wyrównanie elementów do góry, aby nie rozciągały się przy małej liczbie pozycji
   align-content: start;
 
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 8px;
   box-sizing: border-box;
   background: rgba(10, 15, 20, 0.4);
@@ -271,3 +272,5 @@ display: grid;
 .font-item {
   aspect-ratio: 1 / 1; // ✔ tutaj OK
 }
+
+
