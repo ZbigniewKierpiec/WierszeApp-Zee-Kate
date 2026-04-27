@@ -814,3 +814,16 @@ button,
 // #back {
 //   color: var(--text-muted);
 // }
+.divider {
+  display: block;
+  text-align: center;
+  margin: 30px 0;
+  font-size: 20px;
+  color: red; /* DEBUG */
+}
+
+.stanza {
+  display: block;
+  white-space: pre-line;
+  margin-bottom: 20px;
+}

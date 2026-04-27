@@ -1,0 +1,278 @@
+:host {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ===== LAYOUT ===== */
+.editor-shell {
+  width: 100%;
+  height: 100%;
+  display: grid;
+
+  /* 🔥 lewy panel jak mobile preview */
+  grid-template-columns: 40% 1fr;
+
+  background: #05070b;
+}
+
+/* ===== PHONE ===== */
+.phone {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  background:
+    radial-gradient(circle at 50% 35%, rgba(30, 44, 58, 0.95), transparent 58%),
+    linear-gradient(180deg, #121b24 0%, #070b10 100%);
+
+  color: #fff;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+
+.topbar {
+  height: 80px;           /* 🔥 było ~64 → teraz większy */
+  flex: 0 0 80px;
+
+  padding: 0 36px;        /* 🔥 więcej miejsca po bokach */
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: rgba(10, 15, 20, 0.92);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+
+
+
+
+
+
+
+
+.topbar .left,
+.topbar .right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topbar .left {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.icon {
+  color: #cfd6df;
+  opacity: 0.85;
+  font-size: 19px;
+  cursor: pointer;
+}
+
+.save {
+  height: 34px;
+  padding: 0 15px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: #f2c2a5;
+  color: #241812;
+
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ===== PREVIEW ===== */
+.preview {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+}
+.paper {
+  aspect-ratio: 0.75; /* 🔥 lekko szersza niż wcześniej */
+
+  width: 72%;        /* 🔥 minimalnie więcej */
+  max-width: 640px;
+
+  background: #f7efe6;
+  border-radius: 10px;
+
+  padding: 60px 40px;
+
+  color: #3b2a20;
+  text-align: center;
+  line-height: 1.7;
+  font-family: Georgia, serif;
+
+  position: relative;
+
+  box-shadow:
+    0 40px 90px rgba(0, 0, 0, 0.75),
+    inset 0 0 60px rgba(150, 100, 70, 0.2);
+}
+
+
+
+
+/* ===== TEXT ===== */
+
+
+
+.poem {
+  white-space: pre-line;
+
+  font-size: clamp(20px, 1.2vw, 26px); /* 🔥 większy */
+  line-height: 1.6; /* 🔥 KLUCZ – więcej oddechu */
+
+  font-weight: 400; /* 🔥 mniej ciężki */
+  letter-spacing: 0.2px;
+
+  max-width: 70%; /* 🔥 zawęż tekst (jak screen) */
+  margin: 0 auto;
+}
+
+.poem br {
+  content: "";
+  display: block;
+  margin-bottom: 8px; /* 🔥 odstęp między linijkami */
+}
+
+
+
+
+
+
+.separator {
+  display: block;
+
+  margin: 26px 0; /* 🔥 więcej oddechu */
+  color: #d58c7c;
+
+  font-size: clamp(22px, 1.4vw, 28px); /* 🔥 dopasowane do tekstu */
+  font-weight: 600;
+}
+
+
+
+// .separator {
+//   display: block;
+
+//   margin: 40px 0; /* 🔥 DUŻO większy odstęp */
+//   font-size: 28px;
+
+//   color: #d58c7c;
+// }
+
+
+
+
+
+
+
+
+
+.flowers {   display: block;
+  margin-top: 18px;
+  color: #d58c7c;   font-size: 18px; }
+
+/* ===== DECORATIONS ===== */ .flower {
+  position: absolute;
+  opacity: 0.35;   color: #df9a91; }
+
+
+.paper {
+  letter-spacing: 0.3px;
+}
+
+
+
+
+
+
+.flower::before {
+  content: '❀\A ❀\A ❀\A ❀\A ❀';
+  white-space: pre;
+  font-size: 34px;
+  line-height: 0.9;
+}
+
+.flower.top {
+  top: 30px;
+  right: 16px;
+  transform: rotate(10deg);
+}
+
+.flower.bottom {
+  left: 16px;
+  bottom: 60px;
+  transform: rotate(-15deg);
+}
+
+/* ===== TABS ===== */
+.tabs {
+  flex: 0 0 84px;
+
+  width: calc(100% - 40px);
+  margin: 0 20px 20px;
+
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+
+  padding: 7px;
+
+  background: rgba(13, 20, 27, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.tab {
+  height: 68px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  border: 0;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #d1d5db;
+ padding: 0 22px;
+
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #2c2927;
+  color: #f2c2a5;
+  box-shadow: inset 0 -2px 0 #c98765;
+}
+
+.tab span {
+  font-size: 22px;
+}
+
+.tab small {
+  font-size: 11px;
+}

@@ -27,10 +27,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { EditorStateService } from '../sidebar/editor-state-service';
 import { ThemeModeService } from '../../../services/theme-mode-service';
 import  { AuthService } from '../../../services/auth-service';
+import { DividerPicker } from "./divider-picker/divider-picker";
 
 @Component({
   selector: 'app-editor-test',
-  imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor, Gu, TranslateModule],
+  imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor, Gu, TranslateModule, DividerPicker],
   templateUrl: './editor-test.html',
   styleUrl: './editor-test.scss',
 })
@@ -472,6 +473,24 @@ quis nostrud exercitation ullamco.`;
   //   this.cd.detectChanges();
   // }
 
+buildStyleOverrides(p: any) {
+  if (!p) return {};
+
+  return {
+    layout: p.layout,
+    typography: p.typography,
+    decoration: p.decoration,
+  };
+}
+
+
+
+
+
+
+
+
+
 loadPage() {
   const p = this.pages[this.currentPageIndex];
   if (!p) return;
@@ -610,6 +629,37 @@ loadPage() {
       textColor: this.fixColor(this.textColor, '#000000'),
     };
   }
+
+
+
+
+setDivider(d: any) {
+  const page = this.pages[this.currentPageIndex];
+  if (!page) return;
+
+  if (!page.preset) page.preset = {};
+
+  page.preset.decoration = {
+    ...page.preset.decoration,
+    divider: {
+      enabled: true,
+      type: d.type,
+      symbol: d.symbol,
+    },
+  };
+
+  this.selectedPreset = page.preset;
+
+  this.savePage();
+  this.storage.savePages(this.pages);
+  this.cd.detectChanges();
+}
+
+
+
+
+
+
 
   nextPage() {
     if (this.currentPageIndex < this.pages.length - 1) {
@@ -977,18 +1027,44 @@ loadPage() {
     this.storage.savePages(this.pages);
   }
 
-  getVariantStyles() {
-    const template = this.selectedTemplate ?? 'Default';
-    return this.theme.getVariantStyles(template, this.selectedVariant?.name);
-  }
 
-  getVariantStylesForPage(p: any) {
-    return this.theme.getVariantStyles(p.template || 'Default', p.variant?.name);
-  }
+getVariantStyles() {
+  const template = this.selectedTemplate ?? 'Default';
 
-  getHeartPattern() {
-    return this.theme.getHeartPattern();
-  }
+  const overrides =
+    this.activeMode === 'preset' && this.selectedPreset
+      ? this.buildStyleOverrides(this.selectedPreset)
+      : {};
+
+  return this.theme.getVariantStyles(
+    template,
+    this.selectedVariant?.name,
+    overrides
+  );
+}
+
+
+getVariantStylesForPage(p: any) {
+  return this.theme.getVariantStyles(
+    p.template || 'Default',
+    p.variant?.name,
+    p.preset 
+  );
+}
+
+
+
+
+
+
+splitStanzas(text: string): string[] {
+  return text
+    ?.split(/\n\s*\n/)
+    .map(s => s.trim())
+    .filter(Boolean) || [];
+}
+
+
 
   goDashboard() {
     this.router.navigate(['/dashboard']);

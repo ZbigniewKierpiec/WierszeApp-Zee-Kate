@@ -94,6 +94,8 @@
         </select>
       </div>
     </div>
+
+    <app-divider-picker (select)="setDivider($event)"></app-divider-picker>
   </div>
 
   <div class="template-label">
@@ -244,17 +246,23 @@
           {{ p.title }}
         </div>
 
-        <div
-          class="text-preview"
-          [ngStyle]="{
-            'text-align': textAlign,
-            'font-family': p.textFont,
-            'font-size.px': textFontSize,
-            color: p.textColor,
-            'white-space': 'pre-wrap',
-          }"
-        >
-          {{ p.text }}
+        <div class="text-preview">
+          <div class="text-preview">
+            <ng-container *ngFor="let stanza of splitStanzas(p.text); let i = index">
+              <div class="stanza">
+                {{ stanza }}
+              </div>
+
+              <div
+                class="divider"
+                *ngIf="
+                  p.preset?.decoration?.divider?.enabled && i < splitStanzas(p.text).length - 1
+                "
+              >
+                {{ p.preset?.decoration?.divider?.symbol }}
+              </div>
+            </ng-container>
+          </div>
         </div>
       </div>
     </section>
