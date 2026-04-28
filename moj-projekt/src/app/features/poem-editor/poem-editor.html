@@ -13,7 +13,7 @@
 
     <!-- PREVIEW -->
     <div class="preview">
-      <div    class="paper">
+      <div [style.background-image]="backgroundStyle" class="paper">
         <!-- <div
           class="poem"
           [style.color]="poemColor"
@@ -34,85 +34,75 @@
           <span class="flowers">✿ ✿ ✿</span>
         </div> -->
 
+        <div
+          class="poem"
+          [style.color]="poemColor"
+          [style.font-family]="poemFont"
+          [style.font-weight]="poemFontWeight"
+          [style.font-style]="poemFontStyle"
+        >
+          <!-- TEKST 1 -->
+          <span
+            cdkDrag
+            cdkDragLockAxis="y"
+            cdkDragBoundary=".paper"
+            class="draggable block"
+            contenteditable="true"
+          >
+            Gdy zamknę oczy, widzę tylko Ciebie. W każdym oddechu, w każdym wspomnieniu.
+          </span>
 
+          <!-- SEPARATOR -->
+          <span
+            class="separator draggable block"
+            cdkDrag
+            cdkDragLockAxis="y"
+            cdkDragBoundary=".paper"
+          >
+            — ♥ —
+          </span>
 
+          <!-- TEKST 2 -->
+          <span
+            cdkDrag
+            cdkDragLockAxis="y"
+            cdkDragBoundary=".paper"
+            class="draggable block"
+            contenteditable="true"
+          >
+            Jesteś mym światłem w najciemniejszą noc. Jesteś tą ciszą, co koi każdy mrok.
+          </span>
 
-<div
-  class="poem"
-  [style.color]="poemColor"
-  [style.font-family]="poemFont"
-  [style.font-weight]="poemFontWeight"
-  [style.font-style]="poemFontStyle"
->
+          <!-- SEPARATOR -->
+          <span
+            class="separator draggable block"
+            cdkDrag
+            cdkDragLockAxis="y"
+            cdkDragBoundary=".paper"
+          >
+            ✧
+          </span>
 
-  <!-- TEKST 1 -->
-  <span
-    cdkDrag
-    cdkDragBoundary=".paper"
-    class="draggable block"
-    contenteditable="true"
-  >
-    Gdy zamknę oczy, widzę tylko Ciebie. W każdym oddechu, w każdym wspomnieniu.
-  </span>
+          <!-- TEKST 3 -->
+          <span
+            cdkDrag
+            cdkDragLockAxis="y"
+            cdkDragBoundary=".paper"
+            class="draggable block"
+            contenteditable="true"
+          >
+            Niech ten wiersz będzie jak szept, który zostanie na zawsze w nas.
+          </span>
 
-  <!-- SEPARATOR -->
-  <span 
-    class="separator draggable block" 
-    cdkDrag 
-    cdkDragBoundary=".paper"
-  >
-    — ♥ —
-  </span>
-
-  <!-- TEKST 2 -->
-  <span
-    cdkDrag
-    cdkDragBoundary=".paper"
-    class="draggable block"
-    contenteditable="true"
-  >
-    Jesteś mym światłem w najciemniejszą noc. Jesteś tą ciszą, co koi każdy mrok.
-  </span>
-
-  <!-- SEPARATOR -->
-  <span 
-    class="separator draggable block" 
-    cdkDrag 
-    cdkDragBoundary=".paper"
-  >
-    ✧
-  </span>
-
-  <!-- TEKST 3 -->
-  <span
-    cdkDrag
-    cdkDragBoundary=".paper"
-    class="draggable block"
-    contenteditable="true"
-  >
-    Niech ten wiersz będzie jak szept, który zostanie na zawsze w nas.
-  </span>
-
-  <span 
-    class="flowers draggable block" 
-    cdkDrag 
-    cdkDragBoundary=".paper"
-  >
-    ✿ ✿ ✿
-  </span>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
+          <span
+            class="flowers draggable block"
+            cdkDrag
+            cdkDragLockAxis="y"
+            cdkDragBoundary=".paper"
+          >
+            ✿ ✿ ✿
+          </span>
+        </div>
 
         <!-- dekoracje -->
         <div class="flower top"></div>

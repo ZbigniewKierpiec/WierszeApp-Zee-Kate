@@ -8,16 +8,25 @@ import { TextPanel } from './panels/text-panel/text-panel';
 import { SeparatorPanel } from './panels/separator-panel/separator-panel';
 import { FontPanel } from './panels/font-panel/font-panel';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+
 @Component({
   selector: 'app-poem-editor',
-  imports: [CommonModule, ColorsPanel, TextPanel, SeparatorPanel, FontPanel, BackgroundPanel, DragDropModule],
+  imports: [
+    CommonModule,
+    ColorsPanel,
+    TextPanel,
+    SeparatorPanel,
+    FontPanel,
+    BackgroundPanel,
+    DragDropModule,
+  ],
   templateUrl: './poem-editor.html',
   styleUrl: './poem-editor.scss',
 })
 export class PoemEditor {
-    // 🔥 PANEL
+  // 🔥 PANEL
   activePanel: string = 'colors';
-
+  backgroundStyle: string = '';
   // 🎨 STYLE
   poemColor = '#3b2a20';
   poemFont = '"Playfair Display", serif';
@@ -31,8 +40,8 @@ export class PoemEditor {
       type: 'text',
       value: 'Gdy zamknę oczy, widzę tylko Ciebie...',
       x: 50,
-      y: 50
-    }
+      y: 50,
+    },
   ];
 
   // 🟡 TABS
@@ -71,7 +80,7 @@ export class PoemEditor {
       type: 'separator',
       value: symbol,
       x: 100,
-      y: 100
+      y: 100,
     });
   }
 
@@ -79,28 +88,37 @@ export class PoemEditor {
   get currentPanelInputs() {
     if (this.activePanel === 'colors') {
       return {
-        onColorSelect: (color: string) => this.onColorChange(color)
+        onColorSelect: (color: string) => this.onColorChange(color),
       };
     }
-
+    if (this.activePanel === 'background') {
+      return {
+        onBackgroundSelect: (bg: any) => this.onBackgroundChange(bg),
+      };
+    }
     if (this.activePanel === 'fonts') {
       return {
-        onFontSelect: (font: any) => this.onFontChange(font)
+        onFontSelect: (font: any) => this.onFontChange(font),
       };
     }
 
     if (this.activePanel === 'decorations') {
       return {
-        onSeparatorSelect: (sep: string) => this.onSeparatorChange(sep)
+        onSeparatorSelect: (sep: string) => this.onSeparatorChange(sep),
       };
     }
 
     return {};
   }
 
+  onBackgroundChange(bg: any) {
+    if (!bg) return;
+
+    this.backgroundStyle = bg.overlay ? `url(${bg.overlay}), url(${bg.base})` : `url(${bg.base})`;
+  }
+
   // 📦 AKTYWNY PANEL
   get currentPanel() {
     return this.panelMap[this.activePanel];
   }
-  
 }

@@ -277,3 +277,13 @@
 .paper {
   position: relative;
 }
+.paper {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.paper {
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+}

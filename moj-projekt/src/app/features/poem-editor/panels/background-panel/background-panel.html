@@ -27,7 +27,7 @@
       *ngFor="let bg of filteredBackgrounds"
       class="color-item"
       [class.selected]="selectedBg?.id === bg.id"
-      (click)="selectedBg = bg"
+     (click)="selectBg(bg)"
     >
       <div
         class="bg-thumb"

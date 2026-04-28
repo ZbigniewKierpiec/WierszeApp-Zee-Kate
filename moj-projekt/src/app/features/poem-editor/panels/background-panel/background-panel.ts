@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 interface BackgroundOption {
@@ -22,6 +22,8 @@ interface BackgroundCategory {
   styleUrl: './background-panel.scss',
 })
 export class BackgroundPanel {
+  @Input() onBackgroundSelect!: (bg: any) => void;
+
   activeTab = 'all';
 
   backgrounds = [
@@ -35,7 +37,7 @@ export class BackgroundPanel {
     {
       id: 2,
       name: 'Soft Pink',
-     base: 'assets/bg/paper-background.jpg',
+      base: 'assets/bg/paper-background.jpg',
       overlay: '/assets/bg/watercolor-pink.png',
       category: 'romantic',
     },
@@ -69,16 +71,21 @@ export class BackgroundPanel {
     return this.backgrounds.filter((b) => b.category === this.activeTab);
   }
 
-  // 🔥 NAJWAŻNIEJSZE
   getBgStyle(bg: any) {
     if (!bg) return '';
 
     return bg.overlay ? `url(${bg.overlay}), url(${bg.base})` : `url(${bg.base})`;
   }
-
   applyBackground() {
-    console.log('APPLY:', this.selectedBg);
-  }
+    if (!this.selectedBg) return;
 
+    this.onBackgroundSelect?.(this.selectedBg);
+  }
+selectBg(bg: any) {
+  this.selectedBg = bg;
+
+  // 🔥 LIVE PREVIEW (TO JEST KLUCZ)
+  this.onBackgroundSelect?.(bg);
+}
   close() {}
 }
