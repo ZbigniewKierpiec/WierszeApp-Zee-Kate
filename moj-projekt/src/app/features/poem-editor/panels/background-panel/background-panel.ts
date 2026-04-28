@@ -37,8 +37,13 @@ export class BackgroundPanel {
     {
       id: 2,
       name: 'Soft Pink',
+<<<<<<< HEAD
       base: '',
       overlay: '/assets/bg/test',
+=======
+      base: 'assets/bg/paper-background.jpg',
+      overlay: '/assets/bg/watercolor-pink.png',
+>>>>>>> 8715cf3 (live background preview on selection)
       category: 'romantic',
     },
     {
@@ -81,11 +86,20 @@ export class BackgroundPanel {
 
     this.onBackgroundSelect?.(this.selectedBg);
   }
+<<<<<<< HEAD
   selectBg(bg: any) {
     this.selectedBg = bg;
 
     // 🔥 LIVE PREVIEW (TO JEST KLUCZ)
     this.onBackgroundSelect?.(bg);
   }
+=======
+selectBg(bg: any) {
+  this.selectedBg = bg;
+
+  // 🔥 LIVE PREVIEW (TO JEST KLUCZ)
+  this.onBackgroundSelect?.(bg);
+}
+>>>>>>> 8715cf3 (live background preview on selection)
   close() {}
 }
