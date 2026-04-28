@@ -1,1 +1,57 @@
-<p>background-panel works!</p>
+<div class="color-picker-container">
+
+  <!-- HEADER -->
+  <div class="picker-header">
+    <div>
+      <h2 class="picker-title">Tło strony</h2>
+      <p class="picker-subtitle">Wybierz tło</p>
+    </div>
+    <button class="close-button" (click)="close()">×</button>
+  </div>
+
+  <!-- TABS -->
+  <div class="categories-tabs">
+    <button
+      *ngFor="let tab of tabs"
+      class="tab-button"
+      [class.active]="activeTab === tab.id"
+      (click)="activeTab = tab.id"
+    >
+      {{ tab.label }}
+    </button>
+  </div>
+
+  <!-- GRID -->
+  <div class="colors-grid">
+    <div
+      *ngFor="let bg of filteredBackgrounds"
+      class="color-item"
+      [class.selected]="selectedBg?.id === bg.id"
+      (click)="selectedBg = bg"
+    >
+      <div
+        class="bg-thumb"
+        [style.background-image]="getBgStyle(bg)"
+      ></div>
+
+      <span class="color-name">{{ bg.name }}</span>
+    </div>
+  </div>
+<!-- <img src="/assets/bg/zee.png" width="200"> -->
+  <!-- PREVIEW -->
+  <!-- <div class="preview-section">
+    <h3 class="preview-label">Podgląd na żywo</h3>
+    <div class="preview-box">
+      <div
+        class="preview-paper"
+        [style.background-image]="getBgStyle(selectedBg)"
+      ></div>
+    </div>
+  </div> -->
+
+  <!-- APPLY -->
+  <button class="apply-button" (click)="applyBackground()">
+    ✓ Zastosuj wybrane tło
+  </button>
+
+</div>

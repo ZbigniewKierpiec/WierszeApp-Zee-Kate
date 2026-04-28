@@ -14,7 +14,13 @@
     <!-- PREVIEW -->
     <div class="preview">
       <div class="paper">
-        <div class="poem">
+        <div
+          class="poem"
+          [style.color]="poemColor"
+          [style.font-family]="poemFont"
+          [style.font-weight]="poemFontWeight"
+          [style.font-style]="poemFontStyle"
+        >
           Gdy zamknę oczy, widzę tylko Ciebie. W każdym oddechu, w każdym wspomnieniu.
 
           <span class="separator">— ♥ —</span>
@@ -52,6 +58,9 @@
   <div class="side-panel">
     <!-- <app-colors-panel></app-colors-panel> -->
     <!-- <app-separator-panel></app-separator-panel> -->
-    <ng-container *ngComponentOutlet="currentPanel"></ng-container>
+
+    <!-- <ng-container *ngComponentOutlet="currentPanel,inputs: currentPanelInputs"></ng-container> -->
+
+    <ng-container *ngComponentOutlet="currentPanel; inputs: currentPanelInputs"> </ng-container>
   </div>
 </div>

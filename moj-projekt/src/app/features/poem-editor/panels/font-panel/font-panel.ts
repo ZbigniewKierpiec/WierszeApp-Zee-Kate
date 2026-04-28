@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 // Interfejs dla pojedynczego stylu czcionki
 interface FontOption {
   id: number;
@@ -24,7 +24,7 @@ interface FontCategory {
   styleUrl: './font-panel.scss',
 })
 export class FontPanel {
- 
+ @Input() onFontSelect!: (font: any) => void;
  // Aktywna kategoria czcionek
  activeCategory = 'wszystkie';
 
@@ -102,17 +102,27 @@ export class FontPanel {
   }
 
   // Wybór czcionki
-  selectFont(font: FontOption): void {
-    this.selectedFont = font;
-  }
+  // selectFont(font: FontOption): void {
+  //   this.selectedFont = font;
+  // }
+
+
+selectFont(font: FontOption): void {
+  this.selectedFont = font;
+  this.onFontSelect?.(font);
+}
+
+
+
+
+
 
   // Zastosowanie wybranej czcionki
-  applyFont(): void {
-    if (this.selectedFont) {
-      console.log('Zastosowano czcionkę:', this.selectedFont);
-      // Tutaj dodaj własną logikę – np. przekaż wybraną czcionkę do komponentu edytora tekstu
-    }
+ applyFont(): void {
+  if (this.selectedFont && this.onFontSelect) {
+    this.onFontSelect(this.selectedFont);
   }
+}
 
   // Zamknięcie panelu
   close(): void {
