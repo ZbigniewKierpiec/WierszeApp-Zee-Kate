@@ -30,28 +30,28 @@ export class BackgroundPanel {
     {
       id: 1,
       name: 'Romantic Floral',
-      base: 'assets/bg/paper-background.jpg',
+      base: '',
       overlay: '/assets/bg/floral-right.png.png',
       category: 'romantic',
     },
     {
       id: 2,
       name: 'Soft Pink',
-      base: 'assets/bg/paper-background.jpg',
-      overlay: '/assets/bg/watercolor-pink.png',
+      base: '',
+      overlay: '/assets/bg/test',
       category: 'romantic',
     },
     {
       id: 3,
       name: 'Branches',
-      base: '/assets/bg/zee.png',
-      overlay: '/assets/bg/pngwing.com',
+      base: '/assets/bg/zee007.png',
+      overlay: '',
       category: 'paper',
     },
     {
       id: 4,
       name: 'Vintage',
-      base: 'assets/bg/paper-vintage.jpg',
+      base: '/assets/bg/love.png',
       overlay: null,
       category: 'paper',
     },
@@ -81,11 +81,11 @@ export class BackgroundPanel {
 
     this.onBackgroundSelect?.(this.selectedBg);
   }
-selectBg(bg: any) {
-  this.selectedBg = bg;
+  selectBg(bg: any) {
+    this.selectedBg = bg;
 
-  // 🔥 LIVE PREVIEW (TO JEST KLUCZ)
-  this.onBackgroundSelect?.(bg);
-}
+    // 🔥 LIVE PREVIEW (TO JEST KLUCZ)
+    this.onBackgroundSelect?.(bg);
+  }
   close() {}
 }

@@ -1,5 +1,6 @@
 <div class="editor-shell">
   <div class="phone">
+
     <!-- TOP BAR -->
     <div class="topbar">
       <div class="left">← <span>Edytor wiersza</span></div>
@@ -14,26 +15,48 @@
     <!-- PREVIEW -->
     <div class="preview">
       <div [style.background-image]="backgroundStyle" class="paper">
-        <!-- <div
-          class="poem"
-          [style.color]="poemColor"
-          [style.font-family]="poemFont"
-          [style.font-weight]="poemFontWeight"
-          [style.font-style]="poemFontStyle"
-        >
-          Gdy zamknę oczy, widzę tylko Ciebie. W każdym oddechu, w każdym wspomnieniu.
 
-          <span class="separator">— ♥ —</span>
+        <!-- 🔥 GUIDE -->
+      <ng-container *ngIf="showSpacingGuide">
 
-          Jesteś mym światłem w najciemniejszą noc. Jesteś tą ciszą, co koi każdy mrok.
+  <div
+    class="guide-line horizontal"
+    [style.left.px]="guideLeftX"
+    [style.top.px]="guideTopY"
+    [style.width.px]="guideRightX - guideLeftX"
+  ></div>
 
-          <span class="separator">✧</span>
+  <div
+    class="guide-line horizontal"
+    [style.left.px]="guideLeftX"
+    [style.top.px]="guideTopY + guideHeight"
+    [style.width.px]="guideRightX - guideLeftX"
+  ></div>
 
-          Niech ten wiersz będzie jak szept, który zostanie na zawsze w nas.
+  <div
+    class="guide-line vertical"
+    [style.left.px]="guideLeftX"
+    [style.top.px]="guideTopY"
+    [style.height.px]="guideHeight"
+  ></div>
 
-          <span class="flowers">✿ ✿ ✿</span>
-        </div> -->
+  <div
+    class="guide-line vertical"
+    [style.left.px]="guideRightX"
+    [style.top.px]="guideTopY"
+    [style.height.px]="guideHeight"
+  ></div>
 
+  <div 
+    class="spacing-label"
+    [style.left.px]="(guideLeftX + guideRightX) / 2 - 15"
+    [style.top.px]="guideTopY + guideHeight / 2 - 10"
+  >
+    {{ spacingValue }}
+  </div>
+
+</ng-container>
+        <!-- POEM -->
         <div
           class="poem"
           [style.color]="poemColor"
@@ -41,77 +64,55 @@
           [style.font-weight]="poemFontWeight"
           [style.font-style]="poemFontStyle"
         >
-          <!-- TEKST 1 -->
-          <span
-            cdkDrag
-            cdkDragLockAxis="y"
-            cdkDragBoundary=".paper"
-            class="draggable block"
-            contenteditable="true"
-          >
-            Gdy zamknę oczy, widzę tylko Ciebie. W każdym oddechu, w każdym wspomnieniu.
-          </span>
 
-          <!-- SEPARATOR -->
-          <span
-            class="separator draggable block"
-            cdkDrag
-            cdkDragLockAxis="y"
-            cdkDragBoundary=".paper"
-          >
-            — ♥ —
-          </span>
+        
 
-          <!-- TEKST 2 -->
-          <span
-            cdkDrag
-            cdkDragLockAxis="y"
-            cdkDragBoundary=".paper"
-            class="draggable block"
-            contenteditable="true"
-          >
-            Jesteś mym światłem w najciemniejszą noc. Jesteś tą ciszą, co koi każdy mrok.
-          </span>
+<!-- ELEMENT 1 -->
+<span class="draggable block" contenteditable="true">
+  Gdy zamknę oczy, widzę tylko Ciebie...
+</span>
 
-          <!-- SEPARATOR -->
-          <span
-            class="separator draggable block"
-            cdkDrag
-            cdkDragLockAxis="y"
-            cdkDragBoundary=".paper"
-          >
-            ✧
-          </span>
+<!-- ELEMENT 2 -->
+<span class="separator draggable block">
+  — ♥ —
+</span>
 
-          <!-- TEKST 3 -->
-          <span
-            cdkDrag
-            cdkDragLockAxis="y"
-            cdkDragBoundary=".paper"
-            class="draggable block"
-            contenteditable="true"
-          >
-            Niech ten wiersz będzie jak szept, który zostanie na zawsze w nas.
-          </span>
+<!-- ELEMENT 3 -->
+<span class="draggable block" contenteditable="true">
+  Jesteś mym światłem...
+</span>
 
-          <span
-            class="flowers draggable block"
-            cdkDrag
-            cdkDragLockAxis="y"
-            cdkDragBoundary=".paper"
-          >
-            ✿ ✿ ✿
-          </span>
+<!-- ELEMENT 4 -->
+<span class="separator draggable block">
+  ✧
+</span>
+
+<!-- ELEMENT 5 -->
+<span class="draggable block" contenteditable="true">
+  Niech ten wiersz...
+</span>
+
+<!-- ELEMENT 6 -->
+<span class="flowers draggable block">
+  ✿ ✿ ✿
+</span>
+
+
+
+
+
+
+
         </div>
 
         <!-- dekoracje -->
         <div class="flower top"></div>
         <div class="flower bottom"></div>
+
       </div>
     </div>
 
     <!-- BOTTOM MENU -->
-
     <div class="tabs">
       <button
         class="tab"
@@ -123,14 +124,12 @@
         <small>{{ tab.label }}</small>
       </button>
     </div>
+
   </div>
 
   <div class="side-panel">
-    <!-- <app-colors-panel></app-colors-panel> -->
-    <!-- <app-separator-panel></app-separator-panel> -->
-
-    <!-- <ng-container *ngComponentOutlet="currentPanel,inputs: currentPanelInputs"></ng-container> -->
-
-    <ng-container *ngComponentOutlet="currentPanel; inputs: currentPanelInputs"> </ng-container>
+    <ng-container 
+      *ngComponentOutlet="panelMap[activePanel]; inputs: currentPanelInputs">
+    </ng-container>
   </div>
 </div>

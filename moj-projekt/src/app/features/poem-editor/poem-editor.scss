@@ -287,3 +287,158 @@
   background-position: center, center;
   background-repeat: no-repeat, no-repeat;
 }
+.spacing-guide {
+  position: absolute;
+  height: 2px;
+  background: #00aaff;
+  z-index: 999;
+  pointer-events: none;
+}
+.spacing-guide-vertical {
+  position: absolute;
+  width: 2px;
+  background: #00aaff;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.paper {
+  position: relative; /* Kluczowe, aby linie były pozycjonowane względem tego elementu */
+  /* Twoje istniejące style */
+}
+
+.guide-line {
+  position: absolute;
+  pointer-events: none; /* Linie nie blokują interakcji z elementami pod nimi */
+  z-index: 10; /* Linie są widoczne ponad innymi elementami */
+}
+
+.guide-line.vertical {
+  width: 1px;
+  background-color: #2196F3; /* Niebieski kolor linii, możesz zmienić */
+  opacity: 0.8;
+}
+
+.paper {
+  position: relative;
+}
+
+.draggable.block {
+  display: block !important;
+  position: relative !important;
+  line-height: normal;
+  box-sizing: border-box;
+}
+
+.guide-line {
+  position: absolute;
+  pointer-events: none;
+  z-index: 999;
+  width: 1px;
+  background: #2196F3;
+}
+
+
+.paper {
+  position: relative;
+  min-height: 500px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.draggable.block {
+  display: block !important;
+  position: relative !important;
+  margin: 0 !important;
+  padding: 2px 4px !important;
+  line-height: 1.5 !important;
+  box-sizing: border-box !important;
+  transition: transform 0.1s ease;
+}
+
+.guide-line {
+  position: absolute;
+  pointer-events: none;
+  z-index: 9999;
+  background-color: #2196F3;
+
+  &.vertical {
+    width: 1px;
+  }
+}
+
+
+
+.paper {
+  position: relative;
+  min-height: 600px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.draggable.block {
+  display: block !important;
+  position: relative !important;
+  margin: 0 !important;
+  padding: 4px;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+/* LINIE POMOCNICZE */
+.guide-line {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  background-color: #d32f2f; /* Czerwony kolor jak na przykładzie */
+
+  &.horizontal {
+    height: 1px;
+  }
+
+  &.vertical {
+    width: 1px;
+  }
+}
+
+/* ETYKIETA Z WARTOŚCIĄ ODSTĘPU */
+.spacing-label {
+  position: absolute;
+  background-color: #d32f2f;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 11;
+  white-space: nowrap;
+}
+
+.paper {
+  position: relative;
+}
+
+.guide-line {
+  position: absolute;
+}
+
+.paper {
+  position: relative;
+}
+
+.guide-line {
+  position: absolute;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.guide-line.horizontal {
+  height: 1px;
+  background: red;
+}
+
+.guide-line.vertical {
+  width: 1px;
+  background: red;
+}
