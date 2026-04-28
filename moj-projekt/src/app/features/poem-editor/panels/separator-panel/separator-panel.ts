@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 // Interfejs dla pojedynczego wzoru separatora
 
 interface SeparatorOption {
@@ -21,10 +21,11 @@ interface SeparatorCategory {
   styleUrl: './separator-panel.scss',
 })
 export class SeparatorPanel {
+  @Input() onSeparatorSelect!: (sep: string) => void;
+
   activeCategory = 'wszystkie';
 
   selectedSeparator: SeparatorOption | null = null;
-
 
   categories: SeparatorCategory[] = [
     {
@@ -344,13 +345,9 @@ export class SeparatorPanel {
     },
   ];
 
-
-
-
   // ✅ FIX
   get currentCategory(): SeparatorCategory {
-    return this.categories.find(cat => cat.name === this.activeCategory)
-      ?? this.categories[0];
+    return this.categories.find((cat) => cat.name === this.activeCategory) ?? this.categories[0];
   }
 
   // ✅ FIX
@@ -359,23 +356,14 @@ export class SeparatorPanel {
   }
 
   // ✅ FIX
-  applySeparator(): void {
-    if (this.selectedSeparator) {
-      console.log('Zastosowano separator:', this.selectedSeparator);
-    }
+
+  applySeparator() {
+    if (!this.selectedSeparator) return;
+
+    this.onSeparatorSelect?.(this.selectedSeparator.symbol);
   }
 
   close(): void {
     console.log('Zamknięto panel');
   }
-
-
-
-
-
-
-
-
-
-
 }

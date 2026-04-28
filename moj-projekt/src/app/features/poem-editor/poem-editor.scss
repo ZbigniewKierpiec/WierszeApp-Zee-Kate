@@ -250,3 +250,30 @@
 .side-panel {
   width: 100%;
 }
+.draggable {
+  display: inline-block;
+  cursor: move;
+}
+
+.draggable:active {
+  cursor: grabbing;
+}
+
+
+.block {
+  display: block;
+  margin: 10px 0;
+}
+
+.draggable {
+  cursor: move;
+  user-select: none;
+}
+
+.draggable:active {
+  cursor: grabbing;
+}
+
+.paper {
+  position: relative;
+}
