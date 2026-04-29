@@ -1,17 +1,16 @@
 <div class="color-picker-container">
-
   <!-- HEADER -->
   <div class="picker-header">
     <div>
-      <h2 class="picker-title">Kolory tekstu</h2>
-      <p class="picker-subtitle">Wybierz kolor tekstu</p>
+      <h2 class="picker-title">Kolory tła</h2>
+      <p class="picker-subtitle">Wybierz kolor tła</p>
     </div>
     <button class="close-button" (click)="close()">×</button>
   </div>
 
   <!-- TABS -->
   <div class="categories-tabs">
-    <button 
+    <button
       *ngFor="let category of categories"
       class="tab-button"
       [class.active]="activeCategory === category.name"
@@ -23,16 +22,13 @@
 
   <!-- GRID -->
   <div class="colors-grid">
-    <div 
+    <div
       *ngFor="let color of currentCategory.colors"
       class="color-item"
       [class.selected]="selectedColor?.id === color.id"
       (click)="selectColor(color)"
     >
-      <div 
-        class="color-swatch"
-        [style.background]="getColorBg(color)"
-      >
+      <div class="color-swatch" [style.background]="getColorBg(color)">
         <span class="color-number">{{ color.id }}</span>
       </div>
 
@@ -44,18 +40,12 @@
   <div class="preview-section">
     <h3 class="preview-label">Podgląd</h3>
     <div class="preview-box">
-      <p 
-        class="preview-text"
-        [style.color]="selectedColor?.hex || '#3b2a20'"
-      >
+      <p class="preview-text" [style.color]="selectedColor?.hex || '#3b2a20'">
         Gdy zamknę oczy, widzę tylko Ciebie.
       </p>
     </div>
   </div>
 
   <!-- BTN -->
-  <button class="apply-button" (click)="applyColor()">
-    ✓ Zastosuj kolor
-  </button>
-
+  <button class="apply-button" (click)="applyColor()">✓ Zastosuj kolor</button>
 </div>
