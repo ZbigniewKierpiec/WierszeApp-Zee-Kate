@@ -1,6 +1,5 @@
 <div class="editor-shell">
   <div class="phone">
-
     <!-- TOP BAR -->
     <div class="topbar">
       <div class="left">← <span>Edytor wiersza</span></div>
@@ -15,47 +14,6 @@
     <!-- PREVIEW -->
     <div class="preview">
       <div [style.background-image]="backgroundStyle" class="paper">
-
-        <!-- 🔥 GUIDE -->
-      <ng-container *ngIf="showSpacingGuide">
-
-  <div
-    class="guide-line horizontal"
-    [style.left.px]="guideLeftX"
-    [style.top.px]="guideTopY"
-    [style.width.px]="guideRightX - guideLeftX"
-  ></div>
-
-  <div
-    class="guide-line horizontal"
-    [style.left.px]="guideLeftX"
-    [style.top.px]="guideTopY + guideHeight"
-    [style.width.px]="guideRightX - guideLeftX"
-  ></div>
-
-  <div
-    class="guide-line vertical"
-    [style.left.px]="guideLeftX"
-    [style.top.px]="guideTopY"
-    [style.height.px]="guideHeight"
-  ></div>
-
-  <div
-    class="guide-line vertical"
-    [style.left.px]="guideRightX"
-    [style.top.px]="guideTopY"
-    [style.height.px]="guideHeight"
-  ></div>
-
-  <div 
-    class="spacing-label"
-    [style.left.px]="(guideLeftX + guideRightX) / 2 - 15"
-    [style.top.px]="guideTopY + guideHeight / 2 - 10"
-  >
-    {{ spacingValue }}
-  </div>
-
-</ng-container>
         <!-- POEM -->
         <div
           class="poem"
@@ -64,61 +22,39 @@
           [style.font-weight]="poemFontWeight"
           [style.font-style]="poemFontStyle"
         >
+          <!-- ELEMENT 1 -->
+          <span class="draggable block" contenteditable="true">
+            Gdy zamknę oczy, widzę tylko Ciebie...
+          </span>
 
-        
+          <!-- ELEMENT 2 -->
+          <span class="separator  block"> — ♥ — </span>
 
-<!-- ELEMENT 1 -->
-<span class="draggable block" contenteditable="true">
-  Gdy zamknę oczy, widzę tylko Ciebie...
-</span>
+          <!-- ELEMENT 3 -->
+          <span class="draggable block" contenteditable="true"> Jesteś mym światłem... </span>
 
-<!-- ELEMENT 2 -->
-<span class="separator draggable block">
-  — ♥ —
-</span>
+          <!-- ELEMENT 4 -->
+          <span class="separator  block"> ✧ </span>
 
-<!-- ELEMENT 3 -->
-<span class="draggable block" contenteditable="true">
-  Jesteś mym światłem...
-</span>
+          <!-- ELEMENT 5 -->
+          <span class="draggable block" contenteditable="true"> Niech ten wiersz... </span>
 
-<!-- ELEMENT 4 -->
-<span class="separator draggable block">
-  ✧
-</span>
-
-<!-- ELEMENT 5 -->
-<span class="draggable block" contenteditable="true">
-  Niech ten wiersz...
-</span>
-
-<!-- ELEMENT 6 -->
-<span class="flowers draggable block">
-  ✿ ✿ ✿
-</span>
-
-
-
-
-
+          <!-- ELEMENT 6 -->
+          <span class="flowers  block"> ✿ ✿ ✿ </span>
 
           <!-- TEKST 3 -->
           <span
-            cdkDrag
-            cdkDragLockAxis="y"
-            cdkDragBoundary=".paper"
+           
             class="draggable block"
             contenteditable="true"
           >
             Niech ten wiersz będzie jak szept, który zostanie na zawsze w nas.
           </span>
-
         </div>
 
         <!-- dekoracje -->
         <div class="flower top"></div>
         <div class="flower bottom"></div>
-
       </div>
     </div>
 
@@ -134,12 +70,11 @@
         <small>{{ tab.label }}</small>
       </button>
     </div>
-
   </div>
 
   <div class="side-panel">
-    <ng-container 
-      *ngComponentOutlet="panelMap[activePanel]; inputs: currentPanelInputs">
-    </ng-container>
+    <!-- <ng-container *ngComponentOutlet="panelMap[activePanel]; inputs: currentPanelInputs">
+    </ng-container> -->
+    <app-background-panel></app-background-panel>
   </div>
 </div>

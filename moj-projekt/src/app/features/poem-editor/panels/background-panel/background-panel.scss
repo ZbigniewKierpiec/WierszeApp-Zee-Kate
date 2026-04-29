@@ -1,17 +1,66 @@
+// Główny kontener komponentu – dopasowany do panelu bocznego
 .color-picker-container {
   width: 100%;
   height: 100%;
   padding: 24px;
+  box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
   gap: 20px;
 
+  font-family: Arial, sans-serif;
+  color: #e5e7eb;
   background: rgba(13, 20, 27, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 14px;
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-/* TABS */
+// Nagłówek
+.picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .picker-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: #ffffff;
+  }
+
+  .picker-subtitle {
+    font-size: 13px;
+    color: #b0b3b8;
+    margin: 0;
+  }
+
+  .close-button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 9px;
+
+    color: #cfd6df;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Zakładki kategorii
 .categories-tabs {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -19,16 +68,185 @@
 
   .tab-button {
     height: 40px;
-    border-radius: 10px;
+    padding: 0 8px;
+
     background: #2c2927;
+    border: none;
+    border-radius: 10px;
+
     color: #d1d5db;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
+    transition: all 0.2s;
 
     &.active {
       background: #f2c2a5;
       color: #241812;
+      box-shadow: inset 0 -2px 0 #c98765;
+    }
+
+    &:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.08);
     }
   }
+}
+
+// Siatka kolorów - DODANA PROPORCJA 2/2
+.colors-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  flex: 1;
+
+  // Wymagana proporcja
+  aspect-ratio: 2 / 2;
+  width: 100%;
+
+  overflow-y: auto;
+  padding: 8px;
+  box-sizing: border-box;
+  background: rgba(10, 15, 20, 0.4);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  // Pasek przewijania dopasowany do stylu
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+  }
+
+  .color-item {
+    aspect-ratio: 2/2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    // Dopasowanie wewnętrznych elementów do nowej proporcji
+    height: 100%;
+    box-sizing: border-box;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    &.selected {
+      background: #2c2927;
+      box-shadow: inset 0 -2px 0 #c98765;
+    }
+
+    .color-swatch {
+      width: 100%;
+      height: calc(100% - 24px);
+      border-radius: 8px;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+      .color-number {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #ffffff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+      }
+    }
+
+    .color-name {
+      font-size: 11px;
+      color: #d1d5db;
+      text-align: center;
+      line-height: 1.3;
+      min-height: 14px;
+    }
+  }
+}
+
+// Sekcja podglądu
+.preview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .preview-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #b0b3b8;
+    margin: 0;
+  }
+
+  .preview-box {
+    // width: 100%;
+    padding: 16px 20px;
+    background: rgba(10, 15, 20, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+
+    .preview-text {
+      margin: 0;
+      font-size: 15px;
+      font-style: italic;
+      text-align: center;
+      line-height: 1.6;
+      transition: color 0.2s;
+    }
+  }
+}
+
+// Przycisk akcji
+.apply-button {
+  width: 100%;
+  height: 58px;
+  padding: 0 16px;
+
+  background: #f2c2a5;
+  border: none;
+  border-radius: 9px;
+
+  color: #241812;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #e0ad8f;
+  }
+
+  &:active {
+    background: #c98765;
+  }
+}
+
+.color-picker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+
+  background: rgba(13, 20, 27, 0.96);
+  border-radius: 14px;
+  color: #e5e7eb;
 }
 
 /* GRID */
@@ -37,12 +255,17 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 
-  padding: 10px;
-
-  background: rgba(10, 15, 20, 0.4);
-  border-radius: 12px;
+  flex: 1;
+  min-height: 0;
 
   overflow-y: auto;
+
+  padding: 8px;
+  border-radius: 10px;
+
+  background: rgba(10, 15, 20, 0.4);
+
+  align-content: start;
 }
 
 /* ITEM */
@@ -51,33 +274,45 @@
   flex-direction: column;
   gap: 6px;
 
-  padding: 6px;
+  padding: 8px;
   border-radius: 10px;
   cursor: pointer;
 
-  transition: 0.2s;
+  transition: all 0.25s ease;
 
   &:hover {
-    background: rgba(255,255,255,0.05);
+    transform: scale(1.05);
   }
 
   &.selected {
     background: #2c2927;
+    box-shadow: inset 0 -2px 0 #c98765;
   }
 }
 
-/* 🔥 BOX */
-.bg-thumb {
+/* SWATCH */
+.color-swatch {
   width: 100%;
   aspect-ratio: 1 / 1;
 
-  border-radius: 10px;
+  border-radius: 8px;
+  overflow: hidden;
 
-  background-size: auto 70%, cover;
-  background-position: top right, center;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
 
-  border: 1px solid rgba(255,255,255,0.1);
+  position: relative;
+
+  transition: transform 0.3s;
+}
+
+.color-number {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 11px;
+  color: white;
 }
 
 /* NAME */
@@ -88,37 +323,20 @@
 
 /* PREVIEW */
 .preview-box {
-  display: flex;
-  justify-content: center;
-}
-
-.preview-paper {
-  width: 220px;
-  height: 300px;
-
+  padding: 16px;
+  background: rgba(10, 15, 20, 0.5);
   border-radius: 10px;
-
-  background-size: cover, cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
-/* BUTTON */
+.preview-text {
+  text-align: center;
+}
+
+/* BTN */
 .apply-button {
   height: 50px;
   background: #f2c2a5;
-  border-radius: 10px;
-}
-
-.bg-thumb {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-
-  border-radius: 10px;
-
-  background-size: contain, cover; /* 🔥 zmiana */
-  background-position: center, center; /* 🔥 zmiana */
-  background-repeat: no-repeat, no-repeat;
-
-  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  border: none;
+  cursor: pointer;
 }
