@@ -36,9 +36,9 @@ export class BackgroundPanel {
 
 
 
+@Input() onBackgroundSelect!: (bg: string) => void;
 
-
- @Input() onColorSelect!: (color: string) => void;
+ 
 
   activeCategory = 'klasyczne';
   selectedColor: ColorOption | null = null;
@@ -130,18 +130,14 @@ get currentCategory(): ColorCategory {
 
 
 
+getColorBg(color: ColorOption): string {
+  return color.image
+    ? `url(${color.image})`
+    : color.hex;
+}
 
 
 
-  getColorBg(color: ColorOption): string {
-    if (color.image) {
-      return `
-        linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)),
-        url(${color.image})
-      `;
-    }
-    return color.hex;
-  }
 
 
 
@@ -155,7 +151,20 @@ selectColor(color: ColorOption) {
     `
     : color.hex;
 
-  this.onColorSelect?.(style);
+  this.onBackgroundSelect?.(style);
+}
+
+
+
+
+applyColor() {
+  if (!this.selectedColor) return;
+
+  const style = this.selectedColor.image
+    ? `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${this.selectedColor.image})`
+    : this.selectedColor.hex;
+
+  this.onBackgroundSelect?.(style);
 }
 
 
@@ -166,11 +175,6 @@ selectColor(color: ColorOption) {
 
 
 
-  applyColor() {
-    if (this.selectedColor) {
-      this.onColorSelect?.(this.selectedColor.hex);
-    }
-  }
 
   close() {}
 

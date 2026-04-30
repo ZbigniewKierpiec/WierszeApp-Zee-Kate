@@ -51,10 +51,13 @@ export class PoemEditor {
     this.poemFontWeight = f.fontWeight || 'normal';
     this.poemFontStyle = f.fontStyle || 'normal';
   }
-  onBackgroundChange(bg: any) {
-    this.backgroundStyle = bg.overlay ? `url(${bg.overlay}), url(${bg.base})` : `url(${bg.base})`;
-  }
-
+  // onBackgroundChange(bg: any) {
+  //   this.backgroundStyle = bg.overlay ? `url(${bg.overlay}), url(${bg.base})` : `url(${bg.base})`;
+  // }
+onBackgroundChange(bg: string) {
+  this.backgroundStyle = bg;
+  console.log(bg)
+}
   get currentPanelInputs() {
     if (this.activePanel === 'colors') {
       return { onColorSelect: (c: string) => this.onColorChange(c) };

@@ -64,6 +64,7 @@
 .categories-tabs {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+
   gap: 6px;
 
   .tab-button {
@@ -160,7 +161,7 @@
       position: relative;
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
+      aspect-ratio: 1 / 1;
       .color-number {
         position: absolute;
         top: 6px;
@@ -331,9 +332,6 @@
 .preview-text {
   text-align: center;
 }
-
-
-
 
 // Przycisk akcji
 .apply-button {

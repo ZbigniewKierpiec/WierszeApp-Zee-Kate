@@ -28,9 +28,24 @@
       [class.selected]="selectedColor?.id === color.id"
       (click)="selectColor(color)"
     >
-      <div class="color-swatch" [style.background]="getColorBg(color)">
+      <!-- <div class="color-swatch" [style.background-image]="getColorBg(color)">
         <span class="color-number">{{ color.id }}</span>
-      </div>
+      </div> -->
+
+
+<div
+  class="color-swatch"
+  [style.background-image]="color.image ? 'url(' + color.image + ')' : null"
+  [style.background-color]="!color.image ? color.hex : null"
+>
+  <span class="color-number">{{ color.id }}</span>
+</div>
+
+
+
+
+
+
 
       <span class="color-name">{{ color.name }}</span>
     </div>
