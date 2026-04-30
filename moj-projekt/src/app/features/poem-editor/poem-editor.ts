@@ -18,14 +18,43 @@ import { FontPanel } from './panels/font-panel/font-panel';
 export class PoemEditor {
   activePanel = 'colors';
   backgroundStyle = '';
-  separatorSymbol = '— ♥ —'; 
-  poemColor = '#3b2a20';
+ poemColor = '#3b2a20';
   poemFont = '"Playfair Display", serif';
   poemFontWeight: string | number = 'normal';
   poemFontStyle = 'normal';
 
   constructor(private cdr: ChangeDetectorRef) {}
+
   readonly TOLERANCE = 1.5;
+
+
+
+
+
+separators = [
+  '— ♥ —',
+  '✧',
+  '— ♥ —'
+];
+
+// tryb panelu (globalny)
+activeSeparatorValue: string | null = null;
+
+// tryb edycji pojedynczego
+activeSeparatorIndex: number | null = null;
+
+
+setActivePanel(panel: string) {
+  this.activePanel = panel;
+
+  if (panel === 'decorations') {
+    this.activeSeparatorIndex = null; 
+  }
+}
+
+
+
+
 
   editorTabs = [
     { id: 'text', label: 'Tekst', icon: 'T' },
@@ -58,6 +87,14 @@ export class PoemEditor {
     this.backgroundStyle = bg;
     console.log(bg);
   }
+
+selectSeparator(index: number) {
+  this.activeSeparatorIndex = index;
+}
+clearSeparatorSelection() {
+  this.activeSeparatorIndex = null;
+}
+
   // get currentPanelInputs() {
   //   if (this.activePanel === 'colors') {
   //     return { onColorSelect: (c: string) => this.onColorChange(c) };
@@ -92,14 +129,17 @@ get currentPanelInputs() {
 }
 
 
-
-
-
 onSeparatorChange(symbol: string) {
-  this.separatorSymbol = symbol;
+
+  // ✏️ jeśli kliknięty konkretny → zmień tylko jeden
+  if (this.activeSeparatorIndex !== null) {
+    this.separators[this.activeSeparatorIndex] = symbol;
+    return;
+  }
+
+  // 🎛️ jeśli nic nie kliknięte → zmień WSZYSTKIE
+  this.separators = this.separators.map(() => symbol);
 }
-
-
 
 
 

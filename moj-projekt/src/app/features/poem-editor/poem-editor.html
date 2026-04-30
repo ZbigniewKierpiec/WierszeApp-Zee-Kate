@@ -12,7 +12,7 @@
     </div>
 
     <!-- PREVIEW -->
-    <div class="preview">
+    <div (click)="clearSeparatorSelection()" class="preview">
       <div [style.background-image]="backgroundStyle" class="paper">
         <!-- POEM -->
         <div
@@ -28,19 +28,37 @@
           </span>
 
           <!-- ELEMENT 2 -->
-          <span class="separator block"> {{ separatorSymbol }} </span>
+          <span
+            class="separator block"
+            [class.active]="activeSeparatorIndex === 0"
+            (click)="selectSeparator(0); $event.stopPropagation()"
+          >
+            {{ separators[0] }}
+          </span>
 
           <!-- ELEMENT 3 -->
           <span class="draggable block" contenteditable="true"> Jesteś mym światłem... </span>
 
           <!-- ELEMENT 4 -->
-          <span class="separator block"> {{ separatorSymbol }} </span>
+          <span
+            class="separator block"
+            (click)="selectSeparator(1); $event.stopPropagation()"
+            [class.active]="activeSeparatorIndex === 1"
+          >
+            {{ separators[1] }}
+          </span>
 
           <!-- ELEMENT 5 -->
           <span class="draggable block" contenteditable="true"> Niech ten wiersz... </span>
 
           <!-- ELEMENT 6 -->
-          <span class="separator block"> {{ separatorSymbol }} </span>
+          <span
+            class="separator block"
+            (click)="selectSeparator(2); $event.stopPropagation()"
+            [class.active]="activeSeparatorIndex === 2"
+          >
+            {{ separators[2] }}
+          </span>
 
           <!-- TEKST 3 -->
           <span class="draggable block" contenteditable="true">
