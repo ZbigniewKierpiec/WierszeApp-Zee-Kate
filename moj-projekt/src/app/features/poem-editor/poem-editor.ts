@@ -26,8 +26,14 @@ export class PoemEditor {
   constructor(private cdr: ChangeDetectorRef) {}
 
   readonly TOLERANCE = 1.5;
+activeTextIndex: number | null = null;
 
-
+textColors: (string | null)[] = [
+  null,
+  null,
+  null,
+  null
+];
 
 
 
@@ -53,6 +59,11 @@ setActivePanel(panel: string) {
 }
 
 
+selectText(index: number) {
+  this.activeTextIndex = index;
+  this.activeSeparatorIndex = null;
+}
+
 
 
 
@@ -72,9 +83,29 @@ setActivePanel(panel: string) {
   };
 
   // 🎨 PANEL LOGIC
-  onColorChange(c: string) {
-    this.poemColor = c;
+  // onColorChange(c: string) {
+  //   this.poemColor = c;
+  // }
+
+
+onColorChange(c: string) {
+
+  // ✏️ pojedynczy tekst
+  if (this.activeTextIndex !== null) {
+    this.textColors = this.textColors.map((col, i) =>
+      i === this.activeTextIndex ? c : col
+    );
+    return;
   }
+
+  // 🌍 GLOBAL
+  this.poemColor = c;
+  this.textColors = this.textColors.map(() => null); // reset override
+}
+
+
+
+
   onFontChange(f: any) {
     this.poemFont = f.fontFamily;
     this.poemFontWeight = f.fontWeight || 'normal';

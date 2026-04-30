@@ -12,22 +12,28 @@
     </div>
 
     <!-- PREVIEW -->
-    <div (click)="clearSeparatorSelection()" class="preview">
+    <div (click)="clearSeparatorSelection(); activeTextIndex = null" class="preview">
       <div [style.background-image]="backgroundStyle" class="paper">
-        <!-- POEM -->
+
         <div
           class="poem"
-          [style.color]="poemColor"
           [style.font-family]="poemFont"
           [style.font-weight]="poemFontWeight"
           [style.font-style]="poemFontStyle"
         >
-          <!-- ELEMENT 1 -->
-          <span class="draggable block" contenteditable="true">
+
+          <!-- TEXT 1 -->
+          <span
+            (click)="selectText(0); $event.stopPropagation()"
+            [class.active]="activeTextIndex === 0"
+            [style.color]="textColors[0] || poemColor"
+            class="draggable block"
+            contenteditable="true"
+          >
             Gdy zamknę oczy, widzę tylko Ciebie...
           </span>
 
-          <!-- ELEMENT 2 -->
+          <!-- SEPARATOR 1 -->
           <span
             class="separator block"
             [class.active]="activeSeparatorIndex === 0"
@@ -36,39 +42,58 @@
             {{ separators[0] }}
           </span>
 
-          <!-- ELEMENT 3 -->
-          <span class="draggable block" contenteditable="true"> Jesteś mym światłem... </span>
+          <!-- TEXT 2 -->
+          <span
+            (click)="selectText(1); $event.stopPropagation()"
+            [class.active]="activeTextIndex === 1"
+            [style.color]="textColors[1] || poemColor"
+            class="draggable block"
+            contenteditable="true"
+          >
+            Jesteś mym światłem...
+          </span>
 
-          <!-- ELEMENT 4 -->
+          <!-- SEPARATOR 2 -->
           <span
             class="separator block"
-            (click)="selectSeparator(1); $event.stopPropagation()"
             [class.active]="activeSeparatorIndex === 1"
+            (click)="selectSeparator(1); $event.stopPropagation()"
           >
             {{ separators[1] }}
           </span>
 
-          <!-- ELEMENT 5 -->
-          <span class="draggable block" contenteditable="true"> Niech ten wiersz... </span>
+          <!-- TEXT 3 -->
+          <span
+            (click)="selectText(2); $event.stopPropagation()"
+            [class.active]="activeTextIndex === 2"
+            [style.color]="textColors[2] || poemColor"
+            class="draggable block"
+            contenteditable="true"
+          >
+            Niech ten wiersz...
+          </span>
 
-          <!-- ELEMENT 6 -->
+          <!-- SEPARATOR 3 -->
           <span
             class="separator block"
-            (click)="selectSeparator(2); $event.stopPropagation()"
             [class.active]="activeSeparatorIndex === 2"
+            (click)="selectSeparator(2); $event.stopPropagation()"
           >
             {{ separators[2] }}
           </span>
 
-          <!-- TEKST 3 -->
-          <span class="draggable block" contenteditable="true">
+          <!-- TEXT 4 -->
+          <span
+            (click)="selectText(3); $event.stopPropagation()"
+            [class.active]="activeTextIndex === 3"
+            [style.color]="textColors[3] || poemColor"
+            class="draggable block"
+            contenteditable="true"
+          >
             Niech ten wiersz będzie jak szept, który zostanie na zawsze w nas.
           </span>
-        </div>
 
-        <!-- dekoracje -->
-        <!-- <div class="flower top separator"></div>
-        <div class="flower bottom separator"></div> -->
+        </div>
       </div>
     </div>
 
@@ -87,8 +112,8 @@
   </div>
 
   <div class="side-panel">
-    <ng-container *ngComponentOutlet="panelMap[activePanel]; inputs: currentPanelInputs">
+    <ng-container
+      *ngComponentOutlet="panelMap[activePanel]; inputs: currentPanelInputs">
     </ng-container>
-    <!-- <app-background-panel></app-background-panel> -->
   </div>
 </div>
