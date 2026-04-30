@@ -351,16 +351,16 @@ export class SeparatorPanel {
   }
 
   // ✅ FIX
-  selectSeparator(separator: SeparatorOption): void {
-    this.selectedSeparator = separator;
-  }
-
-  // ✅ FIX
 
   applySeparator() {
     if (!this.selectedSeparator) return;
 
     this.onSeparatorSelect?.(this.selectedSeparator.symbol);
+  }
+
+  selectSeparator(separator: SeparatorOption): void {
+    this.selectedSeparator = separator;
+    this.onSeparatorSelect?.(separator.symbol); // 🔥 instant update
   }
 
   close(): void {

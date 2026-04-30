@@ -18,7 +18,7 @@ import { FontPanel } from './panels/font-panel/font-panel';
 export class PoemEditor {
   activePanel = 'colors';
   backgroundStyle = '';
-
+  separatorSymbol = '— ♥ —'; 
   poemColor = '#3b2a20';
   poemFont = '"Playfair Display", serif';
   poemFontWeight: string | number = 'normal';
@@ -54,20 +54,55 @@ export class PoemEditor {
   // onBackgroundChange(bg: any) {
   //   this.backgroundStyle = bg.overlay ? `url(${bg.overlay}), url(${bg.base})` : `url(${bg.base})`;
   // }
-onBackgroundChange(bg: string) {
-  this.backgroundStyle = bg;
-  console.log(bg)
-}
-  get currentPanelInputs() {
-    if (this.activePanel === 'colors') {
-      return { onColorSelect: (c: string) => this.onColorChange(c) };
-    }
-    if (this.activePanel === 'background') {
-      return { onBackgroundSelect: (bg: any) => this.onBackgroundChange(bg) };
-    }
-    if (this.activePanel === 'fonts') {
-      return { onFontSelect: (f: any) => this.onFontChange(f) };
-    }
-    return {};
+  onBackgroundChange(bg: string) {
+    this.backgroundStyle = bg;
+    console.log(bg);
   }
+  // get currentPanelInputs() {
+  //   if (this.activePanel === 'colors') {
+  //     return { onColorSelect: (c: string) => this.onColorChange(c) };
+  //   }
+  //   if (this.activePanel === 'background') {
+  //     return { onBackgroundSelect: (bg: any) => this.onBackgroundChange(bg) };
+  //   }
+  //   if (this.activePanel === 'fonts') {
+  //     return { onFontSelect: (f: any) => this.onFontChange(f) };
+  //   }
+  //   return {};
+  // }
+
+get currentPanelInputs() {
+  if (this.activePanel === 'colors') {
+    return { onColorSelect: (c: string) => this.onColorChange(c) };
+  }
+
+  if (this.activePanel === 'background') {
+    return { onBackgroundSelect: (bg: any) => this.onBackgroundChange(bg) };
+  }
+
+  if (this.activePanel === 'fonts') {
+    return { onFontSelect: (f: any) => this.onFontChange(f) };
+  }
+
+  if (this.activePanel === 'decorations') {
+    return { onSeparatorSelect: (s: string) => this.onSeparatorChange(s) };
+  }
+
+  return {};
+}
+
+
+
+
+
+onSeparatorChange(symbol: string) {
+  this.separatorSymbol = symbol;
+}
+
+
+
+
+
+
+
 }
