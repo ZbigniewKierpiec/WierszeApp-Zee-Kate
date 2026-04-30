@@ -8,13 +8,14 @@
 
 /* ===== LAYOUT ===== */
 .editor-shell {
-  width: 80%;
+  width: 75%;
   height: 100vh;
- 
+
   display: grid;
   align-content: center;
   /* 🔥 lewy panel jak mobile preview */
   grid-template-columns: 50% 1fr;
+
   //   background: #05070b;
 }
 
