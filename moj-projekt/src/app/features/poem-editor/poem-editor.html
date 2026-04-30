@@ -1,6 +1,5 @@
 <div class="editor-shell">
   <div class="phone">
-    <!-- TOP BAR -->
     <div class="topbar">
       <div class="left">← <span>Edytor wiersza</span></div>
 
@@ -11,93 +10,160 @@
       </div>
     </div>
 
-    <!-- PREVIEW -->
-    <div (click)="clearSeparatorSelection(); activeTextIndex = null" class="preview">
+    <div
+      (click)="clearSeparatorSelection(); activeTextIndex = null; miniMenuVisible = false"
+      class="preview"
+    >
       <div [style.background-image]="backgroundStyle" class="paper">
-
-        <div
-          class="poem"
-          [style.font-family]="poemFont"
-          [style.font-weight]="poemFontWeight"
-          [style.font-style]="poemFontStyle"
-        >
+        <div class="poem">
 
           <!-- TEXT 1 -->
           <span
-            (click)="selectText(0); $event.stopPropagation()"
+            (click)="selectText(0, $event); $event.stopPropagation()"
             [class.active]="activeTextIndex === 0"
             [style.color]="textColors[0] || poemColor"
+            [style.font-family]="fontOverrides[0]?.fontFamily || poemFont"
+            [style.font-weight]="styleOverrides[0]?.weight || fontOverrides[0]?.fontWeight || poemFontWeight"
+            [style.font-style]="styleOverrides[0]?.italic ? 'italic' : (fontOverrides[0]?.fontStyle || poemFontStyle)"
+            [style.text-align]="styleOverrides[0]?.align || 'center'"
+            [style.letter-spacing]="styleOverrides[0]?.spacing || '0px'"
+            [style.line-height]="styleOverrides[0]?.lineHeight || 1.5"
+            [style.text-transform]="styleOverrides[0]?.transform || 'none'"
+            [style.opacity]="styleOverrides[0]?.opacity ?? 1"
+            [style.text-shadow]="styleOverrides[0]?.shadow || 'none'"
             class="draggable block"
             contenteditable="true"
           >
             Gdy zamknę oczy, widzę tylko Ciebie...
           </span>
 
-          <!-- SEPARATOR 1 -->
           <span
             class="separator block"
+            [style.color]="separatorColors[0] || poemColor"
             [class.active]="activeSeparatorIndex === 0"
-            (click)="selectSeparator(0); $event.stopPropagation()"
+            (click)="selectSeparator(0, $event); $event.stopPropagation()"
           >
             {{ separators[0] }}
           </span>
 
           <!-- TEXT 2 -->
           <span
-            (click)="selectText(1); $event.stopPropagation()"
+            (click)="selectText(1, $event); $event.stopPropagation()"
             [class.active]="activeTextIndex === 1"
             [style.color]="textColors[1] || poemColor"
+            [style.font-family]="fontOverrides[1]?.fontFamily || poemFont"
+            [style.font-weight]="styleOverrides[1]?.weight || fontOverrides[1]?.fontWeight || poemFontWeight"
+            [style.font-style]="styleOverrides[1]?.italic ? 'italic' : (fontOverrides[1]?.fontStyle || poemFontStyle)"
+            [style.text-align]="styleOverrides[1]?.align || 'center'"
+            [style.letter-spacing]="styleOverrides[1]?.spacing || '0px'"
+            [style.line-height]="styleOverrides[1]?.lineHeight || 1.5"
+            [style.text-transform]="styleOverrides[1]?.transform || 'none'"
+            [style.opacity]="styleOverrides[1]?.opacity ?? 1"
+            [style.text-shadow]="styleOverrides[1]?.shadow || 'none'"
             class="draggable block"
             contenteditable="true"
           >
             Jesteś mym światłem...
           </span>
 
-          <!-- SEPARATOR 2 -->
           <span
             class="separator block"
+            [style.color]="separatorColors[1] || poemColor"
             [class.active]="activeSeparatorIndex === 1"
-            (click)="selectSeparator(1); $event.stopPropagation()"
+            (click)="selectSeparator(1, $event); $event.stopPropagation()"
           >
             {{ separators[1] }}
           </span>
 
           <!-- TEXT 3 -->
           <span
-            (click)="selectText(2); $event.stopPropagation()"
+            (click)="selectText(2, $event); $event.stopPropagation()"
             [class.active]="activeTextIndex === 2"
             [style.color]="textColors[2] || poemColor"
+            [style.font-family]="fontOverrides[2]?.fontFamily || poemFont"
+            [style.font-weight]="styleOverrides[2]?.weight || fontOverrides[2]?.fontWeight || poemFontWeight"
+            [style.font-style]="styleOverrides[2]?.italic ? 'italic' : (fontOverrides[2]?.fontStyle || poemFontStyle)"
+            [style.text-align]="styleOverrides[2]?.align || 'center'"
+            [style.letter-spacing]="styleOverrides[2]?.spacing || '0px'"
+            [style.line-height]="styleOverrides[2]?.lineHeight || 1.5"
+            [style.text-transform]="styleOverrides[2]?.transform || 'none'"
+            [style.opacity]="styleOverrides[2]?.opacity ?? 1"
+            [style.text-shadow]="styleOverrides[2]?.shadow || 'none'"
             class="draggable block"
             contenteditable="true"
           >
             Niech ten wiersz...
           </span>
 
-          <!-- SEPARATOR 3 -->
           <span
             class="separator block"
             [class.active]="activeSeparatorIndex === 2"
-            (click)="selectSeparator(2); $event.stopPropagation()"
+            [style.color]="separatorColors[2] || poemColor"
+            (click)="selectSeparator(2, $event); $event.stopPropagation()"
           >
             {{ separators[2] }}
           </span>
 
           <!-- TEXT 4 -->
           <span
-            (click)="selectText(3); $event.stopPropagation()"
+            (click)="selectText(3, $event); $event.stopPropagation()"
             [class.active]="activeTextIndex === 3"
             [style.color]="textColors[3] || poemColor"
+            [style.font-family]="fontOverrides[3]?.fontFamily || poemFont"
+            [style.font-weight]="styleOverrides[3]?.weight || fontOverrides[3]?.fontWeight || poemFontWeight"
+            [style.font-style]="styleOverrides[3]?.italic ? 'italic' : (fontOverrides[3]?.fontStyle || poemFontStyle)"
+            [style.text-align]="styleOverrides[3]?.align || 'center'"
+            [style.letter-spacing]="styleOverrides[3]?.spacing || '0px'"
+            [style.line-height]="styleOverrides[3]?.lineHeight || 1.5"
+            [style.text-transform]="styleOverrides[3]?.transform || 'none'"
+            [style.opacity]="styleOverrides[3]?.opacity ?? 1"
+            [style.text-shadow]="styleOverrides[3]?.shadow || 'none'"
             class="draggable block"
             contenteditable="true"
           >
             Niech ten wiersz będzie jak szept, który zostanie na zawsze w nas.
           </span>
-
         </div>
       </div>
     </div>
 
-    <!-- BOTTOM MENU -->
+    <div
+      *ngIf="miniMenuVisible"
+      class="mini-menu"
+      [style.top.px]="miniMenuPosition.y"
+      [style.left.px]="miniMenuPosition.x"
+    >
+      <ng-container *ngIf="activeTextIndex !== null">
+        <button class="menu-item" (click)="openPanel('colors')">
+          🎨 <span>Kolor</span>
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="menu-item" (click)="openPanel('fonts')">
+          🔤 <span>Font</span>
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="menu-item" (click)="openPanel('style')">
+          ✨ <span>Styl</span>
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="activeSeparatorIndex !== null">
+        <button class="menu-item" (click)="openPanel('colors')">
+          🎨 <span>Kolor</span>
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="menu-item" (click)="openPanel('decorations')">
+          ❀ <span>Symbol</span>
+        </button>
+      </ng-container>
+    </div>
+
     <div class="tabs">
       <button
         class="tab"
@@ -111,9 +177,8 @@
     </div>
   </div>
 
-  <div class="side-panel">
-    <ng-container
-      *ngComponentOutlet="panelMap[activePanel]; inputs: currentPanelInputs">
+  <div class="side-panel" [class.open]="activePanel">
+    <ng-container *ngComponentOutlet="panelMap[activePanel]; inputs: currentPanelInputs">
     </ng-container>
   </div>
 </div>

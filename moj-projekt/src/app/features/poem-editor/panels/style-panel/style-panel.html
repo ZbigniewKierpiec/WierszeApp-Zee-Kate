@@ -1,0 +1,78 @@
+<div class="color-picker-container">
+
+  <!-- HEADER -->
+  <div class="picker-header">
+    <div>
+      <h2 class="picker-title">Styl tekstu</h2>
+      <p class="picker-subtitle">Wybierz preset stylu</p>
+    </div>
+    <button class="close-button" (click)="close()">×</button>
+  </div>
+
+  <!-- TABS -->
+  <div class="categories-tabs">
+    <button
+      *ngFor="let category of categories"
+      class="tab-button"
+      [class.active]="activeCategory === category.name"
+      (click)="activeCategory = category.name"
+    >
+      {{ category.label }}
+    </button>
+  </div>
+
+  <!-- GRID -->
+  <div class="colors-grid">
+    <div
+      *ngFor="let style of currentCategory.colors"
+      class="color-item"
+      [class.selected]="selectedStyle?.id === style.id"
+      (click)="selectStyle(style)"
+    >
+
+      <!-- 🔥 REAL PREVIEW -->
+      <div
+        class="color-swatch style-swatch"
+        [style.text-align]="style.align || 'center'"
+        [style.letter-spacing]="style.spacing || '0px'"
+        [style.font-weight]="style.weight || '400'"
+        [style.line-height]="style.lineHeight || 1.5"
+        [style.font-style]="style.italic ? 'italic' : 'normal'"
+        [style.text-transform]="style.transform || 'none'"
+        [style.opacity]="style.opacity ?? 1"
+        [style.text-shadow]="style.shadow || 'none'"
+      >
+        {{ style.preview }}
+      </div>
+
+      <span class="color-name">{{ style.name }}</span>
+
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-section">
+    <h3 class="preview-label">Podgląd</h3>
+    <div class="preview-box">
+      <p
+        class="preview-text"
+        [style.text-align]="selectedStyle?.align || 'center'"
+        [style.letter-spacing]="selectedStyle?.spacing || '0px'"
+        [style.font-weight]="selectedStyle?.weight || '400'"
+        [style.line-height]="selectedStyle?.lineHeight || 1.5"
+        [style.font-style]="selectedStyle?.italic ? 'italic' : 'normal'"
+        [style.text-transform]="selectedStyle?.transform || 'none'"
+        [style.opacity]="selectedStyle?.opacity ?? 1"
+        [style.text-shadow]="selectedStyle?.shadow || 'none'"
+      >
+        {{ selectedStyle?.preview || 'Gdy zamknę oczy, widzę tylko Ciebie.' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- BTN -->
+  <button class="apply-button">
+    ✓ Zastosuj styl
+  </button>
+
+</div>
