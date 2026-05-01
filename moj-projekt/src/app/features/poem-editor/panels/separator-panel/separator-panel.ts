@@ -343,6 +343,37 @@ export class SeparatorPanel {
         { id: 40, name: 'Vintage stars', symbol: '✧ ✦ ✧ ✦ ✧' },
       ],
     },
+
+    {
+      name: 'emoji',
+      label: 'Emoji',
+      separators: [
+        { id: 201, name: 'Serce', symbol: '❤️ ❤️ ❤️' },
+        { id: 202, name: 'Smutek', symbol: '😢 😢 😢' },
+        { id: 203, name: 'Ogień', symbol: '🔥 🔥 🔥' },
+        { id: 204, name: 'Magia', symbol: '✨ ✨ ✨' },
+        { id: 205, name: 'Gwiazdy', symbol: '⭐ ⭐ ⭐' },
+        { id: 206, name: 'Księżyc', symbol: '🌙 🌙 🌙' },
+
+        { id: 207, name: 'Złamane serce', symbol: '💔 💔 💔' },
+        { id: 208, name: 'Deszcz', symbol: '🌧️ 🌧️ 🌧️' },
+        { id: 209, name: 'Czas', symbol: '⏳ ⏳ ⏳' },
+        { id: 210, name: 'Kosmos', symbol: '🌌 🌌 🌌' },
+
+        { id: 211, name: 'Myśli', symbol: '💭 💭 💭' },
+        { id: 212, name: 'Krzyk', symbol: '😱 😱 😱' },
+        { id: 213, name: 'Spokój', symbol: '🕊️ 🕊️ 🕊️' },
+        { id: 214, name: 'Sen', symbol: '😴 😴 😴' },
+
+        { id: 215, name: 'Kwiaty', symbol: '🌸 🌸 🌸' },
+        { id: 216, name: 'Róże', symbol: '🌹 🌹 🌹' },
+        { id: 217, name: 'Liście', symbol: '🍃 🍃 🍃' },
+
+        { id: 218, name: 'Błysk', symbol: '⚡ ⚡ ⚡' },
+        { id: 219, name: 'Wir', symbol: '🌀 🌀 🌀' },
+        { id: 220, name: 'Maska', symbol: '🎭 🎭 🎭' },
+      ],
+    },
   ];
 
   // ✅ FIX

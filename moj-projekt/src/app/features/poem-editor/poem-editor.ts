@@ -70,32 +70,31 @@ export class PoemEditor {
   //   );
   // }
 
+  // onStyleApply(style: any) {
+  //   if (this.activeTextIndex === null) return;
 
-// onStyleApply(style: any) {
-//   if (this.activeTextIndex === null) return;
+  //   // ❌ toggle off
+  //   if (!style) {
+  //     this.styleOverrides = this.styleOverrides.map((s, i) =>
+  //       i === this.activeTextIndex ? null : s
+  //     );
+  //     return;
+  //   }
 
-//   // ❌ toggle off
-//   if (!style) {
-//     this.styleOverrides = this.styleOverrides.map((s, i) =>
-//       i === this.activeTextIndex ? null : s
-//     );
-//     return;
-//   }
+  //   // 🔥 KLUCZ: ZASTĄP zamiast merge
+  //   this.styleOverrides = this.styleOverrides.map((s, i) =>
+  //     i === this.activeTextIndex ? style : s
+  //   );
+  // }
+  onStyleApply(style: any | null) {
+    if (this.activeTextIndex === null) return;
 
-//   // 🔥 KLUCZ: ZASTĄP zamiast merge
-//   this.styleOverrides = this.styleOverrides.map((s, i) =>
-//     i === this.activeTextIndex ? style : s
-//   );
-// }
-onStyleApply(style: any | null) {
-  if (this.activeTextIndex === null) return;
+    this.styleOverrides = this.styleOverrides.map((s, i) =>
+      i === this.activeTextIndex ? style : s,
+    );
 
-  this.styleOverrides = this.styleOverrides.map((s, i) =>
-    i === this.activeTextIndex ? style : s
-  );
-
-  this.cdr.detectChanges();
-}
+    this.cdr.detectChanges();
+  }
 
   selectText(index: number, event: MouseEvent) {
     event.stopPropagation();
