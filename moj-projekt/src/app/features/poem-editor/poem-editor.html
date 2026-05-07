@@ -14,17 +14,28 @@
       (click)="clearSeparatorSelection(); activeTextIndex = null; miniMenuVisible = false"
       class="preview"
     >
-      <div [style.background-image]="backgroundStyle" class="paper">
+      <div
+        [ngStyle]="{
+          background: backgroundStyle,
+          'background-size': backgroundStyle?.includes('url') ? 'cover' : '100% 100%',
+          'background-position': backgroundStyle?.includes('url') ? 'center' : 'center',
+          'background-repeat': 'no-repeat',
+        }"
+        class="paper"
+      >
         <div class="poem">
-
           <!-- TEXT 1 -->
           <span
             (click)="selectText(0, $event); $event.stopPropagation()"
             [class.active]="activeTextIndex === 0"
             [style.color]="textColors[0] || poemColor"
             [style.font-family]="fontOverrides[0]?.fontFamily || poemFont"
-            [style.font-weight]="styleOverrides[0]?.weight || fontOverrides[0]?.fontWeight || poemFontWeight"
-            [style.font-style]="styleOverrides[0]?.italic ? 'italic' : (fontOverrides[0]?.fontStyle || poemFontStyle)"
+            [style.font-weight]="
+              styleOverrides[0]?.weight || fontOverrides[0]?.fontWeight || poemFontWeight
+            "
+            [style.font-style]="
+              styleOverrides[0]?.italic ? 'italic' : fontOverrides[0]?.fontStyle || poemFontStyle
+            "
             [style.text-align]="styleOverrides[0]?.align || 'center'"
             [style.letter-spacing]="styleOverrides[0]?.spacing || '0px'"
             [style.line-height]="styleOverrides[0]?.lineHeight || 1.5"
@@ -52,8 +63,12 @@
             [class.active]="activeTextIndex === 1"
             [style.color]="textColors[1] || poemColor"
             [style.font-family]="fontOverrides[1]?.fontFamily || poemFont"
-            [style.font-weight]="styleOverrides[1]?.weight || fontOverrides[1]?.fontWeight || poemFontWeight"
-            [style.font-style]="styleOverrides[1]?.italic ? 'italic' : (fontOverrides[1]?.fontStyle || poemFontStyle)"
+            [style.font-weight]="
+              styleOverrides[1]?.weight || fontOverrides[1]?.fontWeight || poemFontWeight
+            "
+            [style.font-style]="
+              styleOverrides[1]?.italic ? 'italic' : fontOverrides[1]?.fontStyle || poemFontStyle
+            "
             [style.text-align]="styleOverrides[1]?.align || 'center'"
             [style.letter-spacing]="styleOverrides[1]?.spacing || '0px'"
             [style.line-height]="styleOverrides[1]?.lineHeight || 1.5"
@@ -81,8 +96,12 @@
             [class.active]="activeTextIndex === 2"
             [style.color]="textColors[2] || poemColor"
             [style.font-family]="fontOverrides[2]?.fontFamily || poemFont"
-            [style.font-weight]="styleOverrides[2]?.weight || fontOverrides[2]?.fontWeight || poemFontWeight"
-            [style.font-style]="styleOverrides[2]?.italic ? 'italic' : (fontOverrides[2]?.fontStyle || poemFontStyle)"
+            [style.font-weight]="
+              styleOverrides[2]?.weight || fontOverrides[2]?.fontWeight || poemFontWeight
+            "
+            [style.font-style]="
+              styleOverrides[2]?.italic ? 'italic' : fontOverrides[2]?.fontStyle || poemFontStyle
+            "
             [style.text-align]="styleOverrides[2]?.align || 'center'"
             [style.letter-spacing]="styleOverrides[2]?.spacing || '0px'"
             [style.line-height]="styleOverrides[2]?.lineHeight || 1.5"
@@ -110,8 +129,12 @@
             [class.active]="activeTextIndex === 3"
             [style.color]="textColors[3] || poemColor"
             [style.font-family]="fontOverrides[3]?.fontFamily || poemFont"
-            [style.font-weight]="styleOverrides[3]?.weight || fontOverrides[3]?.fontWeight || poemFontWeight"
-            [style.font-style]="styleOverrides[3]?.italic ? 'italic' : (fontOverrides[3]?.fontStyle || poemFontStyle)"
+            [style.font-weight]="
+              styleOverrides[3]?.weight || fontOverrides[3]?.fontWeight || poemFontWeight
+            "
+            [style.font-style]="
+              styleOverrides[3]?.italic ? 'italic' : fontOverrides[3]?.fontStyle || poemFontStyle
+            "
             [style.text-align]="styleOverrides[3]?.align || 'center'"
             [style.letter-spacing]="styleOverrides[3]?.spacing || '0px'"
             [style.line-height]="styleOverrides[3]?.lineHeight || 1.5"
@@ -134,33 +157,23 @@
       [style.left.px]="miniMenuPosition.x"
     >
       <ng-container *ngIf="activeTextIndex !== null">
-        <button class="menu-item" (click)="openPanel('colors')">
-          🎨 <span>Kolor</span>
-        </button>
+        <button class="menu-item" (click)="openPanel('colors')">🎨 <span>Kolor</span></button>
 
         <div class="divider"></div>
 
-        <button class="menu-item" (click)="openPanel('fonts')">
-          🔤 <span>Font</span>
-        </button>
+        <button class="menu-item" (click)="openPanel('fonts')">🔤 <span>Font</span></button>
 
         <div class="divider"></div>
 
-        <button class="menu-item" (click)="openPanel('style')">
-          ✨ <span>Styl</span>
-        </button>
+        <button class="menu-item" (click)="openPanel('style')">✨ <span>Styl</span></button>
       </ng-container>
 
       <ng-container *ngIf="activeSeparatorIndex !== null">
-        <button class="menu-item" (click)="openPanel('colors')">
-          🎨 <span>Kolor</span>
-        </button>
+        <button class="menu-item" (click)="openPanel('colors')">🎨 <span>Kolor</span></button>
 
         <div class="divider"></div>
 
-        <button class="menu-item" (click)="openPanel('decorations')">
-          ❀ <span>Symbol</span>
-        </button>
+        <button class="menu-item" (click)="openPanel('decorations')">❀ <span>Symbol</span></button>
       </ng-container>
     </div>
 

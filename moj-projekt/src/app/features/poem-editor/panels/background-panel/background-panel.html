@@ -2,16 +2,29 @@
   <!-- HEADER -->
   <div class="picker-header">
     <div>
-      <h2 class="picker-title">Kolory tła</h2>
-      <p class="picker-subtitle">Wybierz kolor tła</p>
+      <h2 class="picker-title">Tło</h2>
+      <p class="picker-subtitle">Wybierz styl tła</p>
     </div>
+
     <button class="close-button" (click)="close()">×</button>
   </div>
 
-  <!-- TABS -->
+  <!-- MAIN TABS -->
+  <div class="main-tabs">
+    <button
+      *ngFor="let section of categories"
+      class="tab-button"
+      [class.active]="activeMainCategory === section.name"
+      (click)="changeMainCategory(section.name)"
+    >
+      {{ section.label }}
+    </button>
+  </div>
+
+  <!-- SUB TABS -->
   <div class="categories-tabs">
     <button
-      *ngFor="let category of categories"
+      *ngFor="let category of currentMainCategories"
       class="tab-button"
       [class.active]="activeCategory === category.name"
       (click)="activeCategory = category.name"
@@ -20,7 +33,7 @@
     </button>
   </div>
 
-  <!-- GRID -->
+  <!-- COLORS -->
   <div class="colors-grid">
     <div
       *ngFor="let color of currentCategory.colors"
@@ -28,39 +41,53 @@
       [class.selected]="selectedColor?.id === color.id"
       (click)="selectColor(color)"
     >
-      <!-- <div class="color-swatch" [style.background-image]="getColorBg(color)">
-        <span class="color-number">{{ color.id }}</span>
-      </div> -->
+      <div
+        class="color-swatch"
+        [style.background-image]="color.image ? 'url(' + color.image + ')' : null"
+        [style.background-color]="!color.image ? color.hex : null"
+      >
+        <div class="overlay"></div>
 
+        <span class="color-number">
+          {{ color.id }}
+        </span>
+      </div>
 
-<div
-  class="color-swatch"
-  [style.background-image]="color.image ? 'url(' + color.image + ')' : null"
-  [style.background-color]="!color.image ? color.hex : null"
->
-  <span class="color-number">{{ color.id }}</span>
-</div>
-
-
-
-
-
-
-
-      <span class="color-name">{{ color.name }}</span>
+      <span class="color-name">
+        {{ color.name }}
+      </span>
     </div>
   </div>
 
   <!-- PREVIEW -->
   <div class="preview-section">
     <h3 class="preview-label">Podgląd</h3>
-    <div class="preview-box">
-      <p class="preview-text" [style.color]="selectedColor?.hex || '#3b2a20'">
+
+    <div
+      class="preview-box"
+      [style.background-image]="
+        selectedColor?.image
+          ? 'linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)), url(' +
+            selectedColor?.image +
+            ')'
+          : null
+      "
+      [style.background-color]="
+        !selectedColor?.image ? selectedColor?.hex : null
+      "
+    >
+      <p class="preview-text">
         Gdy zamknę oczy, widzę tylko Ciebie.
       </p>
     </div>
   </div>
 
-  <!-- BTN -->
-  <button class="apply-button" (click)="applyColor()">✓ Zastosuj kolor</button>
+  <!-- BUTTON -->
+  <button
+    class="apply-button"
+    [disabled]="!selectedColor"
+    (click)="applyColor()"
+  >
+    ✓ Zastosuj tło
+  </button>
 </div>

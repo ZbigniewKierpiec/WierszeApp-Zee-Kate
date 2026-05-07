@@ -64,6 +64,7 @@
 .categories-tabs {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+
   gap: 6px;
 
   .tab-button {
@@ -160,10 +161,7 @@
       position: relative;
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1.5rem;
+      aspect-ratio: 1 / 1;
       .color-number {
         position: absolute;
         top: 6px;
@@ -174,11 +172,15 @@
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
       }
     }
-  }
-}
 
-.color-swatch .symbol {
-  font-size: 4rem;
+    .color-name {
+      font-size: 11px;
+      color: #d1d5db;
+      text-align: center;
+      line-height: 1.3;
+      min-height: 14px;
+    }
+  }
 }
 
 // Sekcja podglądu
@@ -196,17 +198,15 @@
 
   .preview-box {
     // width: 100%;
-    height: 1.5rem;
     padding: 16px 20px;
     background: rgba(10, 15, 20, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    .separator-preview {
+
+    .preview-text {
       margin: 0;
-      font-size: 2rem;
+      font-size: 15px;
+      font-style: italic;
       text-align: center;
       line-height: 1.6;
       transition: color 0.2s;
@@ -236,5 +236,160 @@
 
   &:active {
     background: #c98765;
+  }
+}
+
+.color-picker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+
+  background: rgba(13, 20, 27, 0.96);
+  border-radius: 14px;
+  color: #e5e7eb;
+}
+
+/* GRID */
+.colors-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+
+  padding: 8px;
+  border-radius: 10px;
+
+  background: rgba(10, 15, 20, 0.4);
+
+  align-content: start;
+}
+
+/* ITEM */
+.color-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &.selected {
+    background: #2c2927;
+    box-shadow: inset 0 -2px 0 #c98765;
+  }
+}
+
+/* SWATCH */
+.color-swatch {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+
+  border-radius: 8px;
+  overflow: hidden;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  position: relative;
+
+  transition: transform 0.3s;
+}
+
+.color-number {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 11px;
+  color: white;
+}
+
+/* NAME */
+.color-name {
+  font-size: 11px;
+  text-align: center;
+}
+
+/* PREVIEW */
+.preview-box {
+  padding: 16px;
+  background: rgba(10, 15, 20, 0.5);
+  border-radius: 10px;
+}
+
+.preview-text {
+  text-align: center;
+}
+
+// Przycisk akcji
+.apply-button {
+  width: 100%;
+  height: 58px;
+  padding: 0 16px;
+
+  background: #f2c2a5;
+  border: none;
+  border-radius: 9px;
+
+  color: #241812;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #e0ad8f;
+  }
+
+  &:active {
+    background: #c98765;
+  }
+}
+.style-swatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  font-size: 13px;
+  text-align: center;
+
+  padding: 6px;
+  border-radius: 8px;
+
+  transition: all 0.2s;
+}
+
+.sub-tabs{
+  display: flex;
+
+  align-items: center;
+  button{
+      height: 40px;
+    padding: 0 8px;
+margin-right: 1rem;
+    background: #2c2927;
+    border: none;
+    border-radius: 10px;
+
+    color: #d1d5db;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+
   }
 }
