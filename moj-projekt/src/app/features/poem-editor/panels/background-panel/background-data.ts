@@ -181,7 +181,7 @@ export const BACKGROUND_CATEGORIES = [
             id: 301,
             name: 'Christmas Lights',
             image:
-              'https://images.unsplash.com/photo-1543589077-47d81606c1bf?w=1200',
+              'assets/bg/Sezonowe/zee.png',
           },
 
           {
