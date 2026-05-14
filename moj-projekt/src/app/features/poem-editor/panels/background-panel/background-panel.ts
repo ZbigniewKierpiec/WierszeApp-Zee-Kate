@@ -7,16 +7,17 @@ export interface ColorOption {
   name: string;
   hex?: string;
   image?: string | null;
-  safeArea?: {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
+  contentBox?: {
+    width: number;
+    height: number;
+    offsetY: number;
+    offsetTop?: number;
   };
 
   textStyle?: {
-    lineHeight?: number;
+    lineHeight?: string;
     fontSize?: string;
+    maxWidth?: string;
   };
 }
 
@@ -209,27 +210,6 @@ export class BackgroundPanel {
   //     image: color.image || null,
   //   });
   // }
-  selectColor(color: ColorOption) {
-    this.selectedColor = color;
-
-    this.onBackgroundSelect?.({
-      color: color.hex || '#f7efe6',
-
-      image: color.image || null,
-
-      safeArea: color.safeArea || {
-        top: 60,
-        right: 60,
-        bottom: 60,
-        left: 60,
-      },
-
-      textStyle: color.textStyle || {
-        lineHeight: 1.5,
-        fontSize: '1em',
-      },
-    });
-  }
 
   // applyColor() {
   //   if (!this.selectedColor) return;
@@ -250,27 +230,55 @@ export class BackgroundPanel {
   //   });
   // }
 
-  applyColor() {
-    if (!this.selectedColor) return;
+selectColor(color: ColorOption) {
+  this.selectedColor = color;
 
-    this.onBackgroundSelect?.({
-      color: this.selectedColor.hex || '#f7efe6',
+  this.onBackgroundSelect?.({
+    color: color.hex || '#f7efe6',
+    image: color.image || null,
 
-      image: this.selectedColor.image || null,
+    contentBox: color.contentBox || {
+      width: 72,
+      height: 70,
+      offsetY: 0,
+    },
 
-      safeArea: this.selectedColor.safeArea || {
-        top: 60,
-        right: 60,
-        bottom: 60,
-        left: 60,
-      },
+    textStyle: color.textStyle || {
+      lineHeight: '1.4',
+      fontSize: 'clamp(20px, 1.4vw, 32px)',
+      maxWidth: '22ch',
+    },
+  });
+}
 
-      textStyle: this.selectedColor.textStyle || {
-        lineHeight: 1.5,
-        fontSize: '1em',
-      },
-    });
-  }
+
+applyColor() {
+  if (!this.selectedColor) return;
+
+  this.onBackgroundSelect?.({
+    color: this.selectedColor.hex || '#f7efe6',
+
+    image: this.selectedColor.image || null,
+
+    contentBox: this.selectedColor.contentBox || {
+      width: 72,
+      height: 70,
+      offsetY: 0,
+    },
+
+    textStyle: this.selectedColor.textStyle || {
+      lineHeight: '1.4',
+      fontSize: 'clamp(20px, 1.4vw, 32px)',
+      maxWidth: '22ch',
+    },
+  });
+}
+
+
+
+
+
+
 
   close() {}
 }

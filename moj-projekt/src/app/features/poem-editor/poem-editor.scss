@@ -370,3 +370,26 @@
   position: relative;
   z-index: 2;
 }
+//////////////
+.poem {
+  position: absolute;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  z-index: 2;
+}
+
+.block {
+  width: 100%;
+  max-width: var(--poem-max-width);
+
+  text-wrap: balance;
+
+  margin-inline: auto;
+}

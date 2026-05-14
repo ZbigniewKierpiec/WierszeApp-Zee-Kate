@@ -1,4 +1,4 @@
- <!-- [style.line-height]="textStyle.lineHeight"
+<!-- [style.line-height]="textStyle.lineHeight"
           [style.font-size]="textStyle.fontSize" -->
 
 <div class="editor-shell">
@@ -28,11 +28,14 @@
 
         <!-- CONTENT -->
         <div
-          [style.padding-top.px]="safeArea.top"
-          [style.padding-right.px]="safeArea.right"
-          [style.padding-bottom.px]="safeArea.bottom"
-          [style.padding-left.px]="safeArea.left"
-         
+          [style.width.%]="contentBox.width"
+          [style.height.%]="contentBox.height"
+          [style.top.%]="50 + contentBox.offsetY"
+          [style.left.%]="50"
+          [style.transform]="'translate(-50%, -50%)'"
+          [style.font-size]="textStyle.fontSize"
+          [style.line-height]="textStyle.lineHeight"
+          [style.--poem-max-width]="textStyle.maxWidth"
           class="poem"
         >
           <!-- TEXT 1 -->

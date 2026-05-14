@@ -159,31 +159,41 @@ export const BACKGROUND_CATEGORIES = [
         colors: [
           {
             id: 301,
-            name: 'Christmas Lights',
-            image: 'assets/bg/Sezonowe/zee.png',
-            safeArea: {
-              top: 120,
-              right: 120,
-              bottom: 140,
-              left: 120,
+            name: 'Halloween',
+            image: 'assets/bg/Sezonowe/zee7.png',
+
+            contentBox: {
+              width: 64,
+              height: 60,
+              offsetY: -4,
+              offsetTop:20,
+            },
+
+            textStyle: {
+              lineHeight: '1.2',
+              fontSize: 'clamp(18px, 1.2vw, 28px)',
+              maxWidth: '18ch',
+            },
+          },
+ {
+            id: 302,
+            name: 'Halloween',
+            image: 'assets/bg/Sezonowe/zee8.png',
+
+            contentBox: {
+              width: 64,
+              height: 60,
+              offsetY: -4,
+              offsetTop:20,
+            },
+
+            textStyle: {
+              lineHeight: '1.2',
+              fontSize: 'clamp(18px, 1.2vw, 28px)',
+              maxWidth: '18ch',
             },
           },
 
-          {
-            id: 302,
-            name: 'Christmas Tree',
-            image: 'assets/bg/Sezonowe/zee2.png',
-            safeArea: {
-              top: 130,
-              right: 120,
-              bottom: 660,
-              left: 120,
-            },
-            textStyle: {
-              lineHeight: 1.1,
-              fontSize: '0.9em',
-            },
-          },
 
           {
             id: 303,

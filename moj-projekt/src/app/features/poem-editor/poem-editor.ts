@@ -29,16 +29,20 @@ export class PoemEditor {
   // backgroundStyle = '';
   backgroundColor = '';
   backgroundImage = '';
-  safeArea = {
-    top: 60,
-    right: 60,
-    bottom: 60,
-    left: 60,
+
+  contentBox = {
+    width: 72,
+    height: 70,
+    offsetY: 0,
+    offsetTop: 0,
   };
+
   textStyle = {
-    lineHeight: '1.6',
-    fontSize: 'clamp(20px, 1.2vw, 26px)',
+    lineHeight: '1.4',
+    fontSize: 'clamp(20px, 1.4vw, 32px)',
+    maxWidth: '22ch',
   };
+
   poemColor = '#3b2a20';
   poemFont = '"Playfair Display", serif';
   poemFontWeight: string | number = 'normal';
@@ -215,23 +219,25 @@ export class PoemEditor {
   //   }
   // }
 
-  onBackgroundChange(bg: any) {
-    if (bg.color) {
-      this.backgroundColor = bg.color;
-    }
-
-    if (bg.image) {
-      this.backgroundImage = `url("${bg.image}")`;
-    }
-
-    if (bg.safeArea) {
-      this.safeArea = bg.safeArea;
-    }
-
-    if (bg.textStyle) {
-      this.textStyle = bg.textStyle;
-    }
+onBackgroundChange(bg: any) {
+  if (bg.color) {
+    this.backgroundColor = bg.color;
   }
+
+  if (bg.image) {
+    this.backgroundImage = `url("${bg.image}")`;
+  }
+
+  if (bg.contentBox) {
+    this.contentBox = bg.contentBox;
+  }
+}
+
+
+
+
+
+
 
   // selectSeparator(index: number, event: MouseEvent) {
   //   event.stopPropagation();
