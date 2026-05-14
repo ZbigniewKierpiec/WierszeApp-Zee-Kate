@@ -393,3 +393,34 @@
 
   margin-inline: auto;
 }
+
+.poem {
+  position: absolute;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.poem-content {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  word-break: break-word;
+}
+
+.poem::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px dashed red;
+  background: rgba(255,0,0,.08);
+  pointer-events: none;
+}

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, type Type, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, type Type, AfterViewInit, ChangeDetectorRef, ViewChild, type ElementRef } from '@angular/core';
 import interact from 'interactjs';
 
 import { ColorsPanel } from './panels/colors-panel/colors-panel';
@@ -24,7 +24,10 @@ import { StylePanel } from './panels/style-panel/style-panel';
   templateUrl: './poem-editor.html',
   styleUrl: './poem-editor.scss',
 })
-export class PoemEditor {
+export class PoemEditor implements AfterViewInit {
+@ViewChild('poemBox') poemBox!: ElementRef<HTMLDivElement>;
+@ViewChild('poemContent') poemContent!: ElementRef<HTMLDivElement>;
+
   activePanel = 'colors';
   // backgroundStyle = '';
   backgroundColor = '';
@@ -42,13 +45,67 @@ export class PoemEditor {
     fontSize: 'clamp(20px, 1.4vw, 32px)',
     maxWidth: '22ch',
   };
-
+autoTextStyle = {
+  fontSize: 42,
+  lineHeight: 1.4,
+};
   poemColor = '#3b2a20';
   poemFont = '"Playfair Display", serif';
   poemFontWeight: string | number = 'normal';
   poemFontStyle = 'normal';
   separatorColors: (string | null)[] = [null, null, null];
   constructor(private cdr: ChangeDetectorRef) {}
+  ngAfterViewInit(): void {
+   
+ setTimeout(() => this.fitTextToContainer());
+
+
+  }
+
+fitTextToContainer() {
+  const box = this.poemBox?.nativeElement;
+  const content = this.poemContent?.nativeElement;
+
+  if (!box || !content) return;
+
+let fontSize =
+  parseFloat(this.textStyle.fontSize) || 42;
+
+let lineHeight =
+  parseFloat(this.textStyle.lineHeight) || 1.4;
+
+
+
+  content.style.fontSize = `${fontSize}px`;
+  content.style.lineHeight = `${lineHeight}`;
+
+  while (
+    (content.scrollHeight > box.clientHeight ||
+      content.scrollWidth > box.clientWidth) &&
+    fontSize > 14
+  ) {
+    fontSize -= 1;
+
+    if (lineHeight > 1.1) {
+      lineHeight -= 0.01;
+    }
+
+    content.style.fontSize = `${fontSize}px`;
+    content.style.lineHeight = `${lineHeight}`;
+  }
+
+  this.autoTextStyle = {
+    fontSize,
+    lineHeight,
+  };
+}
+
+
+
+
+
+
+
   miniMenuVisible = false;
   miniMenuPosition = { x: 0, y: 0 };
   readonly TOLERANCE = 1.5;
@@ -219,7 +276,9 @@ export class PoemEditor {
   //   }
   // }
 
+
 onBackgroundChange(bg: any) {
+
   if (bg.color) {
     this.backgroundColor = bg.color;
   }
@@ -231,8 +290,14 @@ onBackgroundChange(bg: any) {
   if (bg.contentBox) {
     this.contentBox = bg.contentBox;
   }
-}
 
+  // 🔥 BRAKOWAŁO
+  if (bg.textStyle) {
+    this.textStyle = bg.textStyle;
+  }
+
+  setTimeout(() => this.fitTextToContainer());
+}
 
 
 
