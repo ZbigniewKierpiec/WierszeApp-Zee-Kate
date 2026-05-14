@@ -28,9 +28,10 @@
         <div
           #poemBox
           class="poem"
-          [style.width.%]="contentBox.width"
-          [style.height.%]="contentBox.height"
-          [style.top.%]="50 + contentBox.offsetY"
+          [class.full-page]="!backgroundImage"
+          [style.width.%]="backgroundImage ? contentBox.width : 100"
+          [style.height.%]="backgroundImage ? contentBox.height : 100"
+          [style.top.%]="backgroundImage ? 50 + contentBox.offsetY : 50"
           [style.left.%]="50"
           [style.transform]="'translate(-50%, -50%)'"
         >

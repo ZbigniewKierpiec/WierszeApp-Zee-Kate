@@ -548,3 +548,23 @@
 .separator.active {
   transform: scale(1.1);
 }
+/////////////////////////////////////////////////
+.poem {
+  position: absolute;
+  overflow: hidden;
+}
+
+.poem.full-page {
+  padding: 80px;
+}
+.poem-content {
+  width: 100%;
+}
+
+.poem-block {
+  width: 100%;
+}
+
+.poem-text {
+  white-space: pre-line;
+}
