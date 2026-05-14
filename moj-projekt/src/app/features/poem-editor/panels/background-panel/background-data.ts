@@ -165,7 +165,7 @@ export const BACKGROUND_CATEGORIES = [
             contentBox: {
               width: 64,
               height: 60,
-              offsetY: -4,
+              offsetY: 0,
               offsetTop:20,
             },
 
