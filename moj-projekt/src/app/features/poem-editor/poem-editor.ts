@@ -6,9 +6,10 @@ import {
   ChangeDetectorRef,
   ViewChild,
   type ElementRef,
-  type OnInit,
+  OnInit,
 } from '@angular/core';
-import interact from 'interactjs';
+
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 
 import { ColorsPanel } from './panels/colors-panel/colors-panel';
 import { BackgroundPanel } from './panels/background-panel/background-panel';
@@ -16,9 +17,25 @@ import { TextPanel } from './panels/text-panel/text-panel';
 import { SeparatorPanel } from './panels/separator-panel/separator-panel';
 import { FontPanel } from './panels/font-panel/font-panel';
 import { StylePanel } from './panels/style-panel/style-panel';
-import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+
 import { EditorApiService } from '../../services/editor-api';
 import { AuthService } from '../../services/auth-service';
+
+type PoemBlock =
+  | {
+      type: 'line';
+      text: string;
+      textIndex: number;
+    }
+  | {
+      type: 'space';
+      text: '';
+    }
+  | {
+      type: 'separator';
+      text: string;
+      separatorIndex: number;
+    };
 
 @Component({
   selector: 'app-poem-editor',
@@ -41,7 +58,10 @@ export class PoemEditor implements OnInit, AfterViewInit {
   @ViewChild('poemContent') poemContent!: ElementRef<HTMLDivElement>;
 
   activePanel = 'colors';
-  // backgroundStyle = '';
+
+  bookId = '';
+  pageIndex = 0;
+
   backgroundColor = '';
   backgroundImage = '';
 
@@ -57,20 +77,52 @@ export class PoemEditor implements OnInit, AfterViewInit {
     fontSize: 'clamp(20px, 1.4vw, 32px)',
     maxWidth: '22ch',
   };
+
   autoTextStyle = {
     fontSize: 42,
     lineHeight: 1.4,
-    gap: 24,
+    gap: 14,
   };
+
   poemColor = '#3b2a20';
   poemFont = '"Playfair Display", serif';
   poemFontWeight: string | number = 'normal';
   poemFontStyle = 'normal';
-  separatorColors: (string | null)[] = [null, null, null];
-  ////////////////////////////////////////////////////////////////
-  bookId = '';
-  pageIndex = 0;
-  poemLines: string[] = [];
+
+  poemBlocks: PoemBlock[] = [];
+
+  showSeparators = false;
+
+  styleOverrides: any[] = [];
+  textColors: (string | null)[] = [];
+  fontOverrides: any[] = [];
+  separatorColors: (string | null)[] = [];
+
+  separators: string[] = [];
+
+  miniMenuVisible = false;
+  miniMenuPosition = { x: 0, y: 0 };
+
+  activeTextIndex: number | null = null;
+  activeSeparatorIndex: number | null = null;
+
+  editorTabs = [
+    { id: 'text', label: 'Tekst', icon: 'T' },
+    { id: 'fonts', label: 'Czcionka', icon: 'Aa' },
+    { id: 'colors', label: 'Kolory', icon: '🎨' },
+    { id: 'background', label: 'Tło', icon: '🖼' },
+    { id: 'decorations', label: 'Dekoracje', icon: '❀' },
+    { id: 'style', label: 'Styl', icon: '≡' },
+  ];
+
+  panelMap: Record<string, Type<any>> = {
+    colors: ColorsPanel,
+    background: BackgroundPanel,
+    fonts: FontPanel,
+    decorations: SeparatorPanel,
+    style: StylePanel,
+  };
+
   constructor(
     private cdr: ChangeDetectorRef,
     private router: Router,
@@ -78,9 +130,9 @@ export class PoemEditor implements OnInit, AfterViewInit {
     private api: EditorApiService,
     private auth: AuthService,
   ) {}
+
   ngOnInit(): void {
     this.bookId = this.route.snapshot.paramMap.get('id') || '';
-
     this.pageIndex = Number(this.route.snapshot.queryParamMap.get('page') || 0);
 
     this.loadBook();
@@ -101,16 +153,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
 
         if (!page) return;
 
-        this.poemLines = page.text?.split('\n').filter((line: string) => line.trim()) || [];
-
-        const count = this.poemLines.length;
-
-        this.styleOverrides = Array(count).fill(null);
-        this.textColors = Array(count).fill(null);
-        this.fontOverrides = Array(count).fill(null);
-        this.separatorColors = Array(count).fill(null);
-
-        this.separators = Array(Math.max(count - 1, 0)).fill('✧');
+        this.buildPoemBlocks(page.text || '');
 
         this.cdr.detectChanges();
 
@@ -125,38 +168,52 @@ export class PoemEditor implements OnInit, AfterViewInit {
     });
   }
 
-  // fitTextToContainer() {
-  //   const box = this.poemBox?.nativeElement;
-  //   const content = this.poemContent?.nativeElement;
+  buildPoemBlocks(text: string) {
+    const rawLines = text.replace(/\r\n/g, '\n').split('\n');
 
-  //   if (!box || !content) return;
+    const textLines = rawLines.filter((line) => line.trim()).length;
+    const emptyLines = rawLines.filter((line) => !line.trim()).length;
 
-  //   let fontSize = parseFloat(this.textStyle.fontSize) || 42;
+    this.styleOverrides = Array(textLines).fill(null);
+    this.textColors = Array(textLines).fill(null);
+    this.fontOverrides = Array(textLines).fill(null);
 
-  //   let lineHeight = parseFloat(this.textStyle.lineHeight) || 1.4;
+    this.separatorColors = Array(emptyLines).fill(null);
+    this.separators = Array(emptyLines).fill('✧');
 
-  //   content.style.fontSize = `${fontSize}px`;
-  //   content.style.lineHeight = `${lineHeight}`;
+    this.poemBlocks = [];
 
-  //   while (
-  //     (content.scrollHeight > box.clientHeight || content.scrollWidth > box.clientWidth) &&
-  //     fontSize > 14
-  //   ) {
-  //     fontSize -= 1;
+    let textIndex = 0;
+    let separatorIndex = 0;
 
-  //     if (lineHeight > 1.1) {
-  //       lineHeight -= 0.01;
-  //     }
+    rawLines.forEach((line) => {
+      if (!line.trim()) {
+        if (this.showSeparators) {
+          this.poemBlocks.push({
+            type: 'separator',
+            text: this.separators[separatorIndex] || '✧',
+            separatorIndex,
+          });
+        } else {
+          this.poemBlocks.push({
+            type: 'space',
+            text: '',
+          });
+        }
 
-  //     content.style.fontSize = `${fontSize}px`;
-  //     content.style.lineHeight = `${lineHeight}`;
-  //   }
+        separatorIndex++;
+        return;
+      }
 
-  //   this.autoTextStyle = {
-  //     fontSize,
-  //     lineHeight,
-  //   };
-  // }
+      this.poemBlocks.push({
+        type: 'line',
+        text: line,
+        textIndex,
+      });
+
+      textIndex++;
+    });
+  }
 
   fitTextToContainer() {
     const box = this.poemBox?.nativeElement;
@@ -165,21 +222,24 @@ export class PoemEditor implements OnInit, AfterViewInit {
     if (!box || !content) return;
 
     let fontSize = 42;
-    let lineHeight = 1.5;
-    let gap = 24;
+    let lineHeight = 1.45;
+    let gap = 10;
 
     content.style.fontSize = `${fontSize}px`;
     content.style.lineHeight = `${lineHeight}`;
     content.style.gap = `${gap}px`;
 
-    while (content.scrollHeight > box.clientHeight && fontSize > 14) {
+    while (
+      (content.scrollHeight > box.clientHeight || content.scrollWidth > box.clientWidth) &&
+      fontSize > 12
+    ) {
       fontSize -= 1;
 
       if (lineHeight > 1.1) {
         lineHeight -= 0.01;
       }
 
-      if (gap > 8) {
+      if (gap > 2) {
         gap -= 1;
       }
 
@@ -195,59 +255,78 @@ export class PoemEditor implements OnInit, AfterViewInit {
     };
   }
 
-  miniMenuVisible = false;
-  miniMenuPosition = { x: 0, y: 0 };
-  readonly TOLERANCE = 1.5;
-  activeTextIndex: number | null = null;
-  styleOverrides: any[] = [null, null, null, null];
-  textColors: (string | null)[] = [null, null, null, null];
+  selectText(index: number, event: MouseEvent) {
+    event.stopPropagation();
 
-  separators = ['— ♥ —', '✧', '— ♥ —'];
+    this.activeTextIndex = index;
+    this.activeSeparatorIndex = null;
 
-  // tryb panelu (globalny)
-  activeSeparatorValue: string | null = null;
+    this.miniMenuPosition = {
+      x: event.clientX,
+      y: event.clientY,
+    };
 
-  // tryb edycji pojedynczego
-  activeSeparatorIndex: number | null = null;
-
-  setActivePanel(panel: string) {
-    this.activePanel = panel;
-
-    if (panel === 'decorations') {
-      this.activeSeparatorIndex = null;
-    }
+    this.miniMenuVisible = true;
   }
-  // onStyleApply(style: any) {
-  //   if (this.activeTextIndex === null) return;
 
-  //   if (!style) {
-  //     this.styleOverrides = this.styleOverrides.map((s, i) =>
-  //       i === this.activeTextIndex ? null : s,
-  //     );
-  //     return;
-  //   }
+  selectSeparator(index: number, event: MouseEvent) {
+    event.stopPropagation();
 
-  //   this.styleOverrides = this.styleOverrides.map((s, i) =>
-  //     i === this.activeTextIndex ? { ...(s || {}), ...style } : s,
-  //   );
-  // }
+    this.activeSeparatorIndex = index;
+    this.activeTextIndex = null;
 
-  // onStyleApply(style: any) {
-  //   if (this.activeTextIndex === null) return;
+    this.miniMenuPosition = {
+      x: event.clientX,
+      y: event.clientY,
+    };
 
-  //   // ❌ toggle off
-  //   if (!style) {
-  //     this.styleOverrides = this.styleOverrides.map((s, i) =>
-  //       i === this.activeTextIndex ? null : s
-  //     );
-  //     return;
-  //   }
+    this.miniMenuVisible = true;
+  }
 
-  //   // 🔥 KLUCZ: ZASTĄP zamiast merge
-  //   this.styleOverrides = this.styleOverrides.map((s, i) =>
-  //     i === this.activeTextIndex ? style : s
-  //   );
-  // }
+  clearSeparatorSelection() {
+    this.activeSeparatorIndex = null;
+  }
+
+  openPanel(panel: string) {
+    this.activePanel = panel;
+    this.miniMenuVisible = false;
+  }
+
+  onColorChange(c: string) {
+    if (this.activeTextIndex !== null) {
+      this.textColors = this.textColors.map((col, i) => (i === this.activeTextIndex ? c : col));
+      return;
+    }
+
+    if (this.activeSeparatorIndex !== null) {
+      this.separatorColors = this.separatorColors.map((col, i) =>
+        i === this.activeSeparatorIndex ? c : col,
+      );
+      return;
+    }
+
+    this.poemColor = c;
+    this.textColors = this.textColors.map(() => null);
+    this.separatorColors = this.separatorColors.map(() => null);
+  }
+
+  onFontChange(f: any) {
+    if (this.activeTextIndex !== null) {
+      this.fontOverrides = this.fontOverrides.map((font, i) =>
+        i === this.activeTextIndex ? f : font,
+      );
+      return;
+    }
+
+    this.poemFont = f.fontFamily;
+    this.poemFontWeight = f.fontWeight || 'normal';
+    this.poemFontStyle = f.fontStyle || 'normal';
+
+    this.fontOverrides = this.fontOverrides.map(() => null);
+
+    setTimeout(() => this.fitTextToContainer());
+  }
+
   onStyleApply(style: any | null) {
     if (this.activeTextIndex === null) return;
 
@@ -256,114 +335,8 @@ export class PoemEditor implements OnInit, AfterViewInit {
     );
 
     this.cdr.detectChanges();
+    setTimeout(() => this.fitTextToContainer());
   }
-
-  selectText(index: number, event: MouseEvent) {
-    event.stopPropagation();
-
-    this.activeTextIndex = index;
-    this.activeSeparatorIndex = null;
-
-    // 📍 pozycja kliknięcia
-    this.miniMenuPosition = {
-      x: event.clientX,
-      y: event.clientY,
-    };
-
-    this.miniMenuVisible = true;
-  }
-  openPanel(panel: string) {
-    this.activePanel = panel;
-    this.miniMenuVisible = false;
-  }
-  editorTabs = [
-    { id: 'text', label: 'Tekst', icon: 'T' },
-    { id: 'fonts', label: 'Czcionka', icon: 'Aa' },
-    { id: 'colors', label: 'Kolory', icon: '🎨' },
-    { id: 'background', label: 'Tło', icon: '🖼' },
-    { id: 'decorations', label: 'Dekoracje', icon: '❀' },
-    { id: 'style', label: 'Styl', icon: '≡' },
-  ];
-  fontOverrides: any[] = [null, null, null, null];
-  panelMap: Record<string, Type<any>> = {
-    colors: ColorsPanel,
-    background: BackgroundPanel,
-    fonts: FontPanel,
-    decorations: SeparatorPanel,
-    style: StylePanel,
-  };
-
-  // 🎨 PANEL LOGIC
-  // onColorChange(c: string) {
-  //   this.poemColor = c;
-  // }
-
-  // onColorChange(c: string) {
-  //   // ✏️ pojedynczy tekst
-  //   if (this.activeTextIndex !== null) {
-  //     this.textColors = this.textColors.map((col, i) => (i === this.activeTextIndex ? c : col));
-  //     return;
-  //   }
-
-  //   // 🌍 GLOBAL
-  //   this.poemColor = c;
-  //   this.textColors = this.textColors.map(() => null); // reset override
-  // }
-
-  onColorChange(c: string) {
-    // ✏️ TEXT
-    if (this.activeTextIndex !== null) {
-      this.textColors = this.textColors.map((col, i) => (i === this.activeTextIndex ? c : col));
-      return;
-    }
-
-    // ✨ SEPARATOR
-    if (this.activeSeparatorIndex !== null) {
-      this.separatorColors = this.separatorColors.map((col, i) =>
-        i === this.activeSeparatorIndex ? c : col,
-      );
-      return;
-    }
-
-    // 🌍 GLOBAL
-    this.poemColor = c;
-    this.textColors = this.textColors.map(() => null);
-    this.separatorColors = this.separatorColors.map(() => null);
-  }
-
-  onFontChange(f: any) {
-    // ✏️ tylko wybrany tekst
-    if (this.activeTextIndex !== null) {
-      this.fontOverrides = this.fontOverrides.map((font, i) =>
-        i === this.activeTextIndex ? f : font,
-      );
-      return;
-    }
-
-    // 🌍 global (fallback)
-    this.poemFont = f.fontFamily;
-    this.poemFontWeight = f.fontWeight || 'normal';
-    this.poemFontStyle = f.fontStyle || 'normal';
-
-    this.fontOverrides = this.fontOverrides.map(() => null);
-  }
-
-  // onBackgroundChange(bg: any) {
-  //   this.backgroundStyle = bg.overlay ? `url(${bg.overlay}), url(${bg.base})` : `url(${bg.base})`;
-  // }
-  // onBackgroundChange(bg: string) {
-  //   this.backgroundStyle = bg;
-  //   console.log(bg);
-  // }
-  // onBackgroundChange(bg: any) {
-  //   if (bg.color) {
-  //     this.backgroundColor = bg.color;
-  //   }
-
-  //   if (bg.image) {
-  //     this.backgroundImage = `url("${bg.image}")`;
-  //   }
-  // }
 
   onBackgroundChange(bg: any) {
     if (bg.color) {
@@ -378,7 +351,6 @@ export class PoemEditor implements OnInit, AfterViewInit {
       this.contentBox = bg.contentBox;
     }
 
-    // 🔥 BRAKOWAŁO
     if (bg.textStyle) {
       this.textStyle = bg.textStyle;
     }
@@ -386,45 +358,37 @@ export class PoemEditor implements OnInit, AfterViewInit {
     setTimeout(() => this.fitTextToContainer());
   }
 
-  // selectSeparator(index: number, event: MouseEvent) {
-  //   event.stopPropagation();
+  onSeparatorChange(symbol: string) {
+    if (this.activeSeparatorIndex !== null) {
+      this.separators[this.activeSeparatorIndex] = symbol;
 
-  //   this.activeSeparatorIndex = index;
-  //   this.activeTextIndex = null;
+      this.poemBlocks = this.poemBlocks.map((block) => {
+        if (block.type === 'separator' && block.separatorIndex === this.activeSeparatorIndex) {
+          return {
+            ...block,
+            text: symbol,
+          };
+        }
 
-  //   this.miniMenuPosition = {
-  //     x: event.clientX,
-  //     y: event.clientY
-  //   };
+        return block;
+      });
 
-  //   this.miniMenuVisible = true;
-  // }
+      return;
+    }
 
-  selectSeparator(index: number, event: MouseEvent) {
-    event.stopPropagation();
+    this.separators = this.separators.map(() => symbol);
 
-    this.activeSeparatorIndex = index;
-    this.activeTextIndex = null; // 🔥 to jest KLUCZ
+    this.poemBlocks = this.poemBlocks.map((block) => {
+      if (block.type === 'separator') {
+        return {
+          ...block,
+          text: symbol,
+        };
+      }
 
-    this.miniMenuVisible = true;
+      return block;
+    });
   }
-
-  clearSeparatorSelection() {
-    this.activeSeparatorIndex = null;
-  }
-
-  // get currentPanelInputs() {
-  //   if (this.activePanel === 'colors') {
-  //     return { onColorSelect: (c: string) => this.onColorChange(c) };
-  //   }
-  //   if (this.activePanel === 'background') {
-  //     return { onBackgroundSelect: (bg: any) => this.onBackgroundChange(bg) };
-  //   }
-  //   if (this.activePanel === 'fonts') {
-  //     return { onFontSelect: (f: any) => this.onFontChange(f) };
-  //   }
-  //   return {};
-  // }
 
   get currentPanelInputs() {
     if (this.activePanel === 'colors') {
@@ -444,24 +408,13 @@ export class PoemEditor implements OnInit, AfterViewInit {
     }
 
     if (this.activePanel === 'style') {
-      return {
-        onStyleSelect: (style: any) => this.onStyleApply(style),
-      };
+      return { onStyleSelect: (style: any) => this.onStyleApply(style) };
     }
 
     return {};
   }
-  goBack() {
-    this.router.navigate(['editor']);
-  }
-  onSeparatorChange(symbol: string) {
-    // ✏️ jeśli kliknięty konkretny → zmień tylko jeden
-    if (this.activeSeparatorIndex !== null) {
-      this.separators[this.activeSeparatorIndex] = symbol;
-      return;
-    }
 
-    // 🎛️ jeśli nic nie kliknięte → zmień WSZYSTKIE
-    this.separators = this.separators.map(() => symbol);
+  goBack() {
+    this.router.navigate(['/editor']);
   }
 }

@@ -8,9 +8,7 @@
 
       <div class="right">
         <span class="icon">↶</span>
-
         <span class="icon">↷</span>
-
         <button class="save">Zapisz</button>
       </div>
     </div>
@@ -20,16 +18,13 @@
       class="preview"
       (click)="clearSeparatorSelection(); activeTextIndex = null; miniMenuVisible = false"
     >
-      <!-- PAPER -->
       <div class="paper" [style.background-color]="backgroundColor">
-        <!-- FRAME -->
         <div
           *ngIf="backgroundImage"
           class="background-frame"
           [style.background-image]="backgroundImage"
         ></div>
 
-        <!-- POEM -->
         <div
           #poemBox
           class="poem"
@@ -39,7 +34,6 @@
           [style.left.%]="50"
           [style.transform]="'translate(-50%, -50%)'"
         >
-          <!-- CONTENT -->
           <div
             #poemContent
             class="poem-content"
@@ -48,43 +42,48 @@
             [style.gap.px]="autoTextStyle.gap"
             [style.--poem-max-width]="textStyle.maxWidth"
           >
-            <!-- STANZAS -->
-            <ng-container *ngFor="let line of poemLines; let i = index">
-              <!-- POEM BLOCK -->
+            <ng-container *ngFor="let block of poemBlocks">
+              <!-- LINE -->
               <div
+                *ngIf="block.type === 'line'"
                 class="poem-block"
                 contenteditable="true"
-                (click)="selectText(i, $event); $event.stopPropagation()"
+                (click)="selectText(block.textIndex!, $event); $event.stopPropagation()"
                 (input)="fitTextToContainer()"
-                [class.active]="activeTextIndex === i"
-                [style.color]="textColors[i] || poemColor"
-                [style.font-family]="fontOverrides[i]?.fontFamily || poemFont"
+                [class.active]="activeTextIndex === block.textIndex"
+                [style.color]="textColors[block.textIndex!] || poemColor"
+                [style.font-family]="fontOverrides[block.textIndex!]?.fontFamily || poemFont"
                 [style.font-weight]="
-                  styleOverrides[i]?.weight || fontOverrides[i]?.fontWeight || poemFontWeight
+                  styleOverrides[block.textIndex!]?.weight ||
+                  fontOverrides[block.textIndex!]?.fontWeight ||
+                  poemFontWeight
                 "
                 [style.font-style]="
-                  styleOverrides[i]?.italic
+                  styleOverrides[block.textIndex!]?.italic
                     ? 'italic'
-                    : fontOverrides[i]?.fontStyle || poemFontStyle
+                    : fontOverrides[block.textIndex!]?.fontStyle || poemFontStyle
                 "
-                [style.text-align]="styleOverrides[i]?.align || 'center'"
-                [style.letter-spacing]="styleOverrides[i]?.spacing || '0px'"
-                [style.text-transform]="styleOverrides[i]?.transform || 'none'"
-                [style.opacity]="styleOverrides[i]?.opacity ?? 1"
-                [style.text-shadow]="styleOverrides[i]?.shadow || 'none'"
+                [style.text-align]="styleOverrides[block.textIndex!]?.align || 'center'"
+                [style.letter-spacing]="styleOverrides[block.textIndex!]?.spacing || '0px'"
+                [style.text-transform]="styleOverrides[block.textIndex!]?.transform || 'none'"
+                [style.opacity]="styleOverrides[block.textIndex!]?.opacity ?? 1"
+                [style.text-shadow]="styleOverrides[block.textIndex!]?.shadow || 'none'"
               >
-                {{ line }}
+                {{ block.text }}
               </div>
+
+              <!-- EMPTY LINE / STANZA SPACE -->
+              <div *ngIf="block.type === 'space'" class="poem-space"></div>
 
               <!-- SEPARATOR -->
               <div
-                *ngIf="i < poemLines.length - 1"
+                *ngIf="block.type === 'separator'"
                 class="separator"
-                [class.active]="activeSeparatorIndex === i"
-                [style.color]="separatorColors[i] || poemColor"
-                (click)="selectSeparator(i, $event); $event.stopPropagation()"
+                [class.active]="activeSeparatorIndex === block.separatorIndex"
+                [style.color]="separatorColors[block.separatorIndex!] || poemColor"
+                (click)="selectSeparator(block.separatorIndex!, $event); $event.stopPropagation()"
               >
-                {{ separators[i] || '✧' }}
+                {{ separators[block.separatorIndex!] || '✧' }}
               </div>
             </ng-container>
           </div>
@@ -99,25 +98,17 @@
       [style.top.px]="miniMenuPosition.y"
       [style.left.px]="miniMenuPosition.x"
     >
-      <!-- TEXT -->
       <ng-container *ngIf="activeTextIndex !== null">
         <button class="menu-item" (click)="openPanel('colors')">🎨 <span>Kolor</span></button>
-
         <div class="divider"></div>
-
         <button class="menu-item" (click)="openPanel('fonts')">🔤 <span>Font</span></button>
-
         <div class="divider"></div>
-
         <button class="menu-item" (click)="openPanel('style')">✨ <span>Styl</span></button>
       </ng-container>
 
-      <!-- SEPARATORS -->
       <ng-container *ngIf="activeSeparatorIndex !== null">
         <button class="menu-item" (click)="openPanel('colors')">🎨 <span>Kolor</span></button>
-
         <div class="divider"></div>
-
         <button class="menu-item" (click)="openPanel('decorations')">❀ <span>Symbol</span></button>
       </ng-container>
     </div>
@@ -131,7 +122,6 @@
         (click)="activePanel = tab.id"
       >
         <span>{{ tab.icon }}</span>
-
         <small>{{ tab.label }}</small>
       </button>
     </div>
