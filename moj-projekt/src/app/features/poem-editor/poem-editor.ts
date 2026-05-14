@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, type Type, AfterViewInit, ChangeDetectorRef, ViewChild, type ElementRef } from '@angular/core';
+import {
+  Component,
+  type Type,
+  AfterViewInit,
+  ChangeDetectorRef,
+  ViewChild,
+  type ElementRef,
+  type OnInit,
+} from '@angular/core';
 import interact from 'interactjs';
 
 import { ColorsPanel } from './panels/colors-panel/colors-panel';
@@ -8,6 +16,9 @@ import { TextPanel } from './panels/text-panel/text-panel';
 import { SeparatorPanel } from './panels/separator-panel/separator-panel';
 import { FontPanel } from './panels/font-panel/font-panel';
 import { StylePanel } from './panels/style-panel/style-panel';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { EditorApiService } from '../../services/editor-api';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-poem-editor',
@@ -20,13 +31,14 @@ import { StylePanel } from './panels/style-panel/style-panel';
     FontPanel,
     BackgroundPanel,
     StylePanel,
+    RouterModule,
   ],
   templateUrl: './poem-editor.html',
   styleUrl: './poem-editor.scss',
 })
-export class PoemEditor implements AfterViewInit {
-@ViewChild('poemBox') poemBox!: ElementRef<HTMLDivElement>;
-@ViewChild('poemContent') poemContent!: ElementRef<HTMLDivElement>;
+export class PoemEditor implements OnInit, AfterViewInit {
+  @ViewChild('poemBox') poemBox!: ElementRef<HTMLDivElement>;
+  @ViewChild('poemContent') poemContent!: ElementRef<HTMLDivElement>;
 
   activePanel = 'colors';
   // backgroundStyle = '';
@@ -45,66 +57,143 @@ export class PoemEditor implements AfterViewInit {
     fontSize: 'clamp(20px, 1.4vw, 32px)',
     maxWidth: '22ch',
   };
-autoTextStyle = {
-  fontSize: 42,
-  lineHeight: 1.4,
-};
+  autoTextStyle = {
+    fontSize: 42,
+    lineHeight: 1.4,
+    gap: 24,
+  };
   poemColor = '#3b2a20';
   poemFont = '"Playfair Display", serif';
   poemFontWeight: string | number = 'normal';
   poemFontStyle = 'normal';
   separatorColors: (string | null)[] = [null, null, null];
-  constructor(private cdr: ChangeDetectorRef) {}
-  ngAfterViewInit(): void {
-   
- setTimeout(() => this.fitTextToContainer());
+  ////////////////////////////////////////////////////////////////
+  bookId = '';
+  pageIndex = 0;
+  poemLines: string[] = [];
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private route: ActivatedRoute,
+    private api: EditorApiService,
+    private auth: AuthService,
+  ) {}
+  ngOnInit(): void {
+    this.bookId = this.route.snapshot.paramMap.get('id') || '';
 
+    this.pageIndex = Number(this.route.snapshot.queryParamMap.get('page') || 0);
 
+    this.loadBook();
   }
 
-fitTextToContainer() {
-  const box = this.poemBox?.nativeElement;
-  const content = this.poemContent?.nativeElement;
+  ngAfterViewInit(): void {
+    setTimeout(() => this.fitTextToContainer());
+  }
 
-  if (!box || !content) return;
+  loadBook() {
+    const user = this.auth.getUser();
 
-let fontSize =
-  parseFloat(this.textStyle.fontSize) || 42;
+    if (!user?.id || !this.bookId) return;
 
-let lineHeight =
-  parseFloat(this.textStyle.lineHeight) || 1.4;
+    this.api.getBook(this.bookId, user.id).subscribe({
+      next: (book: any) => {
+        const page = book.pages?.[this.pageIndex];
 
+        if (!page) return;
 
+        this.poemLines = page.text?.split('\n').filter((line: string) => line.trim()) || [];
 
-  content.style.fontSize = `${fontSize}px`;
-  content.style.lineHeight = `${lineHeight}`;
+        const count = this.poemLines.length;
 
-  while (
-    (content.scrollHeight > box.clientHeight ||
-      content.scrollWidth > box.clientWidth) &&
-    fontSize > 14
-  ) {
-    fontSize -= 1;
+        this.styleOverrides = Array(count).fill(null);
+        this.textColors = Array(count).fill(null);
+        this.fontOverrides = Array(count).fill(null);
+        this.separatorColors = Array(count).fill(null);
 
-    if (lineHeight > 1.1) {
-      lineHeight -= 0.01;
-    }
+        this.separators = Array(Math.max(count - 1, 0)).fill('✧');
+
+        this.cdr.detectChanges();
+
+        setTimeout(() => {
+          this.fitTextToContainer();
+        });
+      },
+
+      error: (err) => {
+        console.error('❌ LOAD POEM ERROR', err);
+      },
+    });
+  }
+
+  // fitTextToContainer() {
+  //   const box = this.poemBox?.nativeElement;
+  //   const content = this.poemContent?.nativeElement;
+
+  //   if (!box || !content) return;
+
+  //   let fontSize = parseFloat(this.textStyle.fontSize) || 42;
+
+  //   let lineHeight = parseFloat(this.textStyle.lineHeight) || 1.4;
+
+  //   content.style.fontSize = `${fontSize}px`;
+  //   content.style.lineHeight = `${lineHeight}`;
+
+  //   while (
+  //     (content.scrollHeight > box.clientHeight || content.scrollWidth > box.clientWidth) &&
+  //     fontSize > 14
+  //   ) {
+  //     fontSize -= 1;
+
+  //     if (lineHeight > 1.1) {
+  //       lineHeight -= 0.01;
+  //     }
+
+  //     content.style.fontSize = `${fontSize}px`;
+  //     content.style.lineHeight = `${lineHeight}`;
+  //   }
+
+  //   this.autoTextStyle = {
+  //     fontSize,
+  //     lineHeight,
+  //   };
+  // }
+
+  fitTextToContainer() {
+    const box = this.poemBox?.nativeElement;
+    const content = this.poemContent?.nativeElement;
+
+    if (!box || !content) return;
+
+    let fontSize = 42;
+    let lineHeight = 1.5;
+    let gap = 24;
 
     content.style.fontSize = `${fontSize}px`;
     content.style.lineHeight = `${lineHeight}`;
+    content.style.gap = `${gap}px`;
+
+    while (content.scrollHeight > box.clientHeight && fontSize > 14) {
+      fontSize -= 1;
+
+      if (lineHeight > 1.1) {
+        lineHeight -= 0.01;
+      }
+
+      if (gap > 8) {
+        gap -= 1;
+      }
+
+      content.style.fontSize = `${fontSize}px`;
+      content.style.lineHeight = `${lineHeight}`;
+      content.style.gap = `${gap}px`;
+    }
+
+    this.autoTextStyle = {
+      fontSize,
+      lineHeight,
+      gap,
+    };
   }
-
-  this.autoTextStyle = {
-    fontSize,
-    lineHeight,
-  };
-}
-
-
-
-
-
-
 
   miniMenuVisible = false;
   miniMenuPosition = { x: 0, y: 0 };
@@ -276,33 +365,26 @@ let lineHeight =
   //   }
   // }
 
+  onBackgroundChange(bg: any) {
+    if (bg.color) {
+      this.backgroundColor = bg.color;
+    }
 
-onBackgroundChange(bg: any) {
+    if (bg.image) {
+      this.backgroundImage = `url("${bg.image}")`;
+    }
 
-  if (bg.color) {
-    this.backgroundColor = bg.color;
+    if (bg.contentBox) {
+      this.contentBox = bg.contentBox;
+    }
+
+    // 🔥 BRAKOWAŁO
+    if (bg.textStyle) {
+      this.textStyle = bg.textStyle;
+    }
+
+    setTimeout(() => this.fitTextToContainer());
   }
-
-  if (bg.image) {
-    this.backgroundImage = `url("${bg.image}")`;
-  }
-
-  if (bg.contentBox) {
-    this.contentBox = bg.contentBox;
-  }
-
-  // 🔥 BRAKOWAŁO
-  if (bg.textStyle) {
-    this.textStyle = bg.textStyle;
-  }
-
-  setTimeout(() => this.fitTextToContainer());
-}
-
-
-
-
-
 
   // selectSeparator(index: number, event: MouseEvent) {
   //   event.stopPropagation();
@@ -369,7 +451,9 @@ onBackgroundChange(bg: any) {
 
     return {};
   }
-
+  goBack() {
+    this.router.navigate(['editor']);
+  }
   onSeparatorChange(symbol: string) {
     // ✏️ jeśli kliknięty konkretny → zmień tylko jeden
     if (this.activeSeparatorIndex !== null) {

@@ -7,6 +7,7 @@ import { Register } from './features/editor/register/register';
 import { Dashboard } from './features/dashboard/dashboard';
 import { MainLayout } from './main-layout/main-layout';
 import { AuthGuard } from './services/auth-guard';
+import { PoemEditor } from './features/poem-editor/poem-editor';
 
 // export const routes: Routes = [
 //   // 🔓 bez layoutu
@@ -39,9 +40,11 @@ export const routes: Routes = [
       { path: 'editor', component: EditorTest },
       { path: 'editor/:id', component: EditorTest },
       { path: 'dashboard', component: Dashboard },
+      { path: 'poem-editor', component: PoemEditor },
+      { path: 'poem-editor/:id', component: PoemEditor },
     ],
   },
 
   // fallback
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];

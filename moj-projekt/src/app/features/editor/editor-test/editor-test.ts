@@ -26,12 +26,21 @@ import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditorStateService } from '../sidebar/editor-state-service';
 import { ThemeModeService } from '../../../services/theme-mode-service';
-import  { AuthService } from '../../../services/auth-service';
-import { DividerPicker } from "./divider-picker/divider-picker";
+import { AuthService } from '../../../services/auth-service';
+import { DividerPicker } from './divider-picker/divider-picker';
 
 @Component({
   selector: 'app-editor-test',
-  imports: [Topbar, CommonModule, Sidebar, FormsModule, CoverEditor, Gu, TranslateModule, DividerPicker],
+  imports: [
+    Topbar,
+    CommonModule,
+    Sidebar,
+    FormsModule,
+    CoverEditor,
+    Gu,
+    TranslateModule,
+    DividerPicker,
+  ],
   templateUrl: './editor-test.html',
   styleUrl: './editor-test.scss',
 })
@@ -101,7 +110,7 @@ export class EditorTest implements OnInit, OnDestroy {
     private api: EditorApiService,
     private route: ActivatedRoute,
     private router: Router,
-   private auth: AuthService,
+    private auth: AuthService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private formatting: FormattingService,
@@ -165,53 +174,45 @@ export class EditorTest implements OnInit, OnDestroy {
   //   }
   // }
 
+  ngOnInit() {
+    const user = this.auth.getUser();
 
-ngOnInit() {
-  const user = this.auth.getUser();
-
-  this.themeMode.theme$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-    this.reapplyPresetColors();
-  });
-
-  this.state.isCustomizeOpen$.subscribe((v) => (this.isCustomizeOpen = v));
-
-  this.bindEditorState();
-  this.bindEditorEvents();
-
-  // 🔐 tylko dla zalogowanego
-  if (user?.id) {
-    this.api.getUserBooksFull(user.id).subscribe({
-      next: (books) => {
-        this.booksCount = books.length;
-      },
-      error: (err) => {
-        console.error('❌ BOOKS COUNT ERROR:', err);
-      },
+    this.themeMode.theme$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.reapplyPresetColors();
     });
-  }
 
-  const idFromStorage = this.storage.getBookId();
+    this.state.isCustomizeOpen$.subscribe((v) => (this.isCustomizeOpen = v));
 
-  if (idFromStorage && typeof idFromStorage === 'string' && idFromStorage.trim()) {
-    this.bookId = idFromStorage;
+    this.bindEditorState();
+    this.bindEditorEvents();
 
-    // 🔐 tylko jeśli user istnieje → pobieraj z backendu
+    // 🔐 tylko dla zalogowanego
     if (user?.id) {
-      this.loadBook(this.bookId);
-    } else {
-      this.initEmptyEditor(); // 👈 guest mode
+      this.api.getUserBooksFull(user.id).subscribe({
+        next: (books) => {
+          this.booksCount = books.length;
+        },
+        error: (err) => {
+          console.error('❌ BOOKS COUNT ERROR:', err);
+        },
+      });
     }
 
-  } else {
-    this.initEmptyEditor();
+    const idFromStorage = this.storage.getBookId();
+
+    if (idFromStorage && typeof idFromStorage === 'string' && idFromStorage.trim()) {
+      this.bookId = idFromStorage;
+
+      // 🔐 tylko jeśli user istnieje → pobieraj z backendu
+      if (user?.id) {
+        this.loadBook(this.bookId);
+      } else {
+        this.initEmptyEditor(); // 👈 guest mode
+      }
+    } else {
+      this.initEmptyEditor();
+    }
   }
-}
-
-
-
-
-
-
 
   ngOnDestroy() {
     this.destroy$.next();
@@ -333,6 +334,24 @@ ngOnInit() {
     this.savePage();
     this.storage.savePages(this.pages);
   }
+  // goPoemEditor() {
+  //   this.router.navigate(['poem-editor']);
+  // }
+
+goPoemEditor() {
+  this.savePage();
+
+  if (!this.bookId) return;
+
+  this.router.navigate(['/poem-editor', this.bookId], {
+    queryParams: {
+      page: this.currentPageIndex,
+    },
+  });
+}
+
+
+
 
   formatAI() {
     this.text = this.formatting.formatPoemAI(this.text);
@@ -473,62 +492,48 @@ quis nostrud exercitation ullamco.`;
   //   this.cd.detectChanges();
   // }
 
-buildStyleOverrides(p: any) {
-  if (!p) return {};
+  buildStyleOverrides(p: any) {
+    if (!p) return {};
 
-  return {
-    layout: p.layout,
-    typography: p.typography,
-    decoration: p.decoration,
-  };
-}
+    return {
+      layout: p.layout,
+      typography: p.typography,
+      decoration: p.decoration,
+    };
+  }
 
+  loadPage() {
+    const p = this.pages[this.currentPageIndex];
+    if (!p) return;
 
+    this.syncingFromPage = true;
 
+    this.title = p.title || '';
+    this.text = p.text || '';
 
+    this.selectedTemplate = p.template || 'Default';
+    this.selectedVariant = p.variant || null;
+    this.selectedPreset = p.preset || null;
+    this.activeMode = p.activeMode === 'preset' ? 'preset' : 'template';
 
+    this.titleFont = p.titleFont || 'Playfair Display';
+    this.textFont = p.textFont || 'Playfair Display';
 
+    this.titleColor = this.fixColor(p.titleColor, '#000000');
+    this.textColor = this.fixColor(p.textColor, '#000000');
 
+    // emituj do sidebar/state nadal w trybie sync
+    this.state.template$.next(this.selectedTemplate);
+    this.state.variant$.next(this.selectedVariant);
+    this.state.preset$.next(this.selectedPreset);
 
+    this.cd.detectChanges();
 
-loadPage() {
-  const p = this.pages[this.currentPageIndex];
-  if (!p) return;
-
-  this.syncingFromPage = true;
-
-  this.title = p.title || '';
-  this.text = p.text || '';
-
-  this.selectedTemplate = p.template || 'Default';
-  this.selectedVariant = p.variant || null;
-  this.selectedPreset = p.preset || null;
-  this.activeMode = p.activeMode === 'preset' ? 'preset' : 'template';
-
-  this.titleFont = p.titleFont || 'Playfair Display';
-  this.textFont = p.textFont || 'Playfair Display';
-
-  this.titleColor = this.fixColor(p.titleColor, '#000000');
-  this.textColor = this.fixColor(p.textColor, '#000000');
-
-  // emituj do sidebar/state nadal w trybie sync
-  this.state.template$.next(this.selectedTemplate);
-  this.state.variant$.next(this.selectedVariant);
-  this.state.preset$.next(this.selectedPreset);
-
-  this.cd.detectChanges();
-
-  // dopiero po wszystkim odblokuj
-  queueMicrotask(() => {
-    this.syncingFromPage = false;
-  });
-}
-
-
-
-
-
-
+    // dopiero po wszystkim odblokuj
+    queueMicrotask(() => {
+      this.syncingFromPage = false;
+    });
+  }
 
   loadBook(id: string) {
     const user = this.auth.getUser();
@@ -630,36 +635,27 @@ loadPage() {
     };
   }
 
+  setDivider(d: any) {
+    const page = this.pages[this.currentPageIndex];
+    if (!page) return;
 
+    if (!page.preset) page.preset = {};
 
+    page.preset.decoration = {
+      ...page.preset.decoration,
+      divider: {
+        enabled: true,
+        type: d.type,
+        symbol: d.symbol,
+      },
+    };
 
-setDivider(d: any) {
-  const page = this.pages[this.currentPageIndex];
-  if (!page) return;
+    this.selectedPreset = page.preset;
 
-  if (!page.preset) page.preset = {};
-
-  page.preset.decoration = {
-    ...page.preset.decoration,
-    divider: {
-      enabled: true,
-      type: d.type,
-      symbol: d.symbol,
-    },
-  };
-
-  this.selectedPreset = page.preset;
-
-  this.savePage();
-  this.storage.savePages(this.pages);
-  this.cd.detectChanges();
-}
-
-
-
-
-
-
+    this.savePage();
+    this.storage.savePages(this.pages);
+    this.cd.detectChanges();
+  }
 
   nextPage() {
     if (this.currentPageIndex < this.pages.length - 1) {
@@ -1027,44 +1023,29 @@ setDivider(d: any) {
     this.storage.savePages(this.pages);
   }
 
+  getVariantStyles() {
+    const template = this.selectedTemplate ?? 'Default';
 
-getVariantStyles() {
-  const template = this.selectedTemplate ?? 'Default';
+    const overrides =
+      this.activeMode === 'preset' && this.selectedPreset
+        ? this.buildStyleOverrides(this.selectedPreset)
+        : {};
 
-  const overrides =
-    this.activeMode === 'preset' && this.selectedPreset
-      ? this.buildStyleOverrides(this.selectedPreset)
-      : {};
+    return this.theme.getVariantStyles(template, this.selectedVariant?.name, overrides);
+  }
 
-  return this.theme.getVariantStyles(
-    template,
-    this.selectedVariant?.name,
-    overrides
-  );
-}
+  getVariantStylesForPage(p: any) {
+    return this.theme.getVariantStyles(p.template || 'Default', p.variant?.name, p.preset);
+  }
 
-
-getVariantStylesForPage(p: any) {
-  return this.theme.getVariantStyles(
-    p.template || 'Default',
-    p.variant?.name,
-    p.preset 
-  );
-}
-
-
-
-
-
-
-splitStanzas(text: string): string[] {
-  return text
-    ?.split(/\n\s*\n/)
-    .map(s => s.trim())
-    .filter(Boolean) || [];
-}
-
-
+  splitStanzas(text: string): string[] {
+    return (
+      text
+        ?.split(/\n\s*\n/)
+        .map((s) => s.trim())
+        .filter(Boolean) || []
+    );
+  }
 
   goDashboard() {
     this.router.navigate(['/dashboard']);

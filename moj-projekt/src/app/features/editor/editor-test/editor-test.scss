@@ -827,3 +827,16 @@ button,
   white-space: pre-line;
   margin-bottom: 20px;
 }
+
+.poem-editor-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.poem-editor-btn:hover {
+  transform: translateY(-1px);
+}
