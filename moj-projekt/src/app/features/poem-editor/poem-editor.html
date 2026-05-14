@@ -1,3 +1,6 @@
+ <!-- [style.line-height]="textStyle.lineHeight"
+          [style.font-size]="textStyle.fontSize" -->
+
 <div class="editor-shell">
   <div class="phone">
     <div class="topbar">
@@ -11,19 +14,27 @@
     </div>
 
     <div
-      (click)="clearSeparatorSelection(); activeTextIndex = null; miniMenuVisible = false"
       class="preview"
+      (click)="clearSeparatorSelection(); activeTextIndex = null; miniMenuVisible = false"
     >
-      <div
-        [ngStyle]="{
-          background: backgroundStyle,
-          'background-size': backgroundStyle?.includes('url') ? 'cover' : '100% 100%',
-          'background-position': backgroundStyle?.includes('url') ? 'center' : 'center',
-          'background-repeat': 'no-repeat',
-        }"
-        class="paper"
-      >
-        <div class="poem">
+      <!-- PAPER -->
+      <div class="paper" [style.background-color]="backgroundColor">
+        <!-- TRANSPARENT PNG FRAME -->
+        <div
+          *ngIf="backgroundImage"
+          class="background-frame"
+          [style.background-image]="backgroundImage"
+        ></div>
+
+        <!-- CONTENT -->
+        <div
+          [style.padding-top.px]="safeArea.top"
+          [style.padding-right.px]="safeArea.right"
+          [style.padding-bottom.px]="safeArea.bottom"
+          [style.padding-left.px]="safeArea.left"
+         
+          class="poem"
+        >
           <!-- TEXT 1 -->
           <span
             (click)="selectText(0, $event); $event.stopPropagation()"
@@ -150,6 +161,7 @@
       </div>
     </div>
 
+    <!-- MINI MENU -->
     <div
       *ngIf="miniMenuVisible"
       class="mini-menu"
@@ -177,6 +189,7 @@
       </ng-container>
     </div>
 
+    <!-- TABS -->
     <div class="tabs">
       <button
         class="tab"
@@ -190,8 +203,10 @@
     </div>
   </div>
 
+  <!-- SIDE PANEL -->
   <div class="side-panel" [class.open]="activePanel">
     <ng-container *ngComponentOutlet="panelMap[activePanel]; inputs: currentPanelInputs">
     </ng-container>
   </div>
 </div>
+```

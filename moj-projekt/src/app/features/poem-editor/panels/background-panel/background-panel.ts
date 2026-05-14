@@ -5,8 +5,19 @@ import { BACKGROUND_CATEGORIES } from './background-data';
 export interface ColorOption {
   id: number;
   name: string;
-  hex: string;
+  hex?: string;
   image?: string | null;
+  safeArea?: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+
+  textStyle?: {
+    lineHeight?: number;
+    fontSize?: string;
+  };
 }
 
 export interface ColorCategory {
@@ -23,8 +34,7 @@ export interface ColorCategory {
   styleUrl: './background-panel.scss',
 })
 export class BackgroundPanel {
-  @Input() onBackgroundSelect!: (bg: string) => void;
-
+  @Input() onBackgroundSelect!: (bg: any) => void;
   activeMainCategory = 'background-image';
   activeCategory = 'klasyczne';
 
@@ -157,17 +167,7 @@ export class BackgroundPanel {
   //   },
   // ];
 
-categories = BACKGROUND_CATEGORIES;
-
-
-
-
-
-
-
-
-
-
+  categories = BACKGROUND_CATEGORIES;
 
   get currentMainCategories(): any[] {
     return this.categories.find((c) => c.name === this.activeMainCategory)?.categories || [];
@@ -191,24 +191,85 @@ categories = BACKGROUND_CATEGORIES;
   //   this.selectedColor = color;
   // }
 
+  // selectColor(color: ColorOption) {
+  //   this.selectedColor = color;
+
+  //   const style = color.image
+  //     ? `linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.3)), url(${color.image})`
+  //     : color.hex;
+
+  //   this.onBackgroundSelect?.(style);
+  // }
+
+  // selectColor(color: ColorOption) {
+  //   this.selectedColor = color;
+
+  //   this.onBackgroundSelect?.({
+  //     color: color.hex || '#f7efe6',
+  //     image: color.image || null,
+  //   });
+  // }
   selectColor(color: ColorOption) {
     this.selectedColor = color;
 
-    const style = color.image
-      ? `linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.3)), url(${color.image})`
-      : color.hex;
+    this.onBackgroundSelect?.({
+      color: color.hex || '#f7efe6',
 
-    this.onBackgroundSelect?.(style);
+      image: color.image || null,
+
+      safeArea: color.safeArea || {
+        top: 60,
+        right: 60,
+        bottom: 60,
+        left: 60,
+      },
+
+      textStyle: color.textStyle || {
+        lineHeight: 1.5,
+        fontSize: '1em',
+      },
+    });
   }
+
+  // applyColor() {
+  //   if (!this.selectedColor) return;
+
+  //   const style = this.selectedColor.image
+  //     ? `linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.3)), url(${this.selectedColor.image})`
+  //     : this.selectedColor.hex;
+
+  //   this.onBackgroundSelect?.(style);
+  // }
+
+  // applyColor() {
+  //   if (!this.selectedColor) return;
+
+  //   this.onBackgroundSelect?.({
+  //     color: this.selectedColor.hex || '#f7efe6',
+  //     image: this.selectedColor.image || null,
+  //   });
+  // }
 
   applyColor() {
     if (!this.selectedColor) return;
 
-    const style = this.selectedColor.image
-      ? `linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.3)), url(${this.selectedColor.image})`
-      : this.selectedColor.hex;
+    this.onBackgroundSelect?.({
+      color: this.selectedColor.hex || '#f7efe6',
 
-    this.onBackgroundSelect?.(style);
+      image: this.selectedColor.image || null,
+
+      safeArea: this.selectedColor.safeArea || {
+        top: 60,
+        right: 60,
+        bottom: 60,
+        left: 60,
+      },
+
+      textStyle: this.selectedColor.textStyle || {
+        lineHeight: 1.5,
+        fontSize: '1em',
+      },
+    });
   }
 
   close() {}

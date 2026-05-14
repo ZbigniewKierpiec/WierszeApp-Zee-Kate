@@ -128,7 +128,7 @@
   font-weight: 400; /* 🔥 mniej ciężki */
   letter-spacing: 0.2px;
 
-  max-width: 70%; /* 🔥 zawęż tekst (jak screen) */
+  max-width: 70%;
   margin: 0 auto;
 }
 
@@ -344,3 +344,29 @@
   }
 }
 //////////////////////
+.paper {
+  position: relative;
+  overflow: hidden;
+}
+
+.background-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  inset: 0;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  pointer-events: none;
+
+  z-index: 1;
+}
+
+.poem {
+  position: relative;
+  z-index: 2;
+}
