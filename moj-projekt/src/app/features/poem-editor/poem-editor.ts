@@ -58,7 +58,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
   @ViewChild('poemContent') poemContent!: ElementRef<HTMLDivElement>;
 
   activePanel = 'colors';
-
+  activeTitle = false;
   bookId = '';
   pageIndex = 0;
 
@@ -92,6 +92,19 @@ export class PoemEditor implements OnInit, AfterViewInit {
   poemFontStyle = 'normal';
   poemAlign = 'left';
   poemTitle = '';
+
+
+
+  titleColor = '#ffffff';
+
+  titleFont = '"Playfair Display", serif';
+
+  titleFontWeight: string | number = 600;
+
+  titleFontStyle = 'normal';
+
+  titleAlign = 'center';
+
   poemBlocks: PoemBlock[] = [];
 
   showSeparators = false;
@@ -200,6 +213,22 @@ export class PoemEditor implements OnInit, AfterViewInit {
     });
   }
 
+  selectTitle(event: MouseEvent) {
+    event.stopPropagation();
+
+    this.activeTitle = true;
+
+    this.activeTextIndex = null;
+    this.activeSeparatorIndex = null;
+
+    this.miniMenuPosition = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+
+    this.miniMenuVisible = true;
+  }
+
   normalizeFont(font: string): string {
     if (!font) return '"Playfair Display", serif';
 
@@ -297,33 +326,43 @@ export class PoemEditor implements OnInit, AfterViewInit {
     };
   }
 
-  selectText(index: number, event: MouseEvent) {
-    event.stopPropagation();
+selectText(index: number, event: MouseEvent) {
+  event.stopPropagation();
 
-    this.activeTextIndex = index;
-    this.activeSeparatorIndex = null;
+  this.activeTitle = false;
 
-    this.miniMenuPosition = {
-      x: event.clientX,
-      y: event.clientY,
-    };
+  this.activeTextIndex = index;
+  this.activeSeparatorIndex = null;
 
-    this.miniMenuVisible = true;
-  }
+  this.miniMenuPosition = {
+    x: event.clientX,
+    y: event.clientY,
+  };
 
-  selectSeparator(index: number, event: MouseEvent) {
-    event.stopPropagation();
+  this.miniMenuVisible = true;
+}
 
-    this.activeSeparatorIndex = index;
-    this.activeTextIndex = null;
 
-    this.miniMenuPosition = {
-      x: event.clientX,
-      y: event.clientY,
-    };
 
-    this.miniMenuVisible = true;
-  }
+selectSeparator(index: number, event: MouseEvent) {
+  event.stopPropagation();
+
+  this.activeTitle = false;
+
+  this.activeSeparatorIndex = index;
+  this.activeTextIndex = null;
+
+  this.miniMenuPosition = {
+    x: event.clientX,
+    y: event.clientY,
+  };
+
+  this.miniMenuVisible = true;
+}
+
+
+
+
 
   clearSeparatorSelection() {
     this.activeSeparatorIndex = null;
@@ -335,6 +374,11 @@ export class PoemEditor implements OnInit, AfterViewInit {
   }
 
   onColorChange(c: string) {
+    if (this.activeTitle) {
+      this.titleColor = c;
+      return;
+    }
+
     if (this.activeTextIndex !== null) {
       this.textColors = this.textColors.map((col, i) => (i === this.activeTextIndex ? c : col));
       return;
@@ -353,6 +397,18 @@ export class PoemEditor implements OnInit, AfterViewInit {
   }
 
   onFontChange(f: any) {
+    if (this.activeTitle) {
+      this.titleFont = f.fontFamily;
+
+      this.titleFontWeight = f.fontWeight || 600;
+
+      this.titleFontStyle = f.fontStyle || 'normal';
+
+      requestAnimationFrame(() => this.fitTextToContainer());
+
+      return;
+    }
+
     if (this.activeTextIndex !== null) {
       this.fontOverrides = this.fontOverrides.map((font, i) =>
         i === this.activeTextIndex ? f : font,
@@ -370,6 +426,16 @@ export class PoemEditor implements OnInit, AfterViewInit {
   }
 
   onStyleApply(style: any | null) {
+
+  if (this.activeTitle) {
+    if (style?.align) {
+      this.titleAlign = style.align;
+    }
+
+    return;
+  }
+
+
     if (this.activeTextIndex === null) return;
 
     this.styleOverrides = this.styleOverrides.map((s, i) =>
