@@ -1,4 +1,4 @@
-/* ============================= */
+ /*============================= */
 /* 🔔 TOAST */
 /* ============================= */
 .toast {
@@ -839,4 +839,41 @@ button,
 
 .poem-editor-btn:hover {
   transform: translateY(-1px);
+}
+textarea {
+  width: 100%;
+
+  border: none;
+  outline: none;
+  resize: none;
+
+  background: transparent;
+
+  line-height: 1.8;
+
+  overflow: hidden;
+
+  min-height: 300px;
+  height: auto;
+
+  display: block;
+
+  box-sizing: border-box;
+}
+
+.poem-container {
+  max-width: 600px;
+
+  min-height: 70vh;
+
+  margin: auto;
+  position: relative;
+
+  padding: 30px;
+
+  border-radius: 16px;
+
+  background: var(--poem-bg);
+
+  box-shadow: 0 10px 30px var(--poem-shadow);
 }

@@ -1,29 +1,9 @@
-<!-- <app-topbar
-  (save)="save()"
-  (clear)="clear()"
-  (coverEdit)="isCoverEditorOpen = true"
-  (export)="exportPDF()"
-  (newBook)="createNewBook()"
-  (goDashboard)="goDashboard()"
-></app-topbar> -->
-
-<!-- SIDEBAR -->
-<!-- <app-sidebar
-    [selectedTemplate]="selectedTemplate"
-    [selectedTheme]="selectedTheme"
-    [selectedVariant]="selectedVariant"
-    (themeChange)="applyTheme($event)"
-    (templateChange)="applyTemplate($event)"
-    (variantChange)="applyVariant($event)"
-    (presetChange)="applyPreset($event)"
-    (save)="save()"
-    (clear)="clear()"
-  ></app-sidebar> -->
 
 <!-- EDITOR -->
 <div class="editor-area">
   <div class="toolbar">
     <div class="toolbar-safe">
+
       <!-- BASIC -->
       <div class="toolbar-basic">
         <button (click)="fillLorem()">🧪 {{ 'EDITOR.LOREM' | translate }}</button>
@@ -32,7 +12,9 @@
           ✨ {{ 'EDITOR.FORMAT_ADVANCED' | translate }}
         </button>
 
-        <button (click)="formatAI()">✨ {{ 'EDITOR.AI_FORMAT' | translate }}</button>
+        <button (click)="formatAI()">
+          ✨ {{ 'EDITOR.AI_FORMAT' | translate }}
+        </button>
       </div>
 
       <!-- ADVANCED -->
@@ -71,7 +53,9 @@
         <input
           type="number"
           [ngModel]="activeField === 'title' ? titleSize : textFontSize"
-          (ngModelChange)="activeField === 'title' ? (titleSize = $event) : (textFontSize = $event)"
+          (ngModelChange)="activeField === 'title'
+            ? (titleSize = $event)
+            : (textFontSize = $event)"
           min="12"
           max="60"
         />
@@ -80,13 +64,17 @@
         <input
           type="color"
           [ngModel]="activeField === 'title' ? titleColor : textColor"
-          (ngModelChange)="activeField === 'title' ? (titleColor = $event) : (textColor = $event)"
+          (ngModelChange)="activeField === 'title'
+            ? (titleColor = $event)
+            : (textColor = $event)"
         />
 
         <!-- ALIGN -->
         <select
           [ngModel]="activeField === 'title' ? titleAlign : textAlign"
-          (ngModelChange)="activeField === 'title' ? (titleAlign = $event) : (textAlign = $event)"
+          (ngModelChange)="activeField === 'title'
+            ? (titleAlign = $event)
+            : (textAlign = $event)"
         >
           <option value="left">⬅</option>
           <option value="center">⬍</option>
@@ -94,16 +82,16 @@
         </select>
       </div>
     </div>
-    <!-- 
-    <app-divider-picker (select)="setDivider($event)"></app-divider-picker> -->
+
     <!-- RIGHT SIDE -->
     <div class="toolbar-actions">
-     <button class="poem-editor-btn" (click)="goPoemEditor()">
-  ✨ Poem Editor Pro
-</button>
+      <button class="poem-editor-btn" (click)="goPoemEditor()">
+        ✨ Poem Editor Pro
+      </button>
     </div>
   </div>
 
+  <!-- TEMPLATE LABEL -->
   <div class="template-label">
     <span class="icon">
       {{
@@ -113,18 +101,20 @@
       }}
     </span>
 
-    <!-- 🔥 PRESET -->
+    <!-- PRESET -->
     <span *ngIf="activeMode === 'preset'">
       {{ 'EDITOR.PRESET' | translate }}:
       {{ selectedPreset?.name | translate }}
     </span>
 
-    <!-- 🔥 TEMPLATE -->
+    <!-- TEMPLATE -->
     <span *ngIf="activeMode === 'template'">
       {{ 'EDITOR.TEMPLATE' | translate }}:
       {{ selectedTemplate | translate }}
 
-      <span *ngIf="selectedVariant"> • {{ selectedVariant.name | translate }} </span>
+      <span *ngIf="selectedVariant">
+        • {{ selectedVariant.name | translate }}
+      </span>
     </span>
   </div>
 
@@ -143,45 +133,77 @@
         'text-align': titleAlign,
         'font-family': titleFont,
         'font-size.px': titleSize,
-        color: titleColor || 'var(--text-main)',
+        color: titleColor || 'var(--text-main)'
       }"
     />
 
-    <textarea
-      [(ngModel)]="text"
-      [placeholder]="'EDITOR.TEXT_PLACEHOLDER' | translate"
-      (click)="activeField = 'text'; onTextFocus()"
-      [ngStyle]="{
-        'text-align': textAlign,
-        'font-family': textFont,
-        'font-size.px': textFontSize,
-        color: textColor || 'var(--text-main)',
-      }"
-    ></textarea>
+
+
+
+<textarea
+  #poemTextarea
+  [(ngModel)]="text"
+  [placeholder]="'EDITOR.TEXT_PLACEHOLDER' | translate"
+  (click)="activeField = 'text'; onTextFocus()"
+  (input)="autoResize(poemTextarea)"
+  [ngStyle]="{
+    'text-align': textAlign,
+    'font-family': textFont,
+    'font-size.px': textFontSize,
+    color: textColor || 'var(--text-main)'
+  }"
+></textarea>
+
+
+
+
+
 
     <app-gu [class.visible]="showGooey"></app-gu>
   </div>
 
   <!-- NAVIGATION -->
   <div class="bottom-bar">
-    <button (click)="goBack()">← {{ 'EDITOR.BACK' | translate }}</button>
-    <button (click)="preview()">👁 {{ 'EDITOR.PREVIEW' | translate }}</button>
+    <button (click)="goBack()">
+      ← {{ 'EDITOR.BACK' | translate }}
+    </button>
+
+    <button (click)="preview()">
+      👁 {{ 'EDITOR.PREVIEW' | translate }}
+    </button>
   </div>
 
   <!-- PAGE CONTROLS -->
   <div class="page-controls">
     <button (click)="prevPage()">⬅</button>
 
-    <span> {{ 'EDITOR.PAGE' | translate }} {{ currentPageIndex + 1 }} / {{ pages.length }} </span>
+    <span>
+      {{ 'EDITOR.PAGE' | translate }}
+
+      {{
+        pages[currentPageIndex]?.continuation
+          ? pages[currentPageIndex]?.pageNumber +
+            pages[currentPageIndex]?.continuation
+          : pages[currentPageIndex]?.pageNumber
+      }}
+
+      / {{ pages.length }}
+    </span>
 
     <button (click)="nextPage()">➡</button>
 
-    <button (click)="newPage()">➕ {{ 'EDITOR.NEW_PAGE' | translate }}</button>
+    <button (click)="newPage()">
+      ➕ {{ 'EDITOR.NEW_PAGE' | translate }}
+    </button>
 
-    <button *ngIf="pages.length > 1" (click)="deletePage()">🗑</button>
+    <button *ngIf="pages.length > 1" (click)="deletePage()">
+      🗑
+    </button>
   </div>
 
-  <div class="page-id">ID: {{ pages[currentPageIndex]?.id }}</div>
+  <div class="page-id">
+    ID: {{ pages[currentPageIndex]?.id }}
+  </div>
 </div>
 
 <!-- TOASTS -->
@@ -189,11 +211,21 @@
   {{ savedMessageText }}
 </div>
 
-<div *ngIf="clearMessage" class="toast danger">🧹 {{ 'EDITOR.CLEARED' | translate }}</div>
+<div *ngIf="clearMessage" class="toast danger">
+  🧹 {{ 'EDITOR.CLEARED' | translate }}
+</div>
 
 <!-- PREVIEW -->
-<div *ngIf="isPreviewOpen" class="preview-overlay" (click)="closePreview($event)">
-  <button type="button" class="close-btn" (click)="closePreview($event); $event.stopPropagation()">
+<div
+  *ngIf="isPreviewOpen"
+  class="preview-overlay"
+  (click)="closePreview($event)"
+>
+  <button
+    type="button"
+    class="close-btn"
+    (click)="closePreview($event); $event.stopPropagation()"
+  >
     {{ 'EDITOR.CLOSE' | translate }}
   </button>
 
@@ -201,13 +233,19 @@
     <div id="paged-preview-host"></div>
 
     <div class="nav-buttons">
-      <button type="button" (click)="prevPreviewPage(); $event.stopPropagation()">
+      <button
+        type="button"
+        (click)="prevPreviewPage(); $event.stopPropagation()"
+      >
         ← {{ 'EDITOR.PREV' | translate }}
       </button>
 
       <span>{{ currentPreviewPage + 1 }}</span>
 
-      <button type="button" (click)="nextPreviewPage(); $event.stopPropagation()">
+      <button
+        type="button"
+        (click)="nextPreviewPage(); $event.stopPropagation()"
+      >
         {{ 'EDITOR.NEXT' | translate }} →
       </button>
     </div>
@@ -217,18 +255,20 @@
 <!-- UKRYTE ŹRÓDŁO DLA Paged.js -->
 <div id="paged-source" style="display: none">
   <div class="book">
+
+    <!-- COVER -->
     <section
       class="cover"
       [ngStyle]="{
         background: cover.bgColor,
-        color: cover.textColor,
+        color: cover.textColor
       }"
     >
       <div
         class="cover-image"
         *ngIf="cover.image"
         [ngStyle]="{
-          'background-image': 'url(' + cover.image + ')',
+          'background-image': 'url(' + cover.image + ')'
         }"
       ></div>
 
@@ -238,40 +278,65 @@
       </div>
     </section>
 
-    <section class="poem" *ngFor="let p of pages" [class.hearts]="p.variant?.name === 'Hearts'">
-      <div class="poem-inner" [ngStyle]="getVariantStylesForPage(p)">
+    <!-- POEM PAGES -->
+    <section
+      class="poem"
+      *ngFor="let p of pages"
+      [class.hearts]="p.variant?.name === 'Hearts'"
+    >
+      <div
+        class="poem-inner"
+        [ngStyle]="getVariantStylesForPage(p)"
+      >
+
+        <!-- NORMAL TITLE -->
         <div
           class="title-preview"
+          *ngIf="!p.continuation"
           [ngStyle]="{
             'text-align': titleAlign,
             'font-family': p.titleFont,
             'font-size.px': titleSize,
-            color: p.titleColor,
+            color: p.titleColor
           }"
         >
           {{ p.title }}
         </div>
 
-        <div class="text-preview">
-          <div class="text-preview">
-            <ng-container *ngFor="let stanza of splitStanzas(p.text); let i = index">
-              <div class="stanza">
-                {{ stanza }}
-              </div>
-
-              <div
-                class="divider"
-                *ngIf="
-                  p.preset?.decoration?.divider?.enabled && i < splitStanzas(p.text).length - 1
-                "
-              >
-                {{ p.preset?.decoration?.divider?.symbol }}
-              </div>
-            </ng-container>
-          </div>
+        <!-- CONTINUATION -->
+        <div
+          class="continuation-label"
+          *ngIf="p.continuation"
+        >
+          {{ p.title }} (cont.)
         </div>
+
+        <!-- TEXT -->
+        <div class="text-preview">
+          <ng-container
+            *ngFor="let stanza of splitStanzas(p.text); let i = index"
+          >
+
+            <div class="stanza">
+              {{ stanza }}
+            </div>
+
+            <div
+              class="divider"
+              *ngIf="
+                p.preset?.decoration?.divider?.enabled &&
+                i < splitStanzas(p.text).length - 1
+              "
+            >
+              {{ p.preset?.decoration?.divider?.symbol }}
+            </div>
+
+          </ng-container>
+        </div>
+
       </div>
     </section>
+
   </div>
 </div>
 

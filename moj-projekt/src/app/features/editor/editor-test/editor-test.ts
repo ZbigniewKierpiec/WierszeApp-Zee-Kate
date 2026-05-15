@@ -338,20 +338,17 @@ export class EditorTest implements OnInit, OnDestroy {
   //   this.router.navigate(['poem-editor']);
   // }
 
-goPoemEditor() {
-  this.savePage();
+  goPoemEditor() {
+    this.savePage();
 
-  if (!this.bookId) return;
+    if (!this.bookId) return;
 
-  this.router.navigate(['/poem-editor', this.bookId], {
-    queryParams: {
-      page: this.currentPageIndex,
-    },
-  });
-}
-
-
-
+    this.router.navigate(['/poem-editor', this.bookId], {
+      queryParams: {
+        page: this.currentPageIndex,
+      },
+    });
+  }
 
   formatAI() {
     this.text = this.formatting.formatPoemAI(this.text);
@@ -378,18 +375,30 @@ quis nostrud exercitation ullamco.`;
   createEmptyPage() {
     return {
       id: this.generateId(),
+
       title: '',
       text: '',
+
+      // 🔥 continuation pages
+      continuation: '',
+      pageNumber: 1,
+
       template: 'Default',
       variant: null,
       preset: null,
       activeMode: 'template',
+
       titleFont: this.titleFont || 'Playfair Display',
       textFont: this.textFont || 'Playfair Display',
+
       titleColor: '#000000',
       textColor: '#000000',
     };
   }
+
+
+
+
 
   initEmptyEditor() {
     this.bookId = '';
@@ -502,38 +511,6 @@ quis nostrud exercitation ullamco.`;
     };
   }
 
-  loadPage() {
-    const p = this.pages[this.currentPageIndex];
-    if (!p) return;
-
-    this.syncingFromPage = true;
-
-    this.title = p.title || '';
-    this.text = p.text || '';
-
-    this.selectedTemplate = p.template || 'Default';
-    this.selectedVariant = p.variant || null;
-    this.selectedPreset = p.preset || null;
-    this.activeMode = p.activeMode === 'preset' ? 'preset' : 'template';
-
-    this.titleFont = p.titleFont || 'Playfair Display';
-    this.textFont = p.textFont || 'Playfair Display';
-
-    this.titleColor = this.fixColor(p.titleColor, '#000000');
-    this.textColor = this.fixColor(p.textColor, '#000000');
-
-    // emituj do sidebar/state nadal w trybie sync
-    this.state.template$.next(this.selectedTemplate);
-    this.state.variant$.next(this.selectedVariant);
-    this.state.preset$.next(this.selectedPreset);
-
-    this.cd.detectChanges();
-
-    // dopiero po wszystkim odblokuj
-    queueMicrotask(() => {
-      this.syncingFromPage = false;
-    });
-  }
 
   loadBook(id: string) {
     const user = this.auth.getUser();
@@ -611,29 +588,18 @@ quis nostrud exercitation ullamco.`;
     return hexRegex.test(normalized) ? normalized : fallback;
   }
 
-  savePage() {
-    const p = this.pages[this.currentPageIndex];
 
-    if (!p) {
-      console.warn('⚠️ Brak strony, tworzę nową');
-      this.newPage();
-      return;
-    }
 
-    this.pages[this.currentPageIndex] = {
-      ...p,
-      title: this.title || '',
-      text: this.text || '',
-      template: this.selectedTemplate || 'Default',
-      variant: this.selectedVariant || null,
-      preset: this.selectedPreset ? { ...this.selectedPreset } : null,
-      activeMode: this.activeMode,
-      titleFont: this.titleFont || 'Playfair Display',
-      textFont: this.textFont || 'Playfair Display',
-      titleColor: this.fixColor(this.titleColor, '#000000'),
-      textColor: this.fixColor(this.textColor, '#000000'),
-    };
-  }
+
+
+
+
+
+
+
+
+
+
 
   setDivider(d: any) {
     const page = this.pages[this.currentPageIndex];
@@ -657,23 +623,14 @@ quis nostrud exercitation ullamco.`;
     this.cd.detectChanges();
   }
 
-  nextPage() {
-    if (this.currentPageIndex < this.pages.length - 1) {
-      this.savePage();
-      this.storage.savePages(this.pages);
-      this.currentPageIndex++;
-      this.loadPage();
-    }
-  }
 
-  prevPage() {
-    if (this.currentPageIndex > 0) {
-      this.savePage();
-      this.storage.savePages(this.pages);
-      this.currentPageIndex--;
-      this.loadPage();
-    }
-  }
+
+
+
+
+
+
+
 
   applyTheme(theme: string) {
     this.selectedTheme = theme;
@@ -1069,4 +1026,342 @@ quis nostrud exercitation ullamco.`;
       }
     }, 500);
   }
+
+
+
+//////////////////////////////////////////////////////////////////
+
+// 🔥 NOWE
+trackPage(index: number, page: any) {
+  return page.id;
+}
+
+// 🔥 NOWE
+updateCurrentPage() {
+  const p = this.pages[this.currentPageIndex];
+
+  if (!p) return;
+
+  p.title = this.title;
+  p.text = this.text;
+
+  p.template = this.selectedTemplate;
+  p.variant = this.selectedVariant;
+  p.preset = this.selectedPreset
+    ? { ...this.selectedPreset }
+    : null;
+
+  p.activeMode = this.activeMode;
+
+  p.titleFont = this.titleFont;
+  p.textFont = this.textFont;
+
+  p.titleColor = this.titleColor;
+  p.textColor = this.textColor;
+}
+
+// 🔥 NOWE
+autoResize(textarea: HTMLTextAreaElement) {
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + 'px';
+}
+
+// 🔥 FIX
+splitPoemIntoPages(
+  text: string,
+  maxLines = 22
+): string[] {
+
+  if (!text?.trim()) return [''];
+
+  const lines = text.split('\n');
+
+  const pages: string[] = [];
+  let current: string[] = [];
+
+  for (const line of lines) {
+    current.push(line);
+
+    if (current.length >= maxLines) {
+      pages.push(current.join('\n'));
+      current = [];
+    }
+  }
+
+  if (current.length) {
+    pages.push(current.join('\n'));
+  }
+
+  return pages;
+}
+
+// 🔥 TOTAL FIX
+savePage() {
+
+  const current =
+    this.pages[this.currentPageIndex];
+
+  if (!current) return;
+
+  const mainPageNumber =
+    current.pageNumber ||
+    this.currentPageIndex + 1;
+
+  // 🔥 zachowaj inne strony
+  const staticPages = this.pages.filter(
+    p => p.pageNumber !== mainPageNumber
+  );
+
+  const splitPages =
+    this.splitPoemIntoPages(this.text);
+
+  const rebuiltPages: any[] = [];
+
+  // 🔥 MAIN PAGE
+  rebuiltPages.push({
+    ...current,
+
+    title: this.title || '',
+    text: splitPages[0] || '',
+
+    continuation: '',
+    pageNumber: mainPageNumber,
+
+    template:
+      this.selectedTemplate || 'Default',
+
+    variant:
+      this.selectedVariant || null,
+
+    preset:
+      this.selectedPreset
+        ? { ...this.selectedPreset }
+        : null,
+
+    activeMode: this.activeMode,
+
+    titleFont:
+      this.titleFont ||
+      'Playfair Display',
+
+    textFont:
+      this.textFont ||
+      'Playfair Display',
+
+    titleColor:
+      this.fixColor(
+        this.titleColor,
+        '#000000'
+      ),
+
+    textColor:
+      this.fixColor(
+        this.textColor,
+        '#000000'
+      ),
+  });
+
+  // 🔥 continuation pages
+  const alphabet =
+    'abcdefghijklmnopqrstuvwxyz'.split('');
+
+  for (
+    let i = 1;
+    i < splitPages.length;
+    i++
+  ) {
+
+    rebuiltPages.push({
+      ...this.createEmptyPage(),
+
+      title: this.title || '',
+      text: splitPages[i] || '',
+
+      continuation:
+        alphabet[i - 1],
+
+      pageNumber:
+        mainPageNumber,
+
+      template:
+        this.selectedTemplate || 'Default',
+
+      variant:
+        this.selectedVariant || null,
+
+      preset:
+        this.selectedPreset
+          ? { ...this.selectedPreset }
+          : null,
+
+      activeMode:
+        this.activeMode,
+
+      titleFont:
+        this.titleFont ||
+        'Playfair Display',
+
+      textFont:
+        this.textFont ||
+        'Playfair Display',
+
+      titleColor:
+        this.fixColor(
+          this.titleColor,
+          '#000000'
+        ),
+
+      textColor:
+        this.fixColor(
+          this.textColor,
+          '#000000'
+        ),
+    });
+  }
+
+  // 🔥 SORT
+  this.pages = [
+    ...staticPages,
+    ...rebuiltPages,
+  ].sort((a, b) => {
+
+    if (a.pageNumber === b.pageNumber) {
+
+      if (!a.continuation) return -1;
+      if (!b.continuation) return 1;
+
+      return a.continuation.localeCompare(
+        b.continuation
+      );
+    }
+
+    return a.pageNumber - b.pageNumber;
+  });
+
+  // 🔥 FIX INDEX
+  const currentId = current.id;
+
+  const newIndex =
+    this.pages.findIndex(
+      p => p.id === currentId
+    );
+
+  this.currentPageIndex =
+    newIndex >= 0 ? newIndex : 0;
+}
+
+// 🔥 FIX
+nextPage() {
+
+  if (
+    this.currentPageIndex <
+    this.pages.length - 1
+  ) {
+
+    this.currentPageIndex++;
+
+    this.loadPage();
+  }
+}
+
+// 🔥 FIX
+prevPage() {
+
+  if (
+    this.currentPageIndex > 0
+  ) {
+
+    this.currentPageIndex--;
+
+    this.loadPage();
+  }
+}
+
+// 🔥 FIX
+loadPage() {
+
+  const p =
+    this.pages[this.currentPageIndex];
+
+  if (!p) return;
+
+  this.syncingFromPage = true;
+
+  this.title = p.title || '';
+  this.text = p.text || '';
+
+  this.selectedTemplate =
+    p.template || 'Default';
+
+  this.selectedVariant =
+    p.variant || null;
+
+  this.selectedPreset =
+    p.preset || null;
+
+  this.activeMode =
+    p.activeMode === 'preset'
+      ? 'preset'
+      : 'template';
+
+  this.titleFont =
+    p.titleFont ||
+    'Playfair Display';
+
+  this.textFont =
+    p.textFont ||
+    'Playfair Display';
+
+  this.titleColor =
+    this.fixColor(
+      p.titleColor,
+      '#000000'
+    );
+
+  this.textColor =
+    this.fixColor(
+      p.textColor,
+      '#000000'
+    );
+
+  this.state.template$.next(
+    this.selectedTemplate
+  );
+
+  this.state.variant$.next(
+    this.selectedVariant
+  );
+
+  this.state.preset$.next(
+    this.selectedPreset
+  );
+
+  this.cd.detectChanges();
+
+  queueMicrotask(() => {
+    this.syncingFromPage = false;
+  });
+
+  // 🔥 textarea resize
+  setTimeout(() => {
+
+    const textarea =
+      document.querySelector(
+        'textarea'
+      ) as HTMLTextAreaElement;
+
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height =
+        textarea.scrollHeight + 'px';
+    }
+
+  });
+}
+
+
+
+
+
+
 }
