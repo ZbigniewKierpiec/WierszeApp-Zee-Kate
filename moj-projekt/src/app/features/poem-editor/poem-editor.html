@@ -14,104 +14,45 @@
     </div>
 
     <!-- PREVIEW -->
-    <div
-      class="preview"
-      (click)="clearSeparatorSelection(); activeTextIndex = null; miniMenuVisible = false"
-    >
+    <div class="preview">
       <div class="paper" [style.background-color]="backgroundColor">
+        <!-- BACKGROUND -->
         <div
           *ngIf="backgroundImage"
           class="background-frame"
           [style.background-image]="backgroundImage"
         ></div>
 
+        <!-- POEM -->
         <div
           #poemBox
           class="poem"
-          [class.full-page]="!backgroundImage"
-          [style.width.%]="backgroundImage ? contentBox.width : 100"
-          [style.height.%]="backgroundImage ? contentBox.height : 100"
-          [style.top.%]="backgroundImage ? 50 + contentBox.offsetY : 50"
-          [style.left.%]="50"
-          [style.transform]="'translate(-50%, -50%)'"
+           [class.full-page]="!backgroundImage || backgroundImage === ''"
+
+  [style.width.%]="backgroundImage ? contentBox.width : null"
+  [style.height.%]="backgroundImage ? contentBox.height : null"
+
+  [style.top.%]="backgroundImage ? 50 + contentBox.offsetY : null"
+  [style.left.%]="backgroundImage ? 50 : null"
+
+  [style.transform]="backgroundImage ? 'translate(-50%, -50%)' : null"
         >
           <div
             #poemContent
             class="poem-content"
             [style.font-size.px]="autoTextStyle.fontSize"
             [style.line-height]="autoTextStyle.lineHeight"
-            [style.gap.px]="autoTextStyle.gap"
-            [style.--poem-max-width]="textStyle.maxWidth"
+            [style.font-family]="poemFont"
+            [style.font-weight]="poemFontWeight"
+            [style.font-style]="poemFontStyle"
+            [style.color]="poemColor"
+            contenteditable="true"
+            (input)="fitTextToContainer()"
           >
-            <ng-container *ngFor="let block of poemBlocks">
-              <!-- LINE -->
-              <div
-                *ngIf="block.type === 'line'"
-                class="poem-block"
-                contenteditable="true"
-                (click)="selectText(block.textIndex!, $event); $event.stopPropagation()"
-                (input)="fitTextToContainer()"
-                [class.active]="activeTextIndex === block.textIndex"
-                [style.color]="textColors[block.textIndex!] || poemColor"
-                [style.font-family]="fontOverrides[block.textIndex!]?.fontFamily || poemFont"
-                [style.font-weight]="
-                  styleOverrides[block.textIndex!]?.weight ||
-                  fontOverrides[block.textIndex!]?.fontWeight ||
-                  poemFontWeight
-                "
-                [style.font-style]="
-                  styleOverrides[block.textIndex!]?.italic
-                    ? 'italic'
-                    : fontOverrides[block.textIndex!]?.fontStyle || poemFontStyle
-                "
-                [style.text-align]="styleOverrides[block.textIndex!]?.align || 'center'"
-                [style.letter-spacing]="styleOverrides[block.textIndex!]?.spacing || '0px'"
-                [style.text-transform]="styleOverrides[block.textIndex!]?.transform || 'none'"
-                [style.opacity]="styleOverrides[block.textIndex!]?.opacity ?? 1"
-                [style.text-shadow]="styleOverrides[block.textIndex!]?.shadow || 'none'"
-              >
-                {{ block.text }}
-              </div>
-
-              <!-- EMPTY LINE / STANZA SPACE -->
-              <div *ngIf="block.type === 'space'" class="poem-space"></div>
-
-              <!-- SEPARATOR -->
-              <div
-                *ngIf="block.type === 'separator'"
-                class="separator"
-                [class.active]="activeSeparatorIndex === block.separatorIndex"
-                [style.color]="separatorColors[block.separatorIndex!] || poemColor"
-                (click)="selectSeparator(block.separatorIndex!, $event); $event.stopPropagation()"
-              >
-                {{ separators[block.separatorIndex!] || '✧' }}
-              </div>
-            </ng-container>
+            {{ rawText }}
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- MINI MENU -->
-    <div
-      *ngIf="miniMenuVisible"
-      class="mini-menu"
-      [style.top.px]="miniMenuPosition.y"
-      [style.left.px]="miniMenuPosition.x"
-    >
-      <ng-container *ngIf="activeTextIndex !== null">
-        <button class="menu-item" (click)="openPanel('colors')">🎨 <span>Kolor</span></button>
-        <div class="divider"></div>
-        <button class="menu-item" (click)="openPanel('fonts')">🔤 <span>Font</span></button>
-        <div class="divider"></div>
-        <button class="menu-item" (click)="openPanel('style')">✨ <span>Styl</span></button>
-      </ng-container>
-
-      <ng-container *ngIf="activeSeparatorIndex !== null">
-        <button class="menu-item" (click)="openPanel('colors')">🎨 <span>Kolor</span></button>
-        <div class="divider"></div>
-        <button class="menu-item" (click)="openPanel('decorations')">❀ <span>Symbol</span></button>
-      </ng-container>
     </div>
 
     <!-- TABS -->

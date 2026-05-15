@@ -407,9 +407,9 @@
 .poem-content {
   width: 100%;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
 
   text-align: center;
 
@@ -567,4 +567,174 @@
 
 .poem-text {
   white-space: pre-line;
+}
+//////////////////////////
+.poem-content {
+  width: 100%;
+  height: 100%;
+
+  // display: flex;
+  // flex-direction: column;
+
+  // justify-content: flex-start;
+
+  // text-align: left;
+
+  overflow: hidden;
+}
+.poem-block {
+  width: 100%;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  line-height: inherit;
+
+  outline: none;
+}
+
+/////////////////////
+.poem {
+  position: absolute;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 60px;
+  box-sizing: border-box;
+}
+
+.poem-content {
+  width: 100%;
+  height: auto;
+
+  white-space: pre-wrap;
+
+  text-align: center;
+
+  overflow-wrap: break-word;
+  word-break: break-word;
+
+  display: block;
+}
+//////////////////////////////////////
+/* =========================
+   POEM LAYOUT FINAL
+========================= */
+
+.poem {
+  position: absolute;
+  inset: 0;
+
+  padding: 80px;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  z-index: 2;
+}
+
+.poem-content {
+  width: 100%;
+  max-width: 100%;
+
+  overflow: hidden;
+
+  text-align: center;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  display: block;
+}
+
+.poem-block {
+  width: 100%;
+
+  margin: 0;
+
+  white-space: pre-wrap;
+
+  line-height: inherit;
+
+  text-align: inherit;
+
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  outline: none;
+
+  transition: 0.2s ease;
+}
+
+.poem-block + .poem-block {
+  margin-top: 0.35em;
+}
+
+.poem-space {
+  height: 2.4em;
+}
+
+.separator {
+  margin: 1.4em 0;
+
+  opacity: 0.75;
+
+  text-align: center;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition: 0.2s ease;
+}
+
+.separator.active {
+  transform: scale(1.1);
+}
+
+.poem.full-page {
+  width: 100% !important;
+  height: 100% !important;
+
+  // padding: 90px 70px;
+
+  inset: 0;
+}
+
+.poem {
+  position: absolute;
+  overflow: hidden;
+}
+
+.poem.full-page {
+  inset: 0;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  padding: 90px;
+
+  box-sizing: border-box;
+}
+.poem.full-page {
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 90px;
+
+  box-sizing: border-box;
 }

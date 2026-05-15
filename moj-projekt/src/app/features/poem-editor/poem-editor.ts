@@ -13,29 +13,11 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 
 import { ColorsPanel } from './panels/colors-panel/colors-panel';
 import { BackgroundPanel } from './panels/background-panel/background-panel';
-import { TextPanel } from './panels/text-panel/text-panel';
-import { SeparatorPanel } from './panels/separator-panel/separator-panel';
 import { FontPanel } from './panels/font-panel/font-panel';
 import { StylePanel } from './panels/style-panel/style-panel';
 
 import { EditorApiService } from '../../services/editor-api';
 import { AuthService } from '../../services/auth-service';
-
-type PoemBlock =
-  | {
-      type: 'line';
-      text: string;
-      textIndex: number;
-    }
-  | {
-      type: 'space';
-      text: '';
-    }
-  | {
-      type: 'separator';
-      text: string;
-      separatorIndex: number;
-    };
 
 @Component({
   selector: 'app-poem-editor',
@@ -43,8 +25,6 @@ type PoemBlock =
   imports: [
     CommonModule,
     ColorsPanel,
-    TextPanel,
-    SeparatorPanel,
     FontPanel,
     BackgroundPanel,
     StylePanel,
@@ -62,7 +42,9 @@ export class PoemEditor implements OnInit, AfterViewInit {
   bookId = '';
   pageIndex = 0;
 
-  backgroundColor = '';
+  rawText = '';
+
+  backgroundColor = '#f7efe6';
   backgroundImage = '';
 
   contentBox = {
@@ -72,15 +54,9 @@ export class PoemEditor implements OnInit, AfterViewInit {
     offsetTop: 0,
   };
 
-  textStyle = {
-    lineHeight: '1.4',
-    fontSize: 'clamp(20px, 1.4vw, 32px)',
-    maxWidth: '22ch',
-  };
-
   autoTextStyle = {
     fontSize: 42,
-    lineHeight: 1.4,
+    lineHeight: 1.7,
     gap: 14,
   };
 
@@ -89,29 +65,10 @@ export class PoemEditor implements OnInit, AfterViewInit {
   poemFontWeight: string | number = 'normal';
   poemFontStyle = 'normal';
 
-  poemBlocks: PoemBlock[] = [];
-
-  showSeparators = false;
-
-  styleOverrides: any[] = [];
-  textColors: (string | null)[] = [];
-  fontOverrides: any[] = [];
-  separatorColors: (string | null)[] = [];
-
-  separators: string[] = [];
-
-  miniMenuVisible = false;
-  miniMenuPosition = { x: 0, y: 0 };
-
-  activeTextIndex: number | null = null;
-  activeSeparatorIndex: number | null = null;
-
   editorTabs = [
-    { id: 'text', label: 'Tekst', icon: 'T' },
     { id: 'fonts', label: 'Czcionka', icon: 'Aa' },
     { id: 'colors', label: 'Kolory', icon: '🎨' },
     { id: 'background', label: 'Tło', icon: '🖼' },
-    { id: 'decorations', label: 'Dekoracje', icon: '❀' },
     { id: 'style', label: 'Styl', icon: '≡' },
   ];
 
@@ -119,7 +76,6 @@ export class PoemEditor implements OnInit, AfterViewInit {
     colors: ColorsPanel,
     background: BackgroundPanel,
     fonts: FontPanel,
-    decorations: SeparatorPanel,
     style: StylePanel,
   };
 
@@ -153,7 +109,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
 
         if (!page) return;
 
-        this.buildPoemBlocks(page.text || '');
+        this.rawText = page.text || '';
 
         this.cdr.detectChanges();
 
@@ -168,174 +124,139 @@ export class PoemEditor implements OnInit, AfterViewInit {
     });
   }
 
-  buildPoemBlocks(text: string) {
-    const rawLines = text.replace(/\r\n/g, '\n').split('\n');
+  // fitTextToContainer() {
+  //   const box = this.poemBox?.nativeElement;
+  //   const content = this.poemContent?.nativeElement;
 
-    const textLines = rawLines.filter((line) => line.trim()).length;
-    const emptyLines = rawLines.filter((line) => !line.trim()).length;
+  //   if (!box || !content) return;
 
-    this.styleOverrides = Array(textLines).fill(null);
-    this.textColors = Array(textLines).fill(null);
-    this.fontOverrides = Array(textLines).fill(null);
+  //   let fontSize = 42;
+  //   let lineHeight = 1.7;
 
-    this.separatorColors = Array(emptyLines).fill(null);
-    this.separators = Array(emptyLines).fill('✧');
+  //   content.style.fontSize = `${fontSize}px`;
+  //   content.style.lineHeight = `${lineHeight}`;
 
-    this.poemBlocks = [];
+  //   while (
+  //     (content.scrollHeight > box.clientHeight ||
+  //       content.scrollWidth > box.clientWidth) &&
+  //     fontSize > 12
+  //   ) {
+  //     fontSize -= 1;
 
-    let textIndex = 0;
-    let separatorIndex = 0;
+  //     if (lineHeight > 1.2) {
+  //       lineHeight -= 0.01;
+  //     }
 
-    rawLines.forEach((line) => {
-      if (!line.trim()) {
-        if (this.showSeparators) {
-          this.poemBlocks.push({
-            type: 'separator',
-            text: this.separators[separatorIndex] || '✧',
-            separatorIndex,
-          });
-        } else {
-          this.poemBlocks.push({
-            type: 'space',
-            text: '',
-          });
-        }
+  //     content.style.fontSize = `${fontSize}px`;
+  //     content.style.lineHeight = `${lineHeight}`;
+  //   }
 
-        separatorIndex++;
-        return;
-      }
+  //   this.autoTextStyle = {
+  //     fontSize,
+  //     lineHeight,
+  //     gap: 0,
+  //   };
+  // }
 
-      this.poemBlocks.push({
-        type: 'line',
-        text: line,
-        textIndex,
-      });
+fitTextToContainer() {
+  const box = this.poemBox?.nativeElement;
+  const content = this.poemContent?.nativeElement;
 
-      textIndex++;
-    });
-  }
+  if (!box || !content) return;
 
-  fitTextToContainer() {
-    const box = this.poemBox?.nativeElement;
-    const content = this.poemContent?.nativeElement;
+  let fontSize = 46;
+  let lineHeight = 1.7;
+  let letterSpacing = 0;
+  let padding = 0;
 
-    if (!box || !content) return;
+  // reset
+  content.style.fontSize = `${fontSize}px`;
+  content.style.lineHeight = `${lineHeight}`;
+  content.style.letterSpacing = `${letterSpacing}px`;
+  content.style.padding = `${padding}px`;
 
-    let fontSize = 42;
-    let lineHeight = 1.45;
-    let gap = 10;
+  const fits = () => {
+    return (
+      content.scrollHeight <= box.clientHeight &&
+      content.scrollWidth <= box.clientWidth
+    );
+  };
+
+  // zmniejszaj aż wejdzie
+  while (!fits() && fontSize > 12) {
+    fontSize -= 1;
+
+    if (lineHeight > 1.15) {
+      lineHeight -= 0.015;
+    }
 
     content.style.fontSize = `${fontSize}px`;
     content.style.lineHeight = `${lineHeight}`;
-    content.style.gap = `${gap}px`;
+  }
 
-    while (
-      (content.scrollHeight > box.clientHeight || content.scrollWidth > box.clientWidth) &&
-      fontSize > 12
-    ) {
+  // lekko powiększ jeśli jest za małe
+  while (fits() && fontSize < 80) {
+    fontSize += 1;
+
+    content.style.fontSize = `${fontSize}px`;
+
+    if (!fits()) {
       fontSize -= 1;
-
-      if (lineHeight > 1.1) {
-        lineHeight -= 0.01;
-      }
-
-      if (gap > 2) {
-        gap -= 1;
-      }
-
       content.style.fontSize = `${fontSize}px`;
-      content.style.lineHeight = `${lineHeight}`;
-      content.style.gap = `${gap}px`;
+      break;
     }
-
-    this.autoTextStyle = {
-      fontSize,
-      lineHeight,
-      gap,
-    };
   }
 
-  selectText(index: number, event: MouseEvent) {
-    event.stopPropagation();
+  this.autoTextStyle = {
+    fontSize,
+    lineHeight,
+    gap: 0,
+  };
+}
 
-    this.activeTextIndex = index;
-    this.activeSeparatorIndex = null;
 
-    this.miniMenuPosition = {
-      x: event.clientX,
-      y: event.clientY,
-    };
 
-    this.miniMenuVisible = true;
-  }
 
-  selectSeparator(index: number, event: MouseEvent) {
-    event.stopPropagation();
 
-    this.activeSeparatorIndex = index;
-    this.activeTextIndex = null;
 
-    this.miniMenuPosition = {
-      x: event.clientX,
-      y: event.clientY,
-    };
 
-    this.miniMenuVisible = true;
-  }
 
-  clearSeparatorSelection() {
-    this.activeSeparatorIndex = null;
-  }
 
-  openPanel(panel: string) {
-    this.activePanel = panel;
-    this.miniMenuVisible = false;
-  }
 
   onColorChange(c: string) {
-    if (this.activeTextIndex !== null) {
-      this.textColors = this.textColors.map((col, i) => (i === this.activeTextIndex ? c : col));
-      return;
-    }
-
-    if (this.activeSeparatorIndex !== null) {
-      this.separatorColors = this.separatorColors.map((col, i) =>
-        i === this.activeSeparatorIndex ? c : col,
-      );
-      return;
-    }
-
     this.poemColor = c;
-    this.textColors = this.textColors.map(() => null);
-    this.separatorColors = this.separatorColors.map(() => null);
   }
 
   onFontChange(f: any) {
-    if (this.activeTextIndex !== null) {
-      this.fontOverrides = this.fontOverrides.map((font, i) =>
-        i === this.activeTextIndex ? f : font,
-      );
-      return;
-    }
-
     this.poemFont = f.fontFamily;
     this.poemFontWeight = f.fontWeight || 'normal';
     this.poemFontStyle = f.fontStyle || 'normal';
-
-    this.fontOverrides = this.fontOverrides.map(() => null);
 
     setTimeout(() => this.fitTextToContainer());
   }
 
   onStyleApply(style: any | null) {
-    if (this.activeTextIndex === null) return;
+    if (!style) return;
 
-    this.styleOverrides = this.styleOverrides.map((s, i) =>
-      i === this.activeTextIndex ? style : s,
-    );
+    if (style.align) {
+      this.poemContent.nativeElement.style.textAlign = style.align;
+    }
 
-    this.cdr.detectChanges();
-    setTimeout(() => this.fitTextToContainer());
+    if (style.spacing) {
+      this.poemContent.nativeElement.style.letterSpacing = style.spacing;
+    }
+
+    if (style.transform) {
+      this.poemContent.nativeElement.style.textTransform = style.transform;
+    }
+
+    if (style.opacity !== undefined) {
+      this.poemContent.nativeElement.style.opacity = style.opacity;
+    }
+
+    if (style.shadow) {
+      this.poemContent.nativeElement.style.textShadow = style.shadow;
+    }
   }
 
   onBackgroundChange(bg: any) {
@@ -351,43 +272,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
       this.contentBox = bg.contentBox;
     }
 
-    if (bg.textStyle) {
-      this.textStyle = bg.textStyle;
-    }
-
     setTimeout(() => this.fitTextToContainer());
-  }
-
-  onSeparatorChange(symbol: string) {
-    if (this.activeSeparatorIndex !== null) {
-      this.separators[this.activeSeparatorIndex] = symbol;
-
-      this.poemBlocks = this.poemBlocks.map((block) => {
-        if (block.type === 'separator' && block.separatorIndex === this.activeSeparatorIndex) {
-          return {
-            ...block,
-            text: symbol,
-          };
-        }
-
-        return block;
-      });
-
-      return;
-    }
-
-    this.separators = this.separators.map(() => symbol);
-
-    this.poemBlocks = this.poemBlocks.map((block) => {
-      if (block.type === 'separator') {
-        return {
-          ...block,
-          text: symbol,
-        };
-      }
-
-      return block;
-    });
   }
 
   get currentPanelInputs() {
@@ -401,10 +286,6 @@ export class PoemEditor implements OnInit, AfterViewInit {
 
     if (this.activePanel === 'fonts') {
       return { onFontSelect: (f: any) => this.onFontChange(f) };
-    }
-
-    if (this.activePanel === 'decorations') {
-      return { onSeparatorSelect: (s: string) => this.onSeparatorChange(s) };
     }
 
     if (this.activePanel === 'style') {
