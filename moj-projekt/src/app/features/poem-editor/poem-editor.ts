@@ -75,20 +75,23 @@ export class PoemEditor implements OnInit, AfterViewInit {
   textStyle = {
     lineHeight: '1.4',
     fontSize: 'clamp(20px, 1.4vw, 32px)',
-    maxWidth: '22ch',
+    maxWidth: '38ch',
   };
 
   autoTextStyle = {
-    fontSize: 42,
+    fontSize: 18,
     lineHeight: 1.4,
-    gap: 14,
+    gap: 10,
   };
 
-  poemColor = '#3b2a20';
+  baseFontSize = 18;
+  baseLineHeight = 1.25;
+  poemColor = '#ffffff';
   poemFont = '"Playfair Display", serif';
   poemFontWeight: string | number = 'normal';
   poemFontStyle = 'normal';
-
+  poemAlign = 'left';
+  poemTitle = '';
   poemBlocks: PoemBlock[] = [];
 
   showSeparators = false;
@@ -139,7 +142,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.fitTextToContainer());
+    requestAnimationFrame(() => this.fitTextToContainer());
   }
 
   loadBook() {
@@ -153,11 +156,40 @@ export class PoemEditor implements OnInit, AfterViewInit {
 
         if (!page) return;
 
+        this.poemFont = this.normalizeFont(page.textFont || '"Playfair Display", serif');
+        this.poemColor = '#ffffff';
+        this.poemAlign = page.textAlign || 'left';
+        this.poemTitle = page.title || '';
+        this.baseFontSize = Number(page.textFontSize || 18);
+        this.baseLineHeight = Number(page.textLineHeight || 1.4);
+
+        this.autoTextStyle = {
+          fontSize: this.baseFontSize,
+          lineHeight: this.baseLineHeight,
+          gap: 10,
+        };
+
+        if (page.backgroundColor) {
+          this.backgroundColor = page.backgroundColor;
+        }
+
+        if (page.backgroundImage) {
+          this.backgroundImage = `url("${page.backgroundImage}")`;
+        }
+
+        if (page.contentBox) {
+          this.contentBox = page.contentBox;
+        }
+
+        if (page.textStyle) {
+          this.textStyle = page.textStyle;
+        }
+
         this.buildPoemBlocks(page.text || '');
 
         this.cdr.detectChanges();
 
-        setTimeout(() => {
+        requestAnimationFrame(() => {
           this.fitTextToContainer();
         });
       },
@@ -166,6 +198,16 @@ export class PoemEditor implements OnInit, AfterViewInit {
         console.error('❌ LOAD POEM ERROR', err);
       },
     });
+  }
+
+  normalizeFont(font: string): string {
+    if (!font) return '"Playfair Display", serif';
+
+    if (font.includes(',') || font.includes('"') || font.includes("'")) {
+      return font;
+    }
+
+    return `"${font}", serif`;
   }
 
   buildPoemBlocks(text: string) {
@@ -221,8 +263,8 @@ export class PoemEditor implements OnInit, AfterViewInit {
 
     if (!box || !content) return;
 
-    let fontSize = 42;
-    let lineHeight = 1.45;
+    let fontSize = this.baseFontSize || 18;
+    let lineHeight = this.baseLineHeight || 1.4;
     let gap = 10;
 
     content.style.fontSize = `${fontSize}px`;
@@ -324,7 +366,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
 
     this.fontOverrides = this.fontOverrides.map(() => null);
 
-    setTimeout(() => this.fitTextToContainer());
+    requestAnimationFrame(() => this.fitTextToContainer());
   }
 
   onStyleApply(style: any | null) {
@@ -335,7 +377,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
     );
 
     this.cdr.detectChanges();
-    setTimeout(() => this.fitTextToContainer());
+    requestAnimationFrame(() => this.fitTextToContainer());
   }
 
   onBackgroundChange(bg: any) {
@@ -355,7 +397,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
       this.textStyle = bg.textStyle;
     }
 
-    setTimeout(() => this.fitTextToContainer());
+    requestAnimationFrame(() => this.fitTextToContainer());
   }
 
   onSeparatorChange(symbol: string) {
