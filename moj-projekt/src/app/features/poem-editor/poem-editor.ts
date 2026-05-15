@@ -93,8 +93,6 @@ export class PoemEditor implements OnInit, AfterViewInit {
   poemAlign = 'left';
   poemTitle = '';
 
-
-
   titleColor = '#ffffff';
 
   titleFont = '"Playfair Display", serif';
@@ -121,7 +119,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
 
   activeTextIndex: number | null = null;
   activeSeparatorIndex: number | null = null;
-
+  currentBook: any = null;
   editorTabs = [
     { id: 'text', label: 'Tekst', icon: 'T' },
     { id: 'fonts', label: 'Czcionka', icon: 'Aa' },
@@ -148,10 +146,15 @@ export class PoemEditor implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.bookId = this.route.snapshot.paramMap.get('id') || '';
-    this.pageIndex = Number(this.route.snapshot.queryParamMap.get('page') || 0);
+    this.route.paramMap.subscribe((params) => {
+      this.bookId = params.get('id') || '';
 
-    this.loadBook();
+      this.route.queryParamMap.subscribe((query) => {
+        this.pageIndex = Number(query.get('page') || 0);
+
+        this.loadBook();
+      });
+    });
   }
 
   ngAfterViewInit(): void {
@@ -166,7 +169,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
     this.api.getBook(this.bookId, user.id).subscribe({
       next: (book: any) => {
         const page = book.pages?.[this.pageIndex];
-
+        this.currentBook = book;
         if (!page) return;
 
         this.poemFont = this.normalizeFont(page.textFont || '"Playfair Display", serif');
@@ -210,6 +213,32 @@ export class PoemEditor implements OnInit, AfterViewInit {
       error: (err) => {
         console.error('❌ LOAD POEM ERROR', err);
       },
+    });
+  }
+
+  get hasNextPage(): boolean {
+    return !!this.currentBook?.pages?.[this.pageIndex + 1];
+  }
+
+  nextPage() {
+    if (!this.hasNextPage) return;
+
+    this.router.navigate([], {
+      queryParams: {
+        page: this.pageIndex + 1,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  prevPage() {
+    if (this.pageIndex <= 0) return;
+
+    this.router.navigate([], {
+      queryParams: {
+        page: this.pageIndex - 1,
+      },
+      queryParamsHandling: 'merge',
     });
   }
 
@@ -326,43 +355,37 @@ export class PoemEditor implements OnInit, AfterViewInit {
     };
   }
 
-selectText(index: number, event: MouseEvent) {
-  event.stopPropagation();
+  selectText(index: number, event: MouseEvent) {
+    event.stopPropagation();
 
-  this.activeTitle = false;
+    this.activeTitle = false;
 
-  this.activeTextIndex = index;
-  this.activeSeparatorIndex = null;
+    this.activeTextIndex = index;
+    this.activeSeparatorIndex = null;
 
-  this.miniMenuPosition = {
-    x: event.clientX,
-    y: event.clientY,
-  };
+    this.miniMenuPosition = {
+      x: event.clientX,
+      y: event.clientY,
+    };
 
-  this.miniMenuVisible = true;
-}
+    this.miniMenuVisible = true;
+  }
 
+  selectSeparator(index: number, event: MouseEvent) {
+    event.stopPropagation();
 
+    this.activeTitle = false;
 
-selectSeparator(index: number, event: MouseEvent) {
-  event.stopPropagation();
+    this.activeSeparatorIndex = index;
+    this.activeTextIndex = null;
 
-  this.activeTitle = false;
+    this.miniMenuPosition = {
+      x: event.clientX,
+      y: event.clientY,
+    };
 
-  this.activeSeparatorIndex = index;
-  this.activeTextIndex = null;
-
-  this.miniMenuPosition = {
-    x: event.clientX,
-    y: event.clientY,
-  };
-
-  this.miniMenuVisible = true;
-}
-
-
-
-
+    this.miniMenuVisible = true;
+  }
 
   clearSeparatorSelection() {
     this.activeSeparatorIndex = null;
@@ -426,15 +449,13 @@ selectSeparator(index: number, event: MouseEvent) {
   }
 
   onStyleApply(style: any | null) {
+    if (this.activeTitle) {
+      if (style?.align) {
+        this.titleAlign = style.align;
+      }
 
-  if (this.activeTitle) {
-    if (style?.align) {
-      this.titleAlign = style.align;
+      return;
     }
-
-    return;
-  }
-
 
     if (this.activeTextIndex === null) return;
 

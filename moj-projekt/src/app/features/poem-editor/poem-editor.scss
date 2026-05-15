@@ -545,3 +545,48 @@
 
   white-space: pre-wrap;
 }
+
+
+.page-counter {
+  min-width: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+
+  span {
+    opacity: 0.5;
+    font-weight: 500;
+  }
+}
+
+.page-btn {
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: rgba(255,255,255,0.08);
+  color: white;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(255,255,255,0.14);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+}
+
+///////////////////////////

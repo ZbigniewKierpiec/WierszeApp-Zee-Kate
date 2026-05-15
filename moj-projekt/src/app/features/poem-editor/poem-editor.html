@@ -5,12 +5,45 @@
       <div class="left">
         <button class="back-btn" (click)="goBack()">← <span>Edytor wiersza</span></button>
       </div>
-
+<!-- 
       <div class="right">
         <span class="icon">↶</span>
         <span class="icon">↷</span>
         <button class="save">Zapisz</button>
-      </div>
+      </div> -->
+
+<div class="right">
+  <button
+    class="page-btn"
+    (click)="prevPage()"
+    [disabled]="pageIndex === 0"
+  >
+    ←
+  </button>
+
+  <div class="page-counter">
+    {{ pageIndex + 1 }}
+    <span>/ {{ currentBook?.pages?.length || 1 }}</span>
+  </div>
+
+  <button
+    class="page-btn"
+    (click)="nextPage()"
+    [disabled]="!hasNextPage"
+  >
+    →
+  </button>
+<!-- 
+  <span class="icon">↶</span>
+  <span class="icon">↷</span> -->
+
+  <button class="save">Zapisz</button>
+</div>
+
+
+
+
+
     </div>
 
     <!-- PREVIEW -->
