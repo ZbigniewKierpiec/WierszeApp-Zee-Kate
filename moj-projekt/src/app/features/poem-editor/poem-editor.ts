@@ -20,6 +20,7 @@ import { StylePanel } from './panels/style-panel/style-panel';
 
 import { EditorApiService } from '../../services/editor-api';
 import { AuthService } from '../../services/auth-service';
+import { ExportService } from '../../services/export-service';
 
 type PoemBlock =
   | {
@@ -62,6 +63,10 @@ export class PoemEditor implements OnInit, AfterViewInit {
   bookId = '';
   pageIndex = 0;
 
+  ////////////////////////////
+  isPreviewOpen = false;
+  currentPreviewPage = 0;
+  ////////////////////////////
   backgroundColor = '';
   backgroundImage = '';
 
@@ -143,6 +148,8 @@ export class PoemEditor implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private api: EditorApiService,
     private auth: AuthService,
+    private cd: ChangeDetectorRef,
+    private exportService: ExportService,
   ) {}
 
   ngOnInit(): void {
@@ -161,154 +168,103 @@ export class PoemEditor implements OnInit, AfterViewInit {
     requestAnimationFrame(() => this.fitTextToContainer());
   }
 
+  loadBook() {
+    const user = this.auth.getUser();
 
-loadBook() {
-  const user = this.auth.getUser();
+    if (!user?.id || !this.bookId) return;
 
-  if (!user?.id || !this.bookId) return;
+    this.api.getBook(this.bookId, user.id).subscribe({
+      next: (book: any) => {
+        const page = book.pages?.[this.pageIndex];
 
-  this.api.getBook(this.bookId, user.id).subscribe({
-    next: (book: any) => {
-      const page = book.pages?.[this.pageIndex];
+        this.currentBook = book;
 
-      this.currentBook = book;
+        if (!page) return;
 
-      if (!page) return;
+        // 🔥 POEM DATA
+        const poemData = page.poemEditor || {};
 
-      // 🔥 POEM DATA
-      const poemData = page.poemEditor || {};
+        // BASIC
+        this.poemTitle = page.title || '';
 
-      // BASIC
-      this.poemTitle = page.title || '';
+        // MAIN
+        this.poemFont = this.normalizeFont(poemData.poemFont || '"Playfair Display", serif');
 
-      // MAIN
-      this.poemFont = this.normalizeFont(
-        poemData.poemFont ||
-          '"Playfair Display", serif',
-      );
+        this.poemFontWeight = poemData.poemFontWeight || 'normal';
 
-      this.poemFontWeight =
-        poemData.poemFontWeight ||
-        'normal';
+        this.poemFontStyle = poemData.poemFontStyle || 'normal';
 
-      this.poemFontStyle =
-        poemData.poemFontStyle ||
-        'normal';
+        this.poemColor = poemData.poemColor || '#ffffff';
 
-      this.poemColor =
-        poemData.poemColor ||
-        '#ffffff';
+        this.poemAlign = poemData.poemAlign || 'left';
 
-      this.poemAlign =
-        poemData.poemAlign ||
-        'left';
+        // TITLE
+        this.titleFont = poemData.titleFont || '"Playfair Display", serif';
 
-      // TITLE
-      this.titleFont =
-        poemData.titleFont ||
-        '"Playfair Display", serif';
+        this.titleFontWeight = poemData.titleFontWeight || 600;
 
-      this.titleFontWeight =
-        poemData.titleFontWeight ||
-        600;
+        this.titleFontStyle = poemData.titleFontStyle || 'normal';
 
-      this.titleFontStyle =
-        poemData.titleFontStyle ||
-        'normal';
+        this.titleColor = poemData.titleColor || '#ffffff';
 
-      this.titleColor =
-        poemData.titleColor ||
-        '#ffffff';
+        this.titleAlign = poemData.titleAlign || 'center';
 
-      this.titleAlign =
-        poemData.titleAlign ||
-        'center';
+        // AUTO FIT
+        this.baseFontSize = Number(poemData.textFontSize || 18);
 
-      // AUTO FIT
-      this.baseFontSize = Number(
-        poemData.textFontSize || 18,
-      );
+        this.baseLineHeight = Number(poemData.textLineHeight || 1.4);
 
-      this.baseLineHeight = Number(
-        poemData.textLineHeight || 1.4,
-      );
+        this.autoTextStyle = {
+          fontSize: this.baseFontSize,
+          lineHeight: this.baseLineHeight,
+          gap: 10,
+        };
 
-      this.autoTextStyle = {
-        fontSize: this.baseFontSize,
-        lineHeight: this.baseLineHeight,
-        gap: 10,
-      };
+        // BACKGROUND
+        this.backgroundColor = poemData.backgroundColor || '';
 
-      // BACKGROUND
-      this.backgroundColor =
-        poemData.backgroundColor || '';
+        if (poemData.backgroundImage) {
+          this.backgroundImage = `url("${poemData.backgroundImage}")`;
+        } else {
+          this.backgroundImage = '';
+        }
 
-      if (poemData.backgroundImage) {
-        this.backgroundImage =
-          `url("${poemData.backgroundImage}")`;
-      } else {
-        this.backgroundImage = '';
-      }
+        // BOX
+        if (poemData.contentBox) {
+          this.contentBox = poemData.contentBox;
+        }
 
-      // BOX
-      if (poemData.contentBox) {
-        this.contentBox =
-          poemData.contentBox;
-      }
+        // STYLE
+        if (poemData.textStyle) {
+          this.textStyle = poemData.textStyle;
+        }
 
-      // STYLE
-      if (poemData.textStyle) {
-        this.textStyle =
-          poemData.textStyle;
-      }
+        // OVERRIDES
+        this.styleOverrides = poemData.styleOverrides || [];
 
-      // OVERRIDES
-      this.styleOverrides =
-        poemData.styleOverrides || [];
+        this.fontOverrides = poemData.fontOverrides || [];
 
-      this.fontOverrides =
-        poemData.fontOverrides || [];
+        this.textColors = poemData.textColors || [];
 
-      this.textColors =
-        poemData.textColors || [];
+        this.separatorColors = poemData.separatorColors || [];
 
-      this.separatorColors =
-        poemData.separatorColors || [];
+        this.separators = poemData.separators || [];
 
-      this.separators =
-        poemData.separators || [];
+        // BUILD
+        this.buildPoemBlocks(page.text || '');
 
-      // BUILD
-      this.buildPoemBlocks(
-        page.text || '',
-      );
+        this.cdr.detectChanges();
 
-      this.cdr.detectChanges();
+        requestAnimationFrame(() => {
+          this.fitTextToContainer();
+        });
+      },
 
-      requestAnimationFrame(() => {
-        this.fitTextToContainer();
-      });
-    },
-
-    error: (err) => {
-      console.error(
-        '❌ LOAD POEM ERROR',
-        err,
-      );
-    },
-  });
-}
-
-
-
-
-
-
-
-
-
-
-
+      error: (err) => {
+        console.error('❌ LOAD POEM ERROR', err);
+      },
+    });
+  }
 
   get hasNextPage(): boolean {
     return !!this.currentBook?.pages?.[this.pageIndex + 1];
@@ -490,143 +446,147 @@ loadBook() {
     this.miniMenuVisible = false;
   }
 
-onColorChange(c: string) {
-  if (this.activeTitle) {
-    this.titleColor = c;
+  onColorChange(c: string) {
+    if (this.activeTitle) {
+      this.titleColor = c;
+
+      this.savePoem();
+
+      return;
+    }
+
+    if (this.activeTextIndex !== null) {
+      this.textColors = this.textColors.map((col, i) => (i === this.activeTextIndex ? c : col));
+
+      this.savePoem();
+
+      return;
+    }
+
+    if (this.activeSeparatorIndex !== null) {
+      this.separatorColors = this.separatorColors.map((col, i) =>
+        i === this.activeSeparatorIndex ? c : col,
+      );
+
+      this.savePoem();
+
+      return;
+    }
+
+    this.poemColor = c;
+
+    this.textColors = this.textColors.map(() => null);
+    this.separatorColors = this.separatorColors.map(() => null);
 
     this.savePoem();
-
-    return;
   }
 
-  if (this.activeTextIndex !== null) {
-    this.textColors = this.textColors.map((col, i) =>
-      i === this.activeTextIndex ? c : col,
-    );
+  onFontChange(f: any) {
+    if (this.activeTitle) {
+      this.titleFont = f.fontFamily;
 
-    this.savePoem();
+      this.titleFontWeight = f.fontWeight || 600;
 
-    return;
-  }
+      this.titleFontStyle = f.fontStyle || 'normal';
 
-  if (this.activeSeparatorIndex !== null) {
-    this.separatorColors = this.separatorColors.map((col, i) =>
-      i === this.activeSeparatorIndex ? c : col,
-    );
+      requestAnimationFrame(() => this.fitTextToContainer());
 
-    this.savePoem();
+      this.savePoem();
 
-    return;
-  }
+      return;
+    }
 
-  this.poemColor = c;
+    if (this.activeTextIndex !== null) {
+      this.fontOverrides = this.fontOverrides.map((font, i) =>
+        i === this.activeTextIndex ? f : font,
+      );
 
-  this.textColors = this.textColors.map(() => null);
-  this.separatorColors = this.separatorColors.map(() => null);
+      this.savePoem();
 
-  this.savePoem();
-}
+      return;
+    }
 
+    this.poemFont = f.fontFamily;
+    this.poemFontWeight = f.fontWeight || 'normal';
+    this.poemFontStyle = f.fontStyle || 'normal';
 
-onFontChange(f: any) {
-  if (this.activeTitle) {
-    this.titleFont = f.fontFamily;
-
-    this.titleFontWeight = f.fontWeight || 600;
-
-    this.titleFontStyle = f.fontStyle || 'normal';
+    this.fontOverrides = this.fontOverrides.map(() => null);
 
     requestAnimationFrame(() => this.fitTextToContainer());
 
     this.savePoem();
-
-    return;
   }
 
-  if (this.activeTextIndex !== null) {
-    this.fontOverrides = this.fontOverrides.map((font, i) =>
-      i === this.activeTextIndex ? f : font,
-    );
+  onStyleApply(style: any | null) {
+    if (this.activeTitle) {
+      if (style?.align) {
+        this.titleAlign = style.align;
+      }
 
-    this.savePoem();
+      this.savePoem();
 
-    return;
-  }
-
-  this.poemFont = f.fontFamily;
-  this.poemFontWeight = f.fontWeight || 'normal';
-  this.poemFontStyle = f.fontStyle || 'normal';
-
-  this.fontOverrides = this.fontOverrides.map(() => null);
-
-  requestAnimationFrame(() => this.fitTextToContainer());
-
-  this.savePoem();
-}
-
-
-
-
-onStyleApply(style: any | null) {
-  if (this.activeTitle) {
-    if (style?.align) {
-      this.titleAlign = style.align;
+      return;
     }
 
+    if (this.activeTextIndex === null) return;
+
+    this.styleOverrides = this.styleOverrides.map((s, i) =>
+      i === this.activeTextIndex ? style : s,
+    );
+
+    this.cdr.detectChanges();
+
+    requestAnimationFrame(() => this.fitTextToContainer());
+
     this.savePoem();
-
-    return;
   }
 
-  if (this.activeTextIndex === null) return;
+  onBackgroundChange(bg: any) {
+    if (bg.color) {
+      this.backgroundColor = bg.color;
+    }
 
-  this.styleOverrides = this.styleOverrides.map((s, i) =>
-    i === this.activeTextIndex ? style : s,
-  );
+    if (bg.image) {
+      this.backgroundImage = `url("${bg.image}")`;
+    }
 
-  this.cdr.detectChanges();
+    if (bg.contentBox) {
+      this.contentBox = bg.contentBox;
+    }
 
-  requestAnimationFrame(() => this.fitTextToContainer());
+    if (bg.textStyle) {
+      this.textStyle = bg.textStyle;
+    }
 
-  this.savePoem();
-}
+    requestAnimationFrame(() => this.fitTextToContainer());
 
-
-
-onBackgroundChange(bg: any) {
-  if (bg.color) {
-    this.backgroundColor = bg.color;
+    this.savePoem();
   }
 
-  if (bg.image) {
-    this.backgroundImage = `url("${bg.image}")`;
-  }
+  onSeparatorChange(symbol: string) {
+    if (this.activeSeparatorIndex !== null) {
+      this.separators[this.activeSeparatorIndex] = symbol;
 
-  if (bg.contentBox) {
-    this.contentBox = bg.contentBox;
-  }
+      this.poemBlocks = this.poemBlocks.map((block) => {
+        if (block.type === 'separator' && block.separatorIndex === this.activeSeparatorIndex) {
+          return {
+            ...block,
+            text: symbol,
+          };
+        }
 
-  if (bg.textStyle) {
-    this.textStyle = bg.textStyle;
-  }
+        return block;
+      });
 
-  requestAnimationFrame(() => this.fitTextToContainer());
+      this.savePoem();
 
-  this.savePoem();
-}
+      return;
+    }
 
-
-
-
-onSeparatorChange(symbol: string) {
-  if (this.activeSeparatorIndex !== null) {
-    this.separators[this.activeSeparatorIndex] = symbol;
+    this.separators = this.separators.map(() => symbol);
 
     this.poemBlocks = this.poemBlocks.map((block) => {
-      if (
-        block.type === 'separator' &&
-        block.separatorIndex === this.activeSeparatorIndex
-      ) {
+      if (block.type === 'separator') {
         return {
           ...block,
           text: symbol,
@@ -637,202 +597,200 @@ onSeparatorChange(symbol: string) {
     });
 
     this.savePoem();
-
-    return;
   }
 
-  this.separators = this.separators.map(() => symbol);
-
-  this.poemBlocks = this.poemBlocks.map((block) => {
-    if (block.type === 'separator') {
+  get currentPanelInputs() {
+    if (this.activePanel === 'colors') {
       return {
-        ...block,
-        text: symbol,
+        onColorSelect: (c: string) => this.onColorChange(c),
       };
     }
 
-    return block;
-  });
+    if (this.activePanel === 'background') {
+      return {
+        onBackgroundSelect: (bg: any) => this.onBackgroundChange(bg),
+      };
+    }
 
-  this.savePoem();
-}
+    if (this.activePanel === 'fonts') {
+      return {
+        onFontSelect: (f: any) => this.onFontChange(f),
+      };
+    }
 
+    if (this.activePanel === 'decorations') {
+      return {
+        onSeparatorSelect: (s: string) => this.onSeparatorChange(s),
+      };
+    }
 
+    if (this.activePanel === 'style') {
+      return {
+        onStyleSelect: (style: any) => this.onStyleApply(style),
+      };
+    }
 
+    return {};
+  }
 
+  updateCurrentPage() {
+    if (!this.currentBook?.pages?.[this.pageIndex]) {
+      return;
+    }
 
+    const page = this.currentBook.pages[this.pageIndex];
 
-get currentPanelInputs() {
-  if (this.activePanel === 'colors') {
-    return {
-      onColorSelect: (c: string) => this.onColorChange(c),
+    // 🔥 SHARED ONLY
+    page.title = this.poemTitle;
+
+    page.text = this.poemBlocks
+      .map((block) => {
+        if (block.type === 'line') {
+          return block.text;
+        }
+
+        return '';
+      })
+      .join('\n');
+
+    // 🔥 POEM EDITOR ONLY
+    page.poemEditor = {
+      // MAIN
+      poemFont: this.poemFont,
+
+      poemFontWeight: this.poemFontWeight,
+
+      poemFontStyle: this.poemFontStyle,
+
+      poemColor: this.poemColor,
+
+      poemAlign: this.poemAlign,
+
+      // TITLE
+      titleFont: this.titleFont,
+
+      titleFontWeight: this.titleFontWeight,
+
+      titleFontStyle: this.titleFontStyle,
+
+      titleColor: this.titleColor,
+
+      titleAlign: this.titleAlign,
+
+      // AUTO FIT
+      textFontSize: this.autoTextStyle.fontSize,
+
+      textLineHeight: this.autoTextStyle.lineHeight,
+
+      // BACKGROUND
+      backgroundColor: this.backgroundColor,
+
+      backgroundImage: this.backgroundImage
+        ? this.backgroundImage.replace(/^url\("(.*)"\)$/, '$1')
+        : '',
+
+      // BOX
+      contentBox: this.contentBox,
+
+      // STYLE
+      textStyle: this.textStyle,
+
+      // OVERRIDES
+      styleOverrides: this.styleOverrides,
+
+      fontOverrides: this.fontOverrides,
+
+      textColors: this.textColors,
+
+      separatorColors: this.separatorColors,
+
+      separators: this.separators,
     };
   }
 
-  if (this.activePanel === 'background') {
-    return {
-      onBackgroundSelect: (bg: any) =>
-        this.onBackgroundChange(bg),
-    };
+  savePoem() {
+    if (!this.currentBook) return;
+
+    this.updateCurrentPage();
+
+    this.api.saveBook(this.currentBook).subscribe({
+      next: () => {
+        console.log('✅ POEM SAVED');
+      },
+
+      error: (err) => {
+        console.error('❌ SAVE ERROR', err);
+      },
+    });
   }
 
-  if (this.activePanel === 'fonts') {
-    return {
-      onFontSelect: (f: any) => this.onFontChange(f),
-    };
-  }
 
-  if (this.activePanel === 'decorations') {
-    return {
-      onSeparatorSelect: (s: string) =>
-        this.onSeparatorChange(s),
-    };
-  }
+async preview() {
 
-  if (this.activePanel === 'style') {
-    return {
-      onStyleSelect: (style: any) =>
-        this.onStyleApply(style),
-    };
-  }
+  this.cd.detectChanges();
 
-  return {};
-}
+  this.isPreviewOpen = true;
 
-updateCurrentPage() {
-  if (
-    !this.currentBook?.pages?.[
-      this.pageIndex
-    ]
-  ) {
+  await new Promise(resolve => setTimeout(resolve, 300));
+
+  const source = document.querySelector(
+    '#paged-source .book'
+  ) as HTMLElement | null;
+
+  const host = document.getElementById(
+    'paged-preview-host'
+  );
+
+  console.log('SOURCE:', source);
+  console.log('HOST:', host);
+
+  if (!source || !host) {
+    console.warn('❌ SOURCE / HOST NOT FOUND');
     return;
   }
 
-  const page =
-    this.currentBook.pages[
-      this.pageIndex
-    ];
+  host.innerHTML = '';
 
-  // 🔥 SHARED ONLY
-  page.title = this.poemTitle;
+  // 🔥 IMPORTANT
+  const wrapper = document.createElement('div');
 
-  page.text = this.poemBlocks
-    .map((block) => {
-      if (block.type === 'line') {
-        return block.text;
-      }
+  wrapper.innerHTML = source.innerHTML;
 
-      return '';
-    })
-    .join('\n');
+  try {
 
-  // 🔥 POEM EDITOR ONLY
-  page.poemEditor = {
-    // MAIN
-    poemFont: this.poemFont,
+    // @ts-ignore
+    const previewer = new window.Paged.Previewer();
 
-    poemFontWeight:
-      this.poemFontWeight,
+    await previewer.preview(
+      wrapper,
+      [],
+      host
+    );
 
-    poemFontStyle:
-      this.poemFontStyle,
+    // 🔥 WAIT
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    poemColor:
-      this.poemColor,
+    const pages = host.querySelectorAll('.pagedjs_page');
 
-    poemAlign:
-      this.poemAlign,
+    console.log('PAGED PAGES:', pages.length);
 
-    // TITLE
-    titleFont:
-      this.titleFont,
+    if (!pages.length) {
+      console.warn('❌ NO PAGED PAGES');
+      return;
+    }
 
-    titleFontWeight:
-      this.titleFontWeight,
+    this.exportService.fixLayout(
+      'paged-preview-host',
+      0
+    );
 
-    titleFontStyle:
-      this.titleFontStyle,
+  } catch (err) {
 
-    titleColor:
-      this.titleColor,
-
-    titleAlign:
-      this.titleAlign,
-
-    // AUTO FIT
-    textFontSize:
-      this.autoTextStyle
-        .fontSize,
-
-    textLineHeight:
-      this.autoTextStyle
-        .lineHeight,
-
-    // BACKGROUND
-    backgroundColor:
-      this.backgroundColor,
-
-    backgroundImage:
-      this.backgroundImage
-        ? this.backgroundImage.replace(
-            /^url\("(.*)"\)$/,
-            '$1',
-          )
-        : '',
-
-    // BOX
-    contentBox:
-      this.contentBox,
-
-    // STYLE
-    textStyle:
-      this.textStyle,
-
-    // OVERRIDES
-    styleOverrides:
-      this.styleOverrides,
-
-    fontOverrides:
-      this.fontOverrides,
-
-    textColors:
-      this.textColors,
-
-    separatorColors:
-      this.separatorColors,
-
-    separators:
-      this.separators,
-  };
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-savePoem() {
-  if (!this.currentBook) return;
-
-  this.updateCurrentPage();
-
-  this.api.saveBook(this.currentBook).subscribe({
-    next: () => {
-      console.log('✅ POEM SAVED');
-    },
-
-    error: (err) => {
-      console.error('❌ SAVE ERROR', err);
-    },
-  });
+    console.error(
+      '❌ PREVIEW ERROR:',
+      err
+    );
+  }
 }
 
 
@@ -850,15 +808,40 @@ savePoem() {
 
 
 
+async exportPDF() {
+  console.log('🔥 EXPORT START');
 
+  console.log('POEM BLOCKS:', this.poemBlocks);
 
+  this.cd.detectChanges();
 
+  await this.preview();
 
+  await new Promise((resolve) => setTimeout(resolve, 1500));
 
+  const host = document.getElementById('paged-preview-host');
 
+  const pages = host?.querySelectorAll('.pagedjs_page');
 
+  console.log('PDF PAGES:', pages?.length);
 
+  if (!pages?.length) {
+    console.warn('❌ BRAK STRON PDF');
+    return;
+  }
 
+  try {
+    await this.exportService.exportPDF(
+      'paged-preview-host',
+      'poem-editor.pdf'
+    );
+
+    console.log('✅ PDF DONE');
+
+  } catch (err) {
+    console.error('❌ EXPORT PDF ERROR:', err);
+  }
+}
 
 
 

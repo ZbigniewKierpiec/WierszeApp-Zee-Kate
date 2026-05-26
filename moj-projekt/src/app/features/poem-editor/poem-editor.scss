@@ -208,8 +208,6 @@
 
   justify-content: center;
   align-items: center;
-  
-
 
   width: 100%;
   height: 100%;
@@ -497,7 +495,6 @@
   padding-top: 40px;
 }
 
-
 .poem-block {
   display: block;
 
@@ -551,7 +548,6 @@
   white-space: pre-wrap;
 }
 
-
 .page-counter {
   min-width: 52px;
 
@@ -577,7 +573,7 @@
   border: none;
   border-radius: 8px;
 
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   color: white;
 
   cursor: pointer;
@@ -585,7 +581,7 @@
   transition: 0.2s ease;
 
   &:hover:not(:disabled) {
-    background: rgba(255,255,255,0.14);
+    background: rgba(255, 255, 255, 0.14);
   }
 
   &:disabled {
@@ -595,3 +591,387 @@
 }
 
 ///////////////////////////
+/* ============================= */
+/* 🔥 PDF PREVIEW */
+/* ============================= */
+
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.85);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 99999;
+}
+
+.preview-book {
+  width: 820px;
+  height: 95vh;
+
+  overflow: auto;
+
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================= */
+/* 📄 PAGED */
+/* ============================= */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+.pagedjs_page {
+  width: 794px;
+  height: 1123px;
+
+  margin: 0 auto;
+
+  background: white !important;
+  overflow: hidden;
+}
+
+/* ============================= */
+/* 📖 EXPORT PAGE */
+/* ============================= */
+
+.book {
+  display: block;
+}
+
+.poem-export-page,
+.poem {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  break-after: page;
+}
+
+/* ============================= */
+/* ✍️ EXPORT BOX */
+/* ============================= */
+
+.poem-export-box,
+.poem-inner {
+  position: absolute;
+
+  padding: 60px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ============================= */
+/* 📝 EXPORT TEXT */
+/* ============================= */
+
+.poem-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.poem-title {
+  margin-bottom: 24px;
+  white-space: pre-wrap;
+}
+
+.poem-block {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.poem-space {
+  height: 24px;
+}
+
+.separator {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* ============================= */
+/* 🖨 PRINT */
+/* ============================= */
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #paged-preview-host,
+  #paged-preview-host * {
+    visibility: visible;
+  }
+
+  #paged-preview-host {
+    position: absolute;
+    inset: 0;
+  }
+}
+.paged-source-hidden {
+  position: fixed;
+
+  left: -99999px;
+  top: 0;
+
+  width: 794px;
+  height: 1123px;
+
+  overflow: hidden;
+
+  pointer-events: none;
+}
+.poem-export-box,
+.poem-inner {
+  min-height: 100%;
+}
+.poem-content {
+  width: 100%;
+}
+.poem-export-page {
+  position: relative;
+
+  width: 794px;
+  height: 1123px;
+
+  overflow: hidden;
+
+  background: white;
+}
+
+.poem-export-inner {
+  position: absolute;
+
+  padding: 80px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.poem-export-inner.full-page {
+  inset: 0;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  transform: none !important;
+}
+
+.paged-source-hidden {
+  position: fixed;
+  left: -99999px;
+  top: 0;
+}
+
+.poem-export-page {
+  position: relative;
+
+  width: 794px;
+  height: 1123px;
+
+  background: white;
+
+  overflow: hidden;
+}
+
+.export-bg {
+  position: absolute;
+  inset: 0;
+
+  background-size: cover;
+  background-position: center;
+}
+
+.export-content {
+  position: relative;
+
+  z-index: 2;
+
+  padding: 120px 100px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.export-title {
+  font-size: 34px;
+  margin-bottom: 40px;
+  white-space: pre-wrap;
+}
+
+.export-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 22px;
+  line-height: 1.7;
+}
+
+.export-space {
+  height: 20px;
+}
+
+.export-separator {
+  text-align: center;
+  font-size: 26px;
+  margin: 16px 0;
+}
+/* ========================= */
+/* PDF PREVIEW */
+/* ========================= */
+
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.85);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 99999;
+}
+
+.preview-book {
+  width: 820px;
+  height: 95vh;
+
+  overflow: auto;
+}
+
+/* ========================= */
+/* PAGED SOURCE */
+/* ========================= */
+
+.paged-source-hidden {
+  position: fixed;
+
+  left: -99999px;
+  top: 0;
+
+  width: 794px;
+}
+
+/* ========================= */
+/* EXPORT PAGE */
+/* ========================= */
+
+.poem-export-page {
+  position: relative;
+
+  width: 794px;
+  min-height: 1123px;
+
+  overflow: hidden;
+
+  background: white;
+}
+
+/* ========================= */
+/* BACKGROUND */
+/* ========================= */
+
+.export-bg {
+  position: absolute;
+  inset: 0;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  z-index: 1;
+}
+
+/* ========================= */
+/* CONTENT */
+/* ========================= */
+
+.export-content {
+  position: relative;
+
+  z-index: 2;
+
+  padding: 110px 90px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================= */
+/* TITLE */
+/* ========================= */
+
+.export-title {
+  font-size: 42px;
+
+  margin-bottom: 60px;
+
+  white-space: pre-wrap;
+}
+
+/* ========================= */
+/* TEXT */
+/* ========================= */
+
+.export-line {
+  font-size: 28px;
+
+  line-height: 1.7;
+
+  margin-bottom: 18px;
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ========================= */
+/* SPACE */
+/* ========================= */
+
+.export-space {
+  height: 30px;
+}
+
+/* ========================= */
+/* SEPARATOR */
+/* ========================= */
+
+.export-separator {
+  text-align: center;
+
+  margin: 24px 0;
+
+  font-size: 30px;
+}
+
+/* ========================= */
+/* PAGEDJS */
+/* ========================= */
+
+.pagedjs_page {
+  background: white;
+}
