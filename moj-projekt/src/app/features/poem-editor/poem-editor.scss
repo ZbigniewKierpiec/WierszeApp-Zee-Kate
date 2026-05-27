@@ -835,19 +835,19 @@
   font-size: 26px;
   margin: 16px 0;
 }
-/* ========================= */
-/* PDF PREVIEW */
-/* ========================= */
+/* =========================================
+   PDF PREVIEW
+========================================= */
 
 .preview-overlay {
   position: fixed;
   inset: 0;
 
-  background: rgba(0, 0, 0, 0.85);
-
   display: flex;
   align-items: center;
   justify-content: center;
+
+  background: rgba(0, 0, 0, 0.88);
 
   z-index: 99999;
 }
@@ -859,22 +859,48 @@
   overflow: auto;
 }
 
-/* ========================= */
-/* PAGED SOURCE */
-/* ========================= */
+/* =========================================
+   PAGED SOURCE
+========================================= */
 
-.paged-source-hidden {
-  position: fixed;
+#paged-source {
+  position: absolute;
 
-  left: -99999px;
+  left: 0;
   top: 0;
 
+  visibility: hidden;
+
+  z-index: -1;
+}
+
+.book {
   width: 794px;
 }
 
-/* ========================= */
-/* EXPORT PAGE */
-/* ========================= */
+/* =========================================
+   PAGEDJS
+========================================= */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+.pagedjs_page {
+  width: 794px;
+  min-height: 1123px;
+
+  margin: 0 auto;
+
+  overflow: hidden;
+
+  background: white;
+}
+
+/* =========================================
+   EXPORT PAGE
+========================================= */
 
 .poem-export-page {
   position: relative;
@@ -885,11 +911,13 @@
   overflow: hidden;
 
   background: white;
+
+  break-after: page;
 }
 
-/* ========================= */
-/* BACKGROUND */
-/* ========================= */
+/* =========================================
+   EXPORT BACKGROUND
+========================================= */
 
 .export-bg {
   position: absolute;
@@ -902,9 +930,9 @@
   z-index: 1;
 }
 
-/* ========================= */
-/* CONTENT */
-/* ========================= */
+/* =========================================
+   EXPORT CONTENT
+========================================= */
 
 .export-content {
   position: relative;
@@ -919,9 +947,9 @@
   flex-direction: column;
 }
 
-/* ========================= */
-/* TITLE */
-/* ========================= */
+/* =========================================
+   EXPORT TITLE
+========================================= */
 
 .export-title {
   font-size: 42px;
@@ -929,11 +957,13 @@
   margin-bottom: 60px;
 
   white-space: pre-wrap;
+
+  color: #111;
 }
 
-/* ========================= */
-/* TEXT */
-/* ========================= */
+/* =========================================
+   EXPORT TEXT
+========================================= */
 
 .export-line {
   font-size: 28px;
@@ -946,19 +976,21 @@
 
   word-break: break-word;
   overflow-wrap: break-word;
+
+  color: #111;
 }
 
-/* ========================= */
-/* SPACE */
-/* ========================= */
+/* =========================================
+   EXPORT SPACE
+========================================= */
 
 .export-space {
   height: 30px;
 }
 
-/* ========================= */
-/* SEPARATOR */
-/* ========================= */
+/* =========================================
+   EXPORT SEPARATOR
+========================================= */
 
 .export-separator {
   text-align: center;
@@ -967,11 +999,14 @@
 
   font-size: 30px;
 }
-
-/* ========================= */
-/* PAGEDJS */
-/* ========================= */
-
+////////////////////////////
 .pagedjs_page {
-  background: white;
+  background: transparent !important;
+}
+
+.background-frame,
+.export-bg {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
 }
