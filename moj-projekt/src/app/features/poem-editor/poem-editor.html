@@ -33,16 +33,28 @@
       "
     >
       <div class="paper" [style.background-color]="backgroundColor">
-        <div
+        <!-- <div
           *ngIf="backgroundImage"
           class="background-frame"
+          [style.background-image]="backgroundImage"
+        ></div> -->
+        <div
+          *ngIf="backgroundImage"
+          class="background-image"
           [style.background-image]="backgroundImage"
         ></div>
 
         <div
+          *ngIf="frameImage"
+          class="background-frame"
+          [style.background-image]="frameImage"
+        ></div>
+         <!-- [class.full-page]="!backgroundImage" -->
+        <div
           #poemBox
           class="poem"
-          [class.full-page]="!backgroundImage"
+         
+          [class.full-page]="!backgroundImage && !frameImage"
           [style.width.%]="backgroundImage ? contentBox.width : 100"
           [style.height.%]="backgroundImage ? contentBox.height : 100"
           [style.top.%]="backgroundImage ? 50 + contentBox.offsetY : 50"
@@ -208,11 +220,19 @@
   <div class="book">
     <section class="poem" [style.background]="backgroundColor || '#ffffff'">
       <!-- BACKGROUND -->
-      <div
+      <!-- <div
         *ngIf="backgroundImage"
         class="background-frame"
         [style.background-image]="backgroundImage"
+      ></div> -->
+
+      <div
+        *ngIf="backgroundImage"
+        class="background-image"
+        [style.background-image]="backgroundImage"
       ></div>
+
+      <div *ngIf="frameImage" class="background-frame" [style.background-image]="frameImage"></div>
 
       <!-- EXACT SAME LAYOUT AS PREVIEW -->
       <div class="poem full-page">

@@ -160,13 +160,14 @@ export const BACKGROUND_CATEGORIES = [
           {
             id: 301,
             name: 'Halloween',
+            type: 'frame',
             image: 'assets/bg/Sezonowe/zee7.png',
 
             contentBox: {
               width: 64,
               height: 60,
               offsetY: 0,
-              offsetTop:20,
+              offsetTop: 20,
             },
 
             textStyle: {
@@ -175,16 +176,17 @@ export const BACKGROUND_CATEGORIES = [
               maxWidth: '18ch',
             },
           },
- {
+          {
             id: 302,
             name: 'Halloween',
+            type: 'frame',
             image: 'assets/bg/Sezonowe/zee8.png',
 
             contentBox: {
               width: 64,
               height: 60,
               offsetY: -4,
-              offsetTop:20,
+              offsetTop: 20,
             },
 
             textStyle: {
@@ -194,10 +196,10 @@ export const BACKGROUND_CATEGORIES = [
             },
           },
 
-
           {
             id: 303,
             name: 'Snow winter',
+            type: 'frame',
             image: 'assets/bg/Sezonowe/zee3.png',
             safeArea: {
               top: 130,
@@ -214,6 +216,7 @@ export const BACKGROUND_CATEGORIES = [
           {
             id: 304,
             name: 'Warm Christmas',
+            type: 'frame',
             image: 'assets/bg/Sezonowe/zee4.png',
             safeArea: {
               top: 130,
@@ -230,36 +233,42 @@ export const BACKGROUND_CATEGORIES = [
           {
             id: 305,
             name: 'Halloween',
+            type: 'frame',
             image: 'https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=1200',
           },
 
           {
             id: 306,
             name: 'Dark forest',
+            type: 'frame',
             image: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200',
           },
 
           {
             id: 307,
             name: 'Ghost mood',
+            type: 'frame',
             image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200',
           },
 
           {
             id: 308,
             name: 'Easter flowers',
+            type: 'frame',
             image: 'https://images.unsplash.com/photo-1529336953121-ad5a0d43d0d2?w=1200',
           },
 
           {
             id: 309,
             name: 'Spring',
+            type: 'frame',
             image: 'https://images.unsplash.com/photo-1526045478516-99145907023c?w=1200',
           },
 
           {
             id: 310,
             name: 'Winter mood',
+            type: 'frame',
             image: 'https://images.unsplash.com/photo-1516431883659-655d41c09bf9?w=1200',
           },
         ],

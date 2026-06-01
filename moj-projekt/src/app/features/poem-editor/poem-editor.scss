@@ -1011,9 +1011,8 @@
   background-repeat: no-repeat !important;
 }
 
-
 .preview-toolbar {
-  position:absolute;
+  position: absolute;
   top: 0px;
   left: 20px;
   z-index: 99999;
@@ -1042,8 +1041,7 @@
   background: rgba(20, 20, 20, 0.85);
   backdrop-filter: blur(16px);
 
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 
   z-index: 99999;
 }
@@ -1070,16 +1068,12 @@
 
 .preview-footer button:not(.back-btn):hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(255,255,255,.25);
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.25);
 }
 
 /* Back */
 .preview-footer .back-btn {
-  background: linear-gradient(
-    135deg,
-    #6366f1,
-    #8b5cf6
-  );
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
 
   color: white;
 
@@ -1088,10 +1082,35 @@
 
 .preview-footer .back-btn:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 8px 24px rgba(99,102,241,.4);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
 }
 
 .preview-footer button:active {
-  transform: scale(.97);
+  transform: scale(0.97);
+}
+////////////////////
+.background-image {
+  position: absolute;
+
+  inset: 0;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  z-index: 1;
+}
+
+.background-frame {
+  position: absolute;
+
+  inset: 0;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  pointer-events: none;
+
+  z-index: 2;
 }

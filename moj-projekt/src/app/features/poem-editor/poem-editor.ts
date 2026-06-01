@@ -69,7 +69,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
   ////////////////////////////
   backgroundColor = '';
   backgroundImage = '';
-
+  frameImage = '';
   contentBox = {
     width: 72,
     height: 70,
@@ -541,27 +541,151 @@ export class PoemEditor implements OnInit, AfterViewInit {
     this.savePoem();
   }
 
-  onBackgroundChange(bg: any) {
-    if (bg.color) {
-      this.backgroundColor = bg.color;
-    }
+  // onBackgroundChange(bg: any) {
+  //   if (bg.color) {
+  //     this.backgroundColor = bg.color;
+  //   }
 
-    if (bg.image) {
-      this.backgroundImage = `url("${bg.image}")`;
-    }
+  //   if (bg.image) {
+  //     this.backgroundImage = `url("${bg.image}")`;
+  //   }
 
-    if (bg.contentBox) {
-      this.contentBox = bg.contentBox;
-    }
+  //   if (bg.contentBox) {
+  //     this.contentBox = bg.contentBox;
+  //   }
 
-    if (bg.textStyle) {
-      this.textStyle = bg.textStyle;
-    }
+  //   if (bg.textStyle) {
+  //     this.textStyle = bg.textStyle;
+  //   }
 
-    requestAnimationFrame(() => this.fitTextToContainer());
+  //   requestAnimationFrame(() => this.fitTextToContainer());
 
-    this.savePoem();
+  //   this.savePoem();
+  // }
+
+  // onBackgroundChange(bg: any) {
+  //   if (bg.color) {
+  //     this.backgroundColor = bg.color;
+  //   }
+
+  //   this.backgroundImage = bg.image
+  //     ? `url("${bg.image}")`
+  //     : '';
+
+  //   if (bg.contentBox) {
+  //     this.contentBox = bg.contentBox;
+  //   }
+
+  //   if (bg.textStyle) {
+  //     this.textStyle = bg.textStyle;
+  //   }
+
+  //   requestAnimationFrame(() => this.fitTextToContainer());
+
+  //   this.savePoem();
+  // }
+
+  // onBackgroundChange(bg: any) {
+  //   if (bg.color) {
+  //     this.backgroundColor = bg.color;
+  //   }
+
+  //   // zmieniaj obrazek TYLKO gdy faktycznie wybrano nowy image
+  //   if (bg.image) {
+  //     this.backgroundImage = `url("${bg.image}")`;
+  //   }
+
+  //   if (bg.contentBox) {
+  //     this.contentBox = bg.contentBox;
+  //   }
+
+  //   if (bg.textStyle) {
+  //     this.textStyle = bg.textStyle;
+  //   }
+
+  //   requestAnimationFrame(() => this.fitTextToContainer());
+
+  //   this.savePoem();
+  // }
+
+  // onBackgroundChange(bg: any) {
+  //   if (bg.color) {
+  //     this.backgroundColor = bg.color;
+  //   }
+
+  //   // wybrano zwykły background image
+  //   if (bg.backgroundType === 'background-image') {
+  //     this.backgroundImage = bg.image ? `url("${bg.image}")` : '';
+  //   }
+
+  //   // wybrano kolor -> usuń zwykłe tło obrazkowe
+  //   if (bg.backgroundType === 'background-colors') {
+  //     this.backgroundImage = '';
+  //   }
+
+  //   if (bg.contentBox) {
+  //     this.contentBox = bg.contentBox;
+  //   }
+
+  //   if (bg.textStyle) {
+  //     this.textStyle = bg.textStyle;
+  //   }
+
+  //   requestAnimationFrame(() => this.fitTextToContainer());
+
+  //   this.savePoem();
+  // }
+
+
+
+onBackgroundChange(bg: any) {
+  console.log('BG:', bg);
+
+  if (bg.color) {
+    this.backgroundColor = bg.color;
   }
+
+  // Ramka sezonowa
+  if (bg.imageType === 'frame') {
+    this.frameImage = bg.image ? `url("${bg.image}")` : '';
+    this.backgroundImage = '';
+  }
+
+  // Zwykły background image
+  if (
+    bg.backgroundType === 'background-image' &&
+    bg.imageType === 'background'
+  ) {
+    this.backgroundImage = bg.image ? `url("${bg.image}")` : '';
+    this.frameImage = '';
+  }
+
+  // Sam kolor — usuwa zwykłe image, ale zostawia ramkę
+  if (bg.backgroundType === 'background-colors') {
+    this.backgroundImage = '';
+  }
+
+  if (bg.contentBox) {
+    this.contentBox = bg.contentBox;
+  }
+
+  if (bg.textStyle) {
+    this.textStyle = bg.textStyle;
+  }
+
+  requestAnimationFrame(() => this.fitTextToContainer());
+
+  this.savePoem();
+}
+
+
+
+
+
+
+
+
+
 
   onSeparatorChange(symbol: string) {
     if (this.activeSeparatorIndex !== null) {
@@ -724,180 +848,128 @@ export class PoemEditor implements OnInit, AfterViewInit {
     });
   }
 
+  async preview() {
+    this.cd.detectChanges();
 
-async preview() {
+    this.isPreviewOpen = true;
 
-  this.cd.detectChanges();
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-  this.isPreviewOpen = true;
+    const source = document.querySelector('#paged-source .book') as HTMLElement | null;
 
-  await new Promise(resolve => setTimeout(resolve, 300));
+    const host = document.getElementById('paged-preview-host');
 
-  const source = document.querySelector(
-    '#paged-source .book'
-  ) as HTMLElement | null;
+    console.log('SOURCE:', source);
+    console.log('HOST:', host);
 
-  const host = document.getElementById(
-    'paged-preview-host'
-  );
-
-  console.log('SOURCE:', source);
-  console.log('HOST:', host);
-
-  if (!source || !host) {
-    console.warn('❌ SOURCE / HOST NOT FOUND');
-    return;
-  }
-
-  host.innerHTML = '';
-
-  // 🔥 IMPORTANT
-  const wrapper = document.createElement('div');
-
-  wrapper.innerHTML = source.innerHTML;
-
-  try {
-
-    // @ts-ignore
-    const previewer = new window.Paged.Previewer();
-
-    await previewer.preview(
-      wrapper,
-      [],
-      host
-    );
-
-    // 🔥 WAIT
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const pages = host.querySelectorAll('.pagedjs_page');
-
-    console.log('PAGED PAGES:', pages.length);
-
-    if (!pages.length) {
-      console.warn('❌ NO PAGED PAGES');
+    if (!source || !host) {
+      console.warn('❌ SOURCE / HOST NOT FOUND');
       return;
     }
 
-    this.exportService.fixLayout(
-      'paged-preview-host',
-      0
-    );
-
-  } catch (err) {
-
-    console.error(
-      '❌ PREVIEW ERROR:',
-      err
-    );
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-async exportPDF() {
-  console.log('🔥 EXPORT START');
-
-  console.log('POEM BLOCKS:', this.poemBlocks);
-
-  this.cd.detectChanges();
-
-  await this.preview();
-
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  const host = document.getElementById('paged-preview-host');
-
-  const pages = host?.querySelectorAll('.pagedjs_page');
-
-  console.log('PDF PAGES:', pages?.length);
-
-  if (!pages?.length) {
-    console.warn('❌ BRAK STRON PDF');
-    return;
-  }
-
-  try {
-    await this.exportService.exportPDF(
-      'paged-preview-host',
-      'poem-editor.pdf'
-    );
-
-    console.log('✅ PDF DONE');
-
-  } catch (err) {
-    console.error('❌ EXPORT PDF ERROR:', err);
-  }
-}
-
-
-
-
-closePreview() {
-  this.isPreviewOpen = false;
-
-  const host = document.getElementById('paged-preview-host');
-
-  if (host) {
     host.innerHTML = '';
+
+    // 🔥 IMPORTANT
+    const wrapper = document.createElement('div');
+
+    wrapper.innerHTML = source.innerHTML;
+
+    try {
+      // @ts-ignore
+      const previewer = new window.Paged.Previewer();
+
+      await previewer.preview(wrapper, [], host);
+
+      // 🔥 WAIT
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const pages = host.querySelectorAll('.pagedjs_page');
+
+      console.log('PAGED PAGES:', pages.length);
+
+      if (!pages.length) {
+        console.warn('❌ NO PAGED PAGES');
+        return;
+      }
+
+      this.exportService.fixLayout('paged-preview-host', 0);
+    } catch (err) {
+      console.error('❌ PREVIEW ERROR:', err);
+    }
   }
 
-  this.currentPreviewPage = 0;
-}
+  async exportPDF() {
+    console.log('🔥 EXPORT START');
 
-prevPreviewPage() {
-  const pages = document.querySelectorAll(
-    '#paged-preview-host .pagedjs_page'
-  ) as NodeListOf<HTMLElement>;
+    console.log('POEM BLOCKS:', this.poemBlocks);
 
-  if (!pages.length) return;
+    this.cd.detectChanges();
 
-  this.currentPreviewPage = Math.max(
-    0,
-    this.currentPreviewPage - 1
-  );
+    await this.preview();
 
-  pages[this.currentPreviewPage]?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start',
-  });
-}
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-nextPreviewPage() {
-  const pages = document.querySelectorAll(
-    '#paged-preview-host .pagedjs_page'
-  ) as NodeListOf<HTMLElement>;
+    const host = document.getElementById('paged-preview-host');
 
-  if (!pages.length) return;
+    const pages = host?.querySelectorAll('.pagedjs_page');
 
-  this.currentPreviewPage = Math.min(
-    pages.length - 1,
-    this.currentPreviewPage + 1
-  );
+    console.log('PDF PAGES:', pages?.length);
 
-  pages[this.currentPreviewPage]?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start',
-  });
-}
+    if (!pages?.length) {
+      console.warn('❌ BRAK STRON PDF');
+      return;
+    }
 
+    try {
+      await this.exportService.exportPDF('paged-preview-host', 'poem-editor.pdf');
 
+      console.log('✅ PDF DONE');
+    } catch (err) {
+      console.error('❌ EXPORT PDF ERROR:', err);
+    }
+  }
 
+  closePreview() {
+    this.isPreviewOpen = false;
 
+    const host = document.getElementById('paged-preview-host');
 
+    if (host) {
+      host.innerHTML = '';
+    }
 
+    this.currentPreviewPage = 0;
+  }
 
+  prevPreviewPage() {
+    const pages = document.querySelectorAll(
+      '#paged-preview-host .pagedjs_page',
+    ) as NodeListOf<HTMLElement>;
+
+    if (!pages.length) return;
+
+    this.currentPreviewPage = Math.max(0, this.currentPreviewPage - 1);
+
+    pages[this.currentPreviewPage]?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+
+  nextPreviewPage() {
+    const pages = document.querySelectorAll(
+      '#paged-preview-host .pagedjs_page',
+    ) as NodeListOf<HTMLElement>;
+
+    if (!pages.length) return;
+
+    this.currentPreviewPage = Math.min(pages.length - 1, this.currentPreviewPage + 1);
+
+    pages[this.currentPreviewPage]?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
 
   goBack() {
     this.router.navigate(['/editor']);

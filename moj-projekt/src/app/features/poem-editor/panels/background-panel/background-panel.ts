@@ -230,12 +230,61 @@ export class BackgroundPanel {
   //   });
   // }
 
+// selectColor(color: ColorOption) {
+//   this.selectedColor = color;
+
+//   this.onBackgroundSelect?.({
+//     color: color.hex || '#f7efe6',
+//     image: color.image || null,
+
+//     contentBox: color.contentBox || {
+//       width: 72,
+//       height: 70,
+//       offsetY: 0,
+//     },
+
+//     textStyle: color.textStyle || {
+//       lineHeight: '1.4',
+//       fontSize: 'clamp(20px, 1.4vw, 32px)',
+//       maxWidth: '22ch',
+//     },
+//   });
+// }
+
+
+// applyColor() {
+//   if (!this.selectedColor) return;
+
+//   this.onBackgroundSelect?.({
+//     color: this.selectedColor.hex || '#f7efe6',
+
+//     image: this.selectedColor.image || null,
+
+//     contentBox: this.selectedColor.contentBox || {
+//       width: 72,
+//       height: 70,
+//       offsetY: 0,
+//     },
+
+//     textStyle: this.selectedColor.textStyle || {
+//       lineHeight: '1.4',
+//       fontSize: 'clamp(20px, 1.4vw, 32px)',
+//       maxWidth: '22ch',
+//     },
+//   });
+// }
+
+
+
 selectColor(color: ColorOption) {
   this.selectedColor = color;
 
   this.onBackgroundSelect?.({
     color: color.hex || '#f7efe6',
     image: color.image || null,
+
+    backgroundType: this.activeMainCategory,
+    imageType: (color as any).type || 'background',
 
     contentBox: color.contentBox || {
       width: 72,
@@ -251,14 +300,15 @@ selectColor(color: ColorOption) {
   });
 }
 
-
 applyColor() {
   if (!this.selectedColor) return;
 
   this.onBackgroundSelect?.({
     color: this.selectedColor.hex || '#f7efe6',
-
     image: this.selectedColor.image || null,
+
+    backgroundType: this.activeMainCategory,
+    imageType: (this.selectedColor as any).type || 'background',
 
     contentBox: this.selectedColor.contentBox || {
       width: 72,
@@ -273,7 +323,6 @@ applyColor() {
     },
   });
 }
-
 
 
 
