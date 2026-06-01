@@ -183,23 +183,30 @@
   </div>
 </div>
 <!-- PDF PREVIEW -->
+<!-- <div *ngIf="isPreviewOpen" class="preview-overlay">
+  <div class="preview-book">
+    <div id="paged-preview-host"></div>
+  </div>
+</div> -->
+
 <div *ngIf="isPreviewOpen" class="preview-overlay">
   <div class="preview-book">
     <div id="paged-preview-host"></div>
   </div>
+
+  <div class="preview-footer">
+    <button (click)="prevPreviewPage()">← Prev</button>
+
+    <button class="back-btn" (click)="closePreview()">✨ Back to Editor</button>
+
+    <button (click)="nextPreviewPage()">Next →</button>
+  </div>
 </div>
 
 <!-- PAGED SOURCE -->
-<!-- PAGED SOURCE -->
-<div id="paged-source" style="display:none">
-
+<div id="paged-source" style="display: none">
   <div class="book">
-
-    <section
-      class="poem"
-      [style.background]="backgroundColor || '#ffffff'"
-    >
-
+    <section class="poem" [style.background]="backgroundColor || '#ffffff'">
       <!-- BACKGROUND -->
       <div
         *ngIf="backgroundImage"
@@ -208,36 +215,22 @@
       ></div>
 
       <!-- EXACT SAME LAYOUT AS PREVIEW -->
-      <div
-        class="poem full-page"
-      >
-
+      <div class="poem full-page">
         <div
           class="poem-content"
-
           [style.font-size.px]="autoTextStyle.fontSize"
-
           [style.line-height]="autoTextStyle.lineHeight"
-
           [style.gap.px]="autoTextStyle.gap"
-
           [style.--poem-max-width]="textStyle.maxWidth"
         >
-
           <!-- TITLE -->
           <div
             *ngIf="poemTitle"
-
             class="poem-title"
-
             [style.color]="titleColor || poemColor"
-
             [style.font-family]="titleFont || poemFont"
-
             [style.font-weight]="titleFontWeight || 600"
-
             [style.font-style]="titleFontStyle || 'normal'"
-
             [style.text-align]="titleAlign || 'center'"
           >
             {{ poemTitle }}
@@ -245,83 +238,46 @@
 
           <!-- BLOCKS -->
           <ng-container *ngFor="let block of poemBlocks">
-
             <!-- LINE -->
             <div
               *ngIf="block.type === 'line'"
-
               class="poem-block"
-
-              [style.color]="
-                textColors[block.textIndex!] || poemColor
-              "
-
-              [style.font-family]="
-                fontOverrides[block.textIndex!]?.fontFamily || poemFont
-              "
-
+              [style.color]="textColors[block.textIndex!] || poemColor"
+              [style.font-family]="fontOverrides[block.textIndex!]?.fontFamily || poemFont"
               [style.font-weight]="
                 styleOverrides[block.textIndex!]?.weight ||
                 fontOverrides[block.textIndex!]?.fontWeight ||
                 poemFontWeight
               "
-
               [style.font-style]="
                 styleOverrides[block.textIndex!]?.italic
                   ? 'italic'
                   : fontOverrides[block.textIndex!]?.fontStyle || poemFontStyle
               "
-
-              [style.text-align]="
-                styleOverrides[block.textIndex!]?.align || poemAlign
-              "
-
-              [style.letter-spacing]="
-                styleOverrides[block.textIndex!]?.spacing || '0px'
-              "
-
-              [style.text-transform]="
-                styleOverrides[block.textIndex!]?.transform || 'none'
-              "
-
-              [style.opacity]="
-                styleOverrides[block.textIndex!]?.opacity ?? 1
-              "
-
-              [style.text-shadow]="
-                styleOverrides[block.textIndex!]?.shadow || 'none'
-              "
-
+              [style.text-align]="styleOverrides[block.textIndex!]?.align || poemAlign"
+              [style.letter-spacing]="styleOverrides[block.textIndex!]?.spacing || '0px'"
+              [style.text-transform]="styleOverrides[block.textIndex!]?.transform || 'none'"
+              [style.opacity]="styleOverrides[block.textIndex!]?.opacity ?? 1"
+              [style.text-shadow]="styleOverrides[block.textIndex!]?.shadow || 'none'"
               [style.white-space]="'pre-wrap'"
-
               [style.word-break]="'break-word'"
-
               [style.overflow-wrap]="'break-word'"
             >
               {{ block.text }}
             </div>
 
             <!-- SPACE -->
-            <div
-              *ngIf="block.type === 'space'"
-              class="poem-space"
-            ></div>
+            <div *ngIf="block.type === 'space'" class="poem-space"></div>
 
             <!-- SEPARATOR -->
             <div
               *ngIf="block.type === 'separator'"
-
               class="separator"
-
-              [style.color]="
-                separatorColors[block.separatorIndex!] || poemColor
-              "
+              [style.color]="separatorColors[block.separatorIndex!] || poemColor"
             >
               {{ separators[block.separatorIndex!] || '✧' }}
             </div>
-
           </ng-container>
-
         </div>
       </div>
     </section>

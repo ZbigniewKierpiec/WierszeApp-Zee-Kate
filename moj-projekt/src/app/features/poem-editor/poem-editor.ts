@@ -843,6 +843,62 @@ async exportPDF() {
 
 
 
+
+closePreview() {
+  this.isPreviewOpen = false;
+
+  const host = document.getElementById('paged-preview-host');
+
+  if (host) {
+    host.innerHTML = '';
+  }
+
+  this.currentPreviewPage = 0;
+}
+
+prevPreviewPage() {
+  const pages = document.querySelectorAll(
+    '#paged-preview-host .pagedjs_page'
+  ) as NodeListOf<HTMLElement>;
+
+  if (!pages.length) return;
+
+  this.currentPreviewPage = Math.max(
+    0,
+    this.currentPreviewPage - 1
+  );
+
+  pages[this.currentPreviewPage]?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  });
+}
+
+nextPreviewPage() {
+  const pages = document.querySelectorAll(
+    '#paged-preview-host .pagedjs_page'
+  ) as NodeListOf<HTMLElement>;
+
+  if (!pages.length) return;
+
+  this.currentPreviewPage = Math.min(
+    pages.length - 1,
+    this.currentPreviewPage + 1
+  );
+
+  pages[this.currentPreviewPage]?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  });
+}
+
+
+
+
+
+
+
+
   goBack() {
     this.router.navigate(['/editor']);
   }
