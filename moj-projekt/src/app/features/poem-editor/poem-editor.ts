@@ -221,13 +221,20 @@ export class PoemEditor implements OnInit, AfterViewInit {
         };
 
         // BACKGROUND
+        // this.backgroundColor = poemData.backgroundColor || '';
+
+        // if (poemData.backgroundImage) {
+        //   this.backgroundImage = `url("${poemData.backgroundImage}")`;
+        // } else {
+        //   this.backgroundImage = '';
+        // }
+
+        // BACKGROUND
         this.backgroundColor = poemData.backgroundColor || '';
 
-        if (poemData.backgroundImage) {
-          this.backgroundImage = `url("${poemData.backgroundImage}")`;
-        } else {
-          this.backgroundImage = '';
-        }
+        this.backgroundImage = poemData.backgroundImage ? `url("${poemData.backgroundImage}")` : '';
+
+        this.frameImage = poemData.frameImage ? `url("${poemData.frameImage}")` : '';
 
         // BOX
         if (poemData.contentBox) {
@@ -791,7 +798,6 @@ export class PoemEditor implements OnInit, AfterViewInit {
       textFontSize: this.autoTextStyle.fontSize,
 
       textLineHeight: this.autoTextStyle.lineHeight,
-
       // BACKGROUND
       backgroundColor: this.backgroundColor,
 
@@ -799,6 +805,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
         ? this.backgroundImage.replace(/^url\("(.*)"\)$/, '$1')
         : '',
 
+      frameImage: this.frameImage ? this.frameImage.replace(/^url\("(.*)"\)$/, '$1') : '',
       // BOX
       contentBox: this.contentBox,
 
