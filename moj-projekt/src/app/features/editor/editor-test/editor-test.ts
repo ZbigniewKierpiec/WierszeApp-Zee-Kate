@@ -338,20 +338,17 @@ export class EditorTest implements OnInit, OnDestroy {
   //   this.router.navigate(['poem-editor']);
   // }
 
-goPoemEditor() {
-  this.savePage();
+  goPoemEditor() {
+    this.savePage();
 
-  if (!this.bookId) return;
+    if (!this.bookId) return;
 
-  this.router.navigate(['/poem-editor', this.bookId], {
-    queryParams: {
-      page: this.currentPageIndex,
-    },
-  });
-}
-
-
-
+    this.router.navigate(['/poem-editor', this.bookId], {
+      queryParams: {
+        page: this.currentPageIndex,
+      },
+    });
+  }
 
   formatAI() {
     this.text = this.formatting.formatPoemAI(this.text);
@@ -1001,6 +998,28 @@ quis nostrud exercitation ullamco.`;
     window.history.back();
   }
 
+  // deletePage() {
+  //   const confirmDelete = confirm('Usunąć tę stronę?');
+  //   if (!confirmDelete) return;
+
+  //   this.pages.splice(this.currentPageIndex, 1);
+
+  //   if (this.pages.length === 0) {
+  //     this.pages = [this.createEmptyPage()];
+  //     this.currentPageIndex = 0;
+  //     this.loadPage();
+  //     this.storage.savePages(this.pages);
+  //     return;
+  //   }
+
+  //   if (this.currentPageIndex >= this.pages.length) {
+  //     this.currentPageIndex = this.pages.length - 1;
+  //   }
+
+  //   this.loadPage();
+  //   this.storage.savePages(this.pages);
+  // }
+
   deletePage() {
     const confirmDelete = confirm('Usunąć tę stronę?');
     if (!confirmDelete) return;
@@ -1010,17 +1029,15 @@ quis nostrud exercitation ullamco.`;
     if (this.pages.length === 0) {
       this.pages = [this.createEmptyPage()];
       this.currentPageIndex = 0;
-      this.loadPage();
-      this.storage.savePages(this.pages);
-      return;
-    }
-
-    if (this.currentPageIndex >= this.pages.length) {
+    } else if (this.currentPageIndex >= this.pages.length) {
       this.currentPageIndex = this.pages.length - 1;
     }
 
     this.loadPage();
     this.storage.savePages(this.pages);
+
+    // 🔥 AUTO SAVE BOOK
+    this.save();
   }
 
   getVariantStyles() {

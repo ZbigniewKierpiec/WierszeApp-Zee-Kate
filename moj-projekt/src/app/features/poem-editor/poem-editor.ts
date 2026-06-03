@@ -176,7 +176,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
     this.api.getBook(this.bookId, user.id).subscribe({
       next: (book: any) => {
         const page = book.pages?.[this.pageIndex];
-
+        console.log('BOOK PAGES FROM API:', book.pages.length);
         this.currentBook = book;
 
         if (!page) return;
@@ -834,10 +834,149 @@ export class PoemEditor implements OnInit, AfterViewInit {
     });
   }
 
+  // async preview() {
+  //   this.cd.detectChanges();
+
+  //   this.isPreviewOpen = true;
+
+  //   this.currentPreviewPage = 0;
+
+  //   await new Promise((resolve) => setTimeout(resolve, 300));
+
+  //   const source = document.querySelector('#paged-source .book') as HTMLElement | null;
+
+  //   const host = document.getElementById('paged-preview-host');
+
+  //   console.log('SOURCE:', source);
+  //   console.log('HOST:', host);
+
+  //   if (!source || !host) {
+  //     console.warn('❌ SOURCE / HOST NOT FOUND');
+  //     return;
+  //   }
+
+  //   host.innerHTML = '';
+
+  //   const wrapper = document.createElement('div');
+
+  //   wrapper.innerHTML = source.innerHTML;
+
+  //   try {
+  //     // @ts-ignore
+  //     const previewer = new window.Paged.Previewer();
+
+  //     await previewer.preview(wrapper, [], host);
+
+  //     await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  //     const pages = host.querySelectorAll('.pagedjs_page');
+
+  //     console.log('PAGED PAGES:', pages.length);
+
+  //     if (!pages.length) {
+  //       console.warn('❌ NO PAGED PAGES');
+  //       return;
+  //     }
+
+  //     pages.forEach((p: any, index: number) => {
+  //       p.style.display = index === 0 ? 'block' : 'none';
+  //       p.style.margin = '0 auto';
+  //     });
+
+  //     // 🔥 jeszcze raz po renderze Paged.js
+
+  //     setTimeout(() => {
+  //       this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
+  //     }, 300);
+  //   } catch (err) {
+  //     console.error('❌ PREVIEW ERROR:', err);
+  //   }
+  // }
+
+  // async preview() {
+  //   this.cd.detectChanges();
+
+  //   this.isPreviewOpen = true;
+
+  //   this.currentPreviewPage = 0;
+
+  //   await new Promise((resolve) => setTimeout(resolve, 300));
+
+  //   const source = document.querySelector(
+  //     '#paged-source .book'
+  //   ) as HTMLElement | null;
+
+  //   const host = document.getElementById('paged-preview-host');
+
+  //   console.log('SOURCE:', source);
+  //   console.log('HOST:', host);
+
+  //   if (!source || !host) {
+  //     console.warn('❌ SOURCE / HOST NOT FOUND');
+  //     return;
+  //   }
+
+  //   host.innerHTML = '';
+
+  //   const wrapper = document.createElement('div');
+
+  //   wrapper.innerHTML = source.innerHTML;
+
+  //   try {
+  //     // @ts-ignore
+  //     const previewer = new window.Paged.Previewer();
+
+  //     await previewer.preview(wrapper, [], host);
+
+  //     await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  //     const pages = host.querySelectorAll('.pagedjs_page');
+
+  //     console.log('PAGED PAGES:', pages.length);
+
+  //     if (!pages.length) {
+  //       console.warn('❌ NO PAGED PAGES');
+  //       return;
+  //     }
+
+  //     // pokaż pierwszą stronę
+  //     this.exportService.fixLayout(
+  //       'paged-preview-host',
+  //       0
+  //     );
+
+  //     // usuń poprzedni observer
+  //     if ((this as any)._previewObserver) {
+  //       (this as any)._previewObserver.disconnect();
+  //     }
+
+  //     // Paged.js lubi przebudowywać DOM po renderze
+  //     const observer = new MutationObserver(() => {
+  //       this.exportService.fixLayout(
+  //         'paged-preview-host',
+  //         this.currentPreviewPage
+  //       );
+  //     });
+
+  //     observer.observe(host, {
+  //       childList: true,
+  //       subtree: true,
+  //       attributes: true,
+  //     });
+
+  //     (this as any)._previewObserver = observer;
+
+  //   } catch (err) {
+  //     console.error('❌ PREVIEW ERROR:', err);
+  //   }
+  // }
+
   async preview() {
     this.cd.detectChanges();
 
     this.isPreviewOpen = true;
+
+    this.currentPreviewPage = 0;
 
     await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -855,7 +994,6 @@ export class PoemEditor implements OnInit, AfterViewInit {
 
     host.innerHTML = '';
 
-    // 🔥 IMPORTANT
     const wrapper = document.createElement('div');
 
     wrapper.innerHTML = source.innerHTML;
@@ -866,7 +1004,6 @@ export class PoemEditor implements OnInit, AfterViewInit {
 
       await previewer.preview(wrapper, [], host);
 
-      // 🔥 WAIT
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const pages = host.querySelectorAll('.pagedjs_page');
@@ -878,7 +1015,29 @@ export class PoemEditor implements OnInit, AfterViewInit {
         return;
       }
 
-      this.exportService.fixLayout('paged-preview-host', 0);
+      // 🔥 pierwsze ukrycie stron
+      pages.forEach((p: any, index: number) => {
+        p.style.display = index === 0 ? 'block' : 'none';
+        p.style.margin = '0 auto';
+      });
+
+      // 🔥 usuń stary observer
+      if ((this as any)._previewObserver) {
+        (this as any)._previewObserver.disconnect();
+      }
+
+      // 🔥 pilnuj żeby Paged.js nie odkrywał stron
+      const observer = new MutationObserver(() => {
+        this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
+      });
+
+      observer.observe(host, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+      });
+
+      (this as any)._previewObserver = observer;
     } catch (err) {
       console.error('❌ PREVIEW ERROR:', err);
     }
@@ -927,44 +1086,29 @@ export class PoemEditor implements OnInit, AfterViewInit {
     this.currentPreviewPage = 0;
   }
 
-prevPreviewPage() {
-  const pages = document.querySelectorAll(
-    '#paged-preview-host .pagedjs_page',
-  ) as NodeListOf<HTMLElement>;
+  prevPreviewPage() {
+    const pages = document.querySelectorAll(
+      '#paged-preview-host .pagedjs_page',
+    ) as NodeListOf<HTMLElement>;
 
-  if (!pages.length) return;
+    if (!pages.length) return;
 
-  this.currentPreviewPage = Math.max(0, this.currentPreviewPage - 1);
+    this.currentPreviewPage = Math.max(0, this.currentPreviewPage - 1);
 
-  this.exportService.fixLayout(
-    'paged-preview-host',
-    this.currentPreviewPage
-  );
-}
+    this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
+  }
 
+  nextPreviewPage() {
+    const pages = document.querySelectorAll(
+      '#paged-preview-host .pagedjs_page',
+    ) as NodeListOf<HTMLElement>;
 
-nextPreviewPage() {
-  const pages = document.querySelectorAll(
-    '#paged-preview-host .pagedjs_page',
-  ) as NodeListOf<HTMLElement>;
+    if (!pages.length) return;
 
-  if (!pages.length) return;
+    this.currentPreviewPage = Math.min(pages.length - 1, this.currentPreviewPage + 1);
 
-  this.currentPreviewPage = Math.min(
-    pages.length - 1,
-    this.currentPreviewPage + 1
-  );
-
-  this.exportService.fixLayout(
-    'paged-preview-host',
-    this.currentPreviewPage
-  );
-}
-
-
-
-
-
+    this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
+  }
 
   goBack() {
     this.router.navigate(['/editor']);

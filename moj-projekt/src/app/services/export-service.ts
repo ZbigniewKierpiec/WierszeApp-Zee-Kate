@@ -24,6 +24,14 @@ export class ExportService {
     await this.pagedPreviewer.preview(clonedSource, [], host);
   }
 
+
+
+
+
+
+
+
+
   fixLayout(hostId: string, currentPage: number) {
     const host = document.getElementById(hostId);
     if (!host) return;
