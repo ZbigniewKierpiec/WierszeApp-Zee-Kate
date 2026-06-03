@@ -636,56 +636,42 @@ export class PoemEditor implements OnInit, AfterViewInit {
   //   this.savePoem();
   // }
 
+  onBackgroundChange(bg: any) {
+    console.log('BG:', bg);
 
+    if (bg.color) {
+      this.backgroundColor = bg.color;
+    }
 
-onBackgroundChange(bg: any) {
-  console.log('BG:', bg);
+    // Ramka sezonowa
+    if (bg.imageType === 'frame') {
+      this.frameImage = bg.image ? `url("${bg.image}")` : '';
+      this.backgroundImage = '';
+    }
 
-  if (bg.color) {
-    this.backgroundColor = bg.color;
+    // Zwykły background image
+    if (bg.backgroundType === 'background-image' && bg.imageType === 'background') {
+      this.backgroundImage = bg.image ? `url("${bg.image}")` : '';
+      this.frameImage = '';
+    }
+
+    // Sam kolor — usuwa zwykłe image, ale zostawia ramkę
+    if (bg.backgroundType === 'background-colors') {
+      this.backgroundImage = '';
+    }
+
+    if (bg.contentBox) {
+      this.contentBox = bg.contentBox;
+    }
+
+    if (bg.textStyle) {
+      this.textStyle = bg.textStyle;
+    }
+
+    requestAnimationFrame(() => this.fitTextToContainer());
+
+    this.savePoem();
   }
-
-  // Ramka sezonowa
-  if (bg.imageType === 'frame') {
-    this.frameImage = bg.image ? `url("${bg.image}")` : '';
-    this.backgroundImage = '';
-  }
-
-  // Zwykły background image
-  if (
-    bg.backgroundType === 'background-image' &&
-    bg.imageType === 'background'
-  ) {
-    this.backgroundImage = bg.image ? `url("${bg.image}")` : '';
-    this.frameImage = '';
-  }
-
-  // Sam kolor — usuwa zwykłe image, ale zostawia ramkę
-  if (bg.backgroundType === 'background-colors') {
-    this.backgroundImage = '';
-  }
-
-  if (bg.contentBox) {
-    this.contentBox = bg.contentBox;
-  }
-
-  if (bg.textStyle) {
-    this.textStyle = bg.textStyle;
-  }
-
-  requestAnimationFrame(() => this.fitTextToContainer());
-
-  this.savePoem();
-}
-
-
-
-
-
-
-
-
-
 
   onSeparatorChange(symbol: string) {
     if (this.activeSeparatorIndex !== null) {
@@ -904,7 +890,7 @@ onBackgroundChange(bg: any) {
     console.log('POEM BLOCKS:', this.poemBlocks);
 
     this.cd.detectChanges();
-
+    this.savePoem();
     await this.preview();
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -941,35 +927,44 @@ onBackgroundChange(bg: any) {
     this.currentPreviewPage = 0;
   }
 
-  prevPreviewPage() {
-    const pages = document.querySelectorAll(
-      '#paged-preview-host .pagedjs_page',
-    ) as NodeListOf<HTMLElement>;
+prevPreviewPage() {
+  const pages = document.querySelectorAll(
+    '#paged-preview-host .pagedjs_page',
+  ) as NodeListOf<HTMLElement>;
 
-    if (!pages.length) return;
+  if (!pages.length) return;
 
-    this.currentPreviewPage = Math.max(0, this.currentPreviewPage - 1);
+  this.currentPreviewPage = Math.max(0, this.currentPreviewPage - 1);
 
-    pages[this.currentPreviewPage]?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  }
+  this.exportService.fixLayout(
+    'paged-preview-host',
+    this.currentPreviewPage
+  );
+}
 
-  nextPreviewPage() {
-    const pages = document.querySelectorAll(
-      '#paged-preview-host .pagedjs_page',
-    ) as NodeListOf<HTMLElement>;
 
-    if (!pages.length) return;
+nextPreviewPage() {
+  const pages = document.querySelectorAll(
+    '#paged-preview-host .pagedjs_page',
+  ) as NodeListOf<HTMLElement>;
 
-    this.currentPreviewPage = Math.min(pages.length - 1, this.currentPreviewPage + 1);
+  if (!pages.length) return;
 
-    pages[this.currentPreviewPage]?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  }
+  this.currentPreviewPage = Math.min(
+    pages.length - 1,
+    this.currentPreviewPage + 1
+  );
+
+  this.exportService.fixLayout(
+    'paged-preview-host',
+    this.currentPreviewPage
+  );
+}
+
+
+
+
+
 
   goBack() {
     this.router.navigate(['/editor']);

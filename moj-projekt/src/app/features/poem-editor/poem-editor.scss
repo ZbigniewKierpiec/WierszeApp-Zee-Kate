@@ -1114,3 +1114,7 @@
 
   z-index: 2;
 }
+.poem {
+  break-after: page;
+  page-break-after: always;
+}

@@ -49,11 +49,10 @@
           class="background-frame"
           [style.background-image]="frameImage"
         ></div>
-         <!-- [class.full-page]="!backgroundImage" -->
+        <!-- [class.full-page]="!backgroundImage" -->
         <div
           #poemBox
           class="poem"
-         
           [class.full-page]="!backgroundImage && !frameImage"
           [style.width.%]="backgroundImage ? contentBox.width : 100"
           [style.height.%]="backgroundImage ? contentBox.height : 100"
@@ -218,86 +217,56 @@
 <!-- PAGED SOURCE -->
 <div id="paged-source" style="display: none">
   <div class="book">
-    <section class="poem" [style.background]="backgroundColor || '#ffffff'">
+    <section
+      *ngFor="let page of currentBook?.pages"
+      class="poem"
+      [style.background]="page.poemEditor?.backgroundColor || '#ffffff'"
+    >
       <!-- BACKGROUND -->
-      <!-- <div
-        *ngIf="backgroundImage"
-        class="background-frame"
-        [style.background-image]="backgroundImage"
-      ></div> -->
-
       <div
-        *ngIf="backgroundImage"
+        *ngIf="page.poemEditor?.backgroundImage"
         class="background-image"
-        [style.background-image]="backgroundImage"
+        [style.background-image]="'url(' + page.poemEditor.backgroundImage + ')'"
       ></div>
 
-      <div *ngIf="frameImage" class="background-frame" [style.background-image]="frameImage"></div>
+      <!-- FRAME -->
+      <div
+        *ngIf="page.poemEditor?.frameImage"
+        class="background-frame"
+        [style.background-image]="'url(' + page.poemEditor.frameImage + ')'"
+      ></div>
 
-      <!-- EXACT SAME LAYOUT AS PREVIEW -->
       <div class="poem full-page">
         <div
           class="poem-content"
-          [style.font-size.px]="autoTextStyle.fontSize"
-          [style.line-height]="autoTextStyle.lineHeight"
-          [style.gap.px]="autoTextStyle.gap"
-          [style.--poem-max-width]="textStyle.maxWidth"
+          [style.font-size.px]="page.poemEditor?.textFontSize || 18"
+          [style.line-height]="page.poemEditor?.textLineHeight || 1.4"
         >
           <!-- TITLE -->
           <div
-            *ngIf="poemTitle"
+            *ngIf="page.title"
             class="poem-title"
-            [style.color]="titleColor || poemColor"
-            [style.font-family]="titleFont || poemFont"
-            [style.font-weight]="titleFontWeight || 600"
-            [style.font-style]="titleFontStyle || 'normal'"
-            [style.text-align]="titleAlign || 'center'"
+            [style.color]="page.poemEditor?.titleColor || page.poemEditor?.poemColor"
+            [style.font-family]="page.poemEditor?.titleFont || page.poemEditor?.poemFont"
+            [style.font-weight]="page.poemEditor?.titleFontWeight || 600"
+            [style.font-style]="page.poemEditor?.titleFontStyle || 'normal'"
+            [style.text-align]="page.poemEditor?.titleAlign || 'center'"
           >
-            {{ poemTitle }}
+            {{ page.title }}
           </div>
 
-          <!-- BLOCKS -->
-          <ng-container *ngFor="let block of poemBlocks">
-            <!-- LINE -->
-            <div
-              *ngIf="block.type === 'line'"
-              class="poem-block"
-              [style.color]="textColors[block.textIndex!] || poemColor"
-              [style.font-family]="fontOverrides[block.textIndex!]?.fontFamily || poemFont"
-              [style.font-weight]="
-                styleOverrides[block.textIndex!]?.weight ||
-                fontOverrides[block.textIndex!]?.fontWeight ||
-                poemFontWeight
-              "
-              [style.font-style]="
-                styleOverrides[block.textIndex!]?.italic
-                  ? 'italic'
-                  : fontOverrides[block.textIndex!]?.fontStyle || poemFontStyle
-              "
-              [style.text-align]="styleOverrides[block.textIndex!]?.align || poemAlign"
-              [style.letter-spacing]="styleOverrides[block.textIndex!]?.spacing || '0px'"
-              [style.text-transform]="styleOverrides[block.textIndex!]?.transform || 'none'"
-              [style.opacity]="styleOverrides[block.textIndex!]?.opacity ?? 1"
-              [style.text-shadow]="styleOverrides[block.textIndex!]?.shadow || 'none'"
-              [style.white-space]="'pre-wrap'"
-              [style.word-break]="'break-word'"
-              [style.overflow-wrap]="'break-word'"
-            >
-              {{ block.text }}
-            </div>
-
-            <!-- SPACE -->
-            <div *ngIf="block.type === 'space'" class="poem-space"></div>
-
-            <!-- SEPARATOR -->
-            <div
-              *ngIf="block.type === 'separator'"
-              class="separator"
-              [style.color]="separatorColors[block.separatorIndex!] || poemColor"
-            >
-              {{ separators[block.separatorIndex!] || '✧' }}
-            </div>
-          </ng-container>
+          <!-- TEXT -->
+          <div
+            class="poem-block"
+            style="white-space: pre-wrap"
+            [style.color]="page.poemEditor?.poemColor || '#000'"
+            [style.font-family]="page.poemEditor?.poemFont"
+            [style.font-weight]="page.poemEditor?.poemFontWeight || 'normal'"
+            [style.font-style]="page.poemEditor?.poemFontStyle || 'normal'"
+            [style.text-align]="page.poemEditor?.poemAlign || 'left'"
+          >
+            {{ page.text }}
+          </div>
         </div>
       </div>
     </section>
