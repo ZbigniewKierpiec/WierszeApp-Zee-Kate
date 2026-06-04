@@ -62,12 +62,7 @@ export class PoemEditor implements OnInit, AfterViewInit {
   activeTitle = false;
   bookId = '';
   pageIndex = 0;
-
-  ////////////////////////////
-  isPreviewOpen = false;
-  currentPreviewPage = 0;
-  ////////////////////////////
-  backgroundColor = '';
+backgroundColor = '';
   backgroundImage = '';
   frameImage = '';
   contentBox = {
@@ -841,281 +836,30 @@ export class PoemEditor implements OnInit, AfterViewInit {
     });
   }
 
-  // async preview() {
-  //   this.cd.detectChanges();
 
-  //   this.isPreviewOpen = true;
 
-  //   this.currentPreviewPage = 0;
+async exportPDF() {
+  console.log('🔥 EXPORT START');
 
-  //   await new Promise((resolve) => setTimeout(resolve, 300));
+  this.savePoem();
 
-  //   const source = document.querySelector('#paged-source .book') as HTMLElement | null;
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  //   const host = document.getElementById('paged-preview-host');
+  try {
+    await this.exportService.exportPDF(
+      'paged-source',
+      'poem-editor.pdf'
+    );
 
-  //   console.log('SOURCE:', source);
-  //   console.log('HOST:', host);
-
-  //   if (!source || !host) {
-  //     console.warn('❌ SOURCE / HOST NOT FOUND');
-  //     return;
-  //   }
-
-  //   host.innerHTML = '';
-
-  //   const wrapper = document.createElement('div');
-
-  //   wrapper.innerHTML = source.innerHTML;
-
-  //   try {
-  //     // @ts-ignore
-  //     const previewer = new window.Paged.Previewer();
-
-  //     await previewer.preview(wrapper, [], host);
-
-  //     await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  //     const pages = host.querySelectorAll('.pagedjs_page');
-
-  //     console.log('PAGED PAGES:', pages.length);
-
-  //     if (!pages.length) {
-  //       console.warn('❌ NO PAGED PAGES');
-  //       return;
-  //     }
-
-  //     pages.forEach((p: any, index: number) => {
-  //       p.style.display = index === 0 ? 'block' : 'none';
-  //       p.style.margin = '0 auto';
-  //     });
-
-  //     // 🔥 jeszcze raz po renderze Paged.js
-
-  //     setTimeout(() => {
-  //       this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
-  //     }, 300);
-  //   } catch (err) {
-  //     console.error('❌ PREVIEW ERROR:', err);
-  //   }
-  // }
-
-  // async preview() {
-  //   this.cd.detectChanges();
-
-  //   this.isPreviewOpen = true;
-
-  //   this.currentPreviewPage = 0;
-
-  //   await new Promise((resolve) => setTimeout(resolve, 300));
-
-  //   const source = document.querySelector(
-  //     '#paged-source .book'
-  //   ) as HTMLElement | null;
-
-  //   const host = document.getElementById('paged-preview-host');
-
-  //   console.log('SOURCE:', source);
-  //   console.log('HOST:', host);
-
-  //   if (!source || !host) {
-  //     console.warn('❌ SOURCE / HOST NOT FOUND');
-  //     return;
-  //   }
-
-  //   host.innerHTML = '';
-
-  //   const wrapper = document.createElement('div');
-
-  //   wrapper.innerHTML = source.innerHTML;
-
-  //   try {
-  //     // @ts-ignore
-  //     const previewer = new window.Paged.Previewer();
-
-  //     await previewer.preview(wrapper, [], host);
-
-  //     await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  //     const pages = host.querySelectorAll('.pagedjs_page');
-
-  //     console.log('PAGED PAGES:', pages.length);
-
-  //     if (!pages.length) {
-  //       console.warn('❌ NO PAGED PAGES');
-  //       return;
-  //     }
-
-  //     // pokaż pierwszą stronę
-  //     this.exportService.fixLayout(
-  //       'paged-preview-host',
-  //       0
-  //     );
-
-  //     // usuń poprzedni observer
-  //     if ((this as any)._previewObserver) {
-  //       (this as any)._previewObserver.disconnect();
-  //     }
-
-  //     // Paged.js lubi przebudowywać DOM po renderze
-  //     const observer = new MutationObserver(() => {
-  //       this.exportService.fixLayout(
-  //         'paged-preview-host',
-  //         this.currentPreviewPage
-  //       );
-  //     });
-
-  //     observer.observe(host, {
-  //       childList: true,
-  //       subtree: true,
-  //       attributes: true,
-  //     });
-
-  //     (this as any)._previewObserver = observer;
-
-  //   } catch (err) {
-  //     console.error('❌ PREVIEW ERROR:', err);
-  //   }
-  // }
-
-  async preview() {
-    this.cd.detectChanges();
-
-    this.isPreviewOpen = true;
-
-    this.currentPreviewPage = 0;
-
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    const source = document.querySelector('#paged-source .book') as HTMLElement | null;
-
-    const host = document.getElementById('paged-preview-host');
-
-    console.log('SOURCE:', source);
-    console.log('HOST:', host);
-
-    if (!source || !host) {
-      console.warn('❌ SOURCE / HOST NOT FOUND');
-      return;
-    }
-
-    host.innerHTML = '';
-
-    const wrapper = document.createElement('div');
-
-    wrapper.innerHTML = source.innerHTML;
-
-    try {
-      // @ts-ignore
-      const previewer = new window.Paged.Previewer();
-
-      await previewer.preview(wrapper, [], host);
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const pages = host.querySelectorAll('.pagedjs_page');
-
-      console.log('PAGED PAGES:', pages.length);
-
-      if (!pages.length) {
-        console.warn('❌ NO PAGED PAGES');
-        return;
-      }
-
-      // 🔥 pierwsze ukrycie stron
-      pages.forEach((p: any, index: number) => {
-        p.style.display = index === 0 ? 'block' : 'none';
-        p.style.margin = '0 auto';
-      });
-
-      // 🔥 usuń stary observer
-      if ((this as any)._previewObserver) {
-        (this as any)._previewObserver.disconnect();
-      }
-
-      // 🔥 pilnuj żeby Paged.js nie odkrywał stron
-      const observer = new MutationObserver(() => {
-        this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
-      });
-
-      observer.observe(host, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-      });
-
-      (this as any)._previewObserver = observer;
-    } catch (err) {
-      console.error('❌ PREVIEW ERROR:', err);
-    }
+    console.log('✅ PDF DONE');
+  } catch (err) {
+    console.error('❌ EXPORT PDF ERROR:', err);
   }
+}
 
-  async exportPDF() {
-    console.log('🔥 EXPORT START');
 
-    console.log('POEM BLOCKS:', this.poemBlocks);
 
-    this.cd.detectChanges();
-    this.savePoem();
-    await this.preview();
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    const host = document.getElementById('paged-preview-host');
-
-    const pages = host?.querySelectorAll('.pagedjs_page');
-
-    console.log('PDF PAGES:', pages?.length);
-
-    if (!pages?.length) {
-      console.warn('❌ BRAK STRON PDF');
-      return;
-    }
-
-    try {
-      await this.exportService.exportPDF('paged-preview-host', 'poem-editor.pdf');
-
-      console.log('✅ PDF DONE');
-    } catch (err) {
-      console.error('❌ EXPORT PDF ERROR:', err);
-    }
-  }
-
-  closePreview() {
-    this.isPreviewOpen = false;
-
-    const host = document.getElementById('paged-preview-host');
-
-    if (host) {
-      host.innerHTML = '';
-    }
-
-    this.currentPreviewPage = 0;
-  }
-
-  prevPreviewPage() {
-    const pages = document.querySelectorAll(
-      '#paged-preview-host .pagedjs_page',
-    ) as NodeListOf<HTMLElement>;
-
-    if (!pages.length) return;
-
-    this.currentPreviewPage = Math.max(0, this.currentPreviewPage - 1);
-
-    this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
-  }
-
-  nextPreviewPage() {
-    const pages = document.querySelectorAll(
-      '#paged-preview-host .pagedjs_page',
-    ) as NodeListOf<HTMLElement>;
-
-    if (!pages.length) return;
-
-    this.currentPreviewPage = Math.min(pages.length - 1, this.currentPreviewPage + 1);
-
-    this.exportService.fixLayout('paged-preview-host', this.currentPreviewPage);
-  }
 
   goBack() {
     this.router.navigate(['/editor']);

@@ -200,19 +200,6 @@
   </div>
 </div> -->
 
-<div *ngIf="isPreviewOpen" class="preview-overlay">
-  <div class="preview-book">
-    <div id="paged-preview-host"></div>
-  </div>
-
-  <div class="preview-footer">
-    <button (click)="prevPreviewPage()">← Prev</button>
-
-    <button class="back-btn" (click)="closePreview()">✨ Back to Editor</button>
-
-    <button (click)="nextPreviewPage()">Next →</button>
-  </div>
-</div>
 
 <!-- PAGED SOURCE -->
 <div id="paged-source" style="display: none">
