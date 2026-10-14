@@ -3,13 +3,28 @@ import { Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { API_BASE_URL } from '../api-config';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private api = 'http://localhost:3000/api/auth';
+  private api = `${API_BASE_URL}/auth`;
 
   constructor(private http: HttpClient) {}
+
+  isTrustedApiRequest(url: string): boolean {
+    try {
+      const apiUrl = new URL(API_BASE_URL, globalThis.location.origin);
+      const requestUrl = new URL(url, apiUrl);
+      const apiPath = apiUrl.pathname.replace(/\/+$/, '');
+      return (
+        requestUrl.origin === apiUrl.origin &&
+        (requestUrl.pathname === apiPath || requestUrl.pathname.startsWith(`${apiPath}/`))
+      );
+    } catch {
+      return false;
+    }
+  }
 
   // ✅ REGISTER
   register(data: { email: string; password: string }) {
@@ -51,7 +66,13 @@ export class AuthService {
   // ✅ USER
   getUser() {
     const savedUser = localStorage.getItem('user');
-    if (savedUser) return JSON.parse(savedUser);
+    if (savedUser) {
+      try {
+        return JSON.parse(savedUser);
+      } catch {
+        localStorage.removeItem('user');
+      }
+    }
 
     const token = this.getToken();
     if (!token) return null;
@@ -84,5 +105,6 @@ export class AuthService {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
+    localStorage.removeItem('bookId');
   }
 }

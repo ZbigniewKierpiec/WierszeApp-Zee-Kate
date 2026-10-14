@@ -34,7 +34,11 @@
     "CREATE_FIRST": "Create your first book",
     "UNTITLED": "Untitled",
     "NO_TITLE": "No title",
-    "DEFAULT": "Default"
+    "DEFAULT": "Default",
+    "LOAD_ERROR": "Could not load your books.",
+    "CREATE_ERROR": "Could not create the book.",
+    "DELETE_ERROR": "Could not delete the book.",
+    "RETRY": "Try again"
   },
 
   "EDITOR": {

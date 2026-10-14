@@ -13,6 +13,14 @@ describe('CoverEditor', () => {
 
     fixture = TestBed.createComponent(CoverEditor);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('cover', {
+      title: 'Test book',
+      author: '',
+      image: '',
+      bgColor: '#000000',
+      textColor: '#ffffff',
+    });
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 

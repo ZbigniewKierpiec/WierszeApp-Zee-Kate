@@ -34,7 +34,11 @@
     "CREATE_FIRST": "Utwórz pierwszą książkę",
     "UNTITLED": "Bez tytułu",
     "NO_TITLE": "Brak tytułu",
-    "DEFAULT": "Domyślny"
+    "DEFAULT": "Domyślny",
+    "LOAD_ERROR": "Nie udało się załadować książek.",
+    "CREATE_ERROR": "Nie udało się utworzyć książki.",
+    "DELETE_ERROR": "Nie udało się usunąć książki.",
+    "RETRY": "Spróbuj ponownie"
   },
   "EDITOR": {
     "LOREM": "Lorem",

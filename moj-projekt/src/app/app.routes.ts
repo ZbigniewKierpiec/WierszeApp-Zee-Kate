@@ -1,50 +1,45 @@
 import { Routes } from '@angular/router';
-import { Home } from './features/home/home/home';
-import { Editor } from './features/editor/editor/editor';
-import { EditorTest } from './features/editor/editor-test/editor-test';
-import { Login } from './features/editor/login/login';
-import { Register } from './features/editor/register/register';
-import { Dashboard } from './features/dashboard/dashboard';
 import { MainLayout } from './main-layout/main-layout';
-import { AuthGuard } from './services/auth-guard';
-import { PoemEditor } from './features/poem-editor/poem-editor';
 
-// export const routes: Routes = [
-//   // 🔓 bez layoutu
-//   { path: '', component: Home },
-//   { path: 'login', component: Login },
-//   { path: 'register', component: Register },
-
-//   // 🔒 layout tylko dla wybranych tras
-//   {
-//     path: '',
-//     component: MainLayout,
-//     children: [
-//       { path: 'dashboard', component: Dashboard },
-//       { path: 'editor', component: EditorTest },
-//       { path: 'editor/:id', component: EditorTest },
-//     ],
-//   },
-// ];
 export const routes: Routes = [
-  // 🔓 public bez layoutu
-  { path: '', component: Home },
-  { path: 'login', component: Login },
-  { path: 'register', component: Register },
-
-  // 🔓 cała aplikacja z layoutem (BEZ guard)
+  { path: '', loadComponent: () => import('./features/home/home/home').then((m) => m.Home) },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/editor/login/login').then((m) => m.Login),
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./features/editor/register/register').then((m) => m.Register),
+  },
   {
     path: '',
     component: MainLayout,
     children: [
-      { path: 'editor', component: EditorTest },
-      { path: 'editor/:id', component: EditorTest },
-      { path: 'dashboard', component: Dashboard },
-      { path: 'poem-editor', component: PoemEditor },
-      { path: 'poem-editor/:id', component: PoemEditor },
+      {
+        path: 'editor',
+        loadComponent: () =>
+          import('./features/editor/editor-test/editor-test').then((m) => m.EditorTest),
+      },
+      {
+        path: 'editor/:id',
+        loadComponent: () =>
+          import('./features/editor/editor-test/editor-test').then((m) => m.EditorTest),
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+      },
+      {
+        path: 'poem-editor',
+        loadComponent: () =>
+          import('./features/poem-editor/poem-editor').then((m) => m.PoemEditor),
+      },
+      {
+        path: 'poem-editor/:id',
+        loadComponent: () =>
+          import('./features/poem-editor/poem-editor').then((m) => m.PoemEditor),
+      },
     ],
   },
-
-  // fallback
   { path: '**', redirectTo: '' },
 ];

@@ -10,8 +10,9 @@ import { finalize } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 import { BooksService } from '../../services/books-service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import  { AuthService } from '../../services/auth-service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -22,6 +23,7 @@ import  { AuthService } from '../../services/auth-service';
 export class Dashboard implements OnInit {
   books: any[] = [];
   loading = true;
+  loadFailed = false;
   lastBookId = localStorage.getItem('bookId');
   constructor(
     private api: EditorApiService,
@@ -30,6 +32,8 @@ export class Dashboard implements OnInit {
     private cd: ChangeDetectorRef,
     private dialog: MatDialog,
     private booksService: BooksService,
+    private snackBar: MatSnackBar,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -40,16 +44,31 @@ export class Dashboard implements OnInit {
       return;
     }
 
-    this.api.getUserBooksFull(user.id).subscribe({
+    this.loadBooks(user.id);
+  }
+
+  loadBooks(userId = this.auth.getUserId()): void {
+    if (!userId) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.loading = true;
+    this.loadFailed = false;
+    this.api.getUserBooksFull(userId).subscribe({
       next: (books: any) => {
-        console.log(books);
         this.books = books;
         this.loading = false;
         this.cd.detectChanges();
       },
       error: (err) => {
         console.error('❌ LOAD BOOKS ERROR:', err);
+        this.loadFailed = true;
         this.loading = false;
+        this.snackBar.open(this.translate.instant('DASHBOARD.LOAD_ERROR'), 'OK', {
+          duration: 3500,
+          verticalPosition: 'top',
+        });
       },
     });
   }
@@ -88,11 +107,26 @@ createBook() {
   }
 
   this.api.createEmptyBook(user.id).subscribe((res: any) => {
+    if (typeof res?.id !== 'string' || !res.id.trim()) {
+      console.error('CREATE BOOK RESPONSE DID NOT INCLUDE A BOOK ID');
+      this.snackBar.open(this.translate.instant('DASHBOARD.CREATE_ERROR'), 'OK', {
+        duration: 3500,
+        verticalPosition: 'top',
+      });
+      return;
+    }
+
     localStorage.setItem('bookId', res.id);
 
     this.booksService.increment(); // 🔥 KLUCZ
 
     this.router.navigate(['/editor']);
+  }, (err) => {
+    console.error('❌ CREATE BOOK ERROR:', err);
+    this.snackBar.open(this.translate.instant('DASHBOARD.CREATE_ERROR'), 'OK', {
+      duration: 3500,
+      verticalPosition: 'top',
+    });
   });
 }
 
@@ -155,6 +189,10 @@ createBook() {
       const userId = this.auth.getUserId();
       if (!userId) {
         console.error('NO USER ID');
+        this.snackBar.open(this.translate.instant('DASHBOARD.DELETE_ERROR'), 'OK', {
+          duration: 3500,
+          verticalPosition: 'top',
+        });
         return;
       }
 
@@ -174,10 +212,21 @@ createBook() {
 
           this.booksService.decrement(); // 🔥 KLUCZ
 
+          if (this.lastBookId === book.id) {
+            this.lastBookId = null;
+            localStorage.removeItem('bookId');
+            localStorage.removeItem('pages');
+            localStorage.removeItem('cover');
+          }
+
           this.router.navigate(['editor']);
         },
         error: (err) => {
           console.error('DELETE ERROR:', err);
+          this.snackBar.open(this.translate.instant('DASHBOARD.DELETE_ERROR'), 'OK', {
+            duration: 3500,
+            verticalPosition: 'top',
+          });
         },
       });
     });

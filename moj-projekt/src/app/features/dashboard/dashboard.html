@@ -33,7 +33,14 @@
     <p>{{ 'DASHBOARD.LOADING' | translate }}</p>
   </div>
 
-  <div class="state empty" *ngIf="!loading && books.length === 0">
+  <div class="state" *ngIf="!loading && loadFailed">
+    <p>{{ 'DASHBOARD.LOAD_ERROR' | translate }}</p>
+    <button class="create-btn" (click)="loadBooks()">
+      {{ 'DASHBOARD.RETRY' | translate }}
+    </button>
+  </div>
+
+  <div class="state empty" *ngIf="!loading && !loadFailed && books.length === 0">
     <h2>📖 {{ 'DASHBOARD.EMPTY_TITLE' | translate }}</h2>
     <p>{{ 'DASHBOARD.EMPTY_SUBTITLE' | translate }}</p>
 
@@ -43,7 +50,7 @@
   </div>
 
   <!-- GRID -->
-  <div class="books-grid" *ngIf="!loading && books.length > 0">
+  <div class="books-grid" *ngIf="!loading && !loadFailed && books.length > 0">
 
     <div 
       class="book-card"

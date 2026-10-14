@@ -13,8 +13,13 @@ export class BooksService {
   constructor(private api: EditorApiService) {}
 
   load(userId: string) {
-    this.api.getUserBooksFull(userId).subscribe((books: Book[]) => {
-      this.booksCountSubject.next(books.length);
+    this.api.getUserBooksFull(userId).subscribe({
+      next: (books: Book[]) => {
+        this.booksCountSubject.next(books.length);
+      },
+      error: (err) => {
+        console.error('BOOK COUNT LOAD ERROR:', err);
+      },
     });
   }
 

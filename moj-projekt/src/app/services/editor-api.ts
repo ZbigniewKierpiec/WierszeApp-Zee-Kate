@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { API_BASE_URL } from '../api-config';
 export interface Book {
   id: string;
   title: string;
@@ -12,9 +13,7 @@ export interface Book {
   providedIn: 'root',
 })
 export class EditorApiService {
- 
-private apiUrl = 'http://localhost:3000/api/books';
-  private api = 'http://localhost:3000/api';
+  private apiUrl = `${API_BASE_URL}/books`;
 
 
 
@@ -33,19 +32,18 @@ private apiUrl = 'http://localhost:3000/api/books';
   }
 
   getUserBooks(userId: string) {
-    return this.http.get(`${this.api}/books/user/${userId}`);
+    return this.http.get(`${API_BASE_URL}/books/user/${userId}`);
   }
 
-getUserBooksFull(userId: string) {
-  return this.http.get<Book[]>(`${this.api}/books/user/${userId}/full`);
-}
+  getUserBooksFull(userId: string) {
+    return this.http.get<Book[]>(`${API_BASE_URL}/books/user/${userId}/full`);
+  }
 
 
-
-deleteBook(id: string, userId: string) {
-  const params = new HttpParams().set('user_id', userId);
-  return this.http.delete(`${this.apiUrl}/${id}`, { params });
-}
+  deleteBook(id: string, userId: string) {
+    const params = new HttpParams().set('user_id', userId);
+    return this.http.delete(`${this.apiUrl}/${id}`, { params });
+  }
 
 
 

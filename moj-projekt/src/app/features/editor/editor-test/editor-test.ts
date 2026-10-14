@@ -542,7 +542,6 @@ quis nostrud exercitation ullamco.`;
 
     this.api.getBook(id, user.id).subscribe({
       next: (book: any) => {
-        console.log('✅ LOADED:', book);
         this.applyBook(book);
       },
       error: (err) => {
@@ -550,15 +549,18 @@ quis nostrud exercitation ullamco.`;
           console.warn('⚠️ Book nie istnieje lub jest stary bookId w storage');
           this.storage.removeBookId();
           this.initEmptyEditor();
+          this.showMessage('This book could not be found. A new empty editor was opened.');
           return;
         }
 
         if (err.status === 403) {
           console.warn('🚫 Brak dostępu do książki');
+          this.showMessage('You do not have permission to open this book.');
           return;
         }
 
         console.error('❌ LOAD ERROR:', err);
+        this.showMessage('Could not load the book. Please try again.');
       },
     });
   }
@@ -811,10 +813,19 @@ quis nostrud exercitation ullamco.`;
     if (!confirmNew) return;
 
     const user = this.auth.getUser();
-    if (!user?.id) return;
+    if (!user?.id) {
+      this.showMessage('Log in to create a book.');
+      return;
+    }
 
     this.api.createEmptyBook(user.id).subscribe({
       next: (res: any) => {
+        if (typeof res?.id !== 'string' || !res.id.trim()) {
+          console.error('CREATE BOOK RESPONSE DID NOT INCLUDE A BOOK ID');
+          this.showMessage('The book could not be created. Please try again.');
+          return;
+        }
+
         this.storage.saveBookId(res.id);
         this.bookId = res.id;
         this.pages = [this.createEmptyPage()];
@@ -823,13 +834,12 @@ quis nostrud exercitation ullamco.`;
       },
       error: (err) => {
         console.error('❌ CREATE EMPTY BOOK ERROR:', err);
+        this.showMessage('The book could not be created. Please try again.');
       },
     });
   }
 
   save() {
-    console.log('🔥 SAVE CLICKED');
-
     if (!this.canSave) {
       this.showMessage('Uzupełnij tytuł i treść');
       return;
@@ -840,6 +850,7 @@ quis nostrud exercitation ullamco.`;
     const user = this.auth.getUser();
     if (!user?.id) {
       console.error('❌ Brak usera — nie zapisuję');
+      this.showMessage('Log in to save this book.');
       return;
     }
 
@@ -873,10 +884,14 @@ quis nostrud exercitation ullamco.`;
       selectedTheme: this.selectedTheme || '',
     };
 
-    console.log('💾 SAVE PAYLOAD:', payload);
-
     this.api.saveBook(payload).subscribe({
       next: (res: any) => {
+        if (isNew && (typeof res?.id !== 'string' || !res.id.trim())) {
+          console.error('CREATE BOOK RESPONSE DID NOT INCLUDE A BOOK ID');
+          this.showMessage('The book could not be saved. Please try again.');
+          return;
+        }
+
         if (res?.id) {
           this.bookId = res.id;
           this.storage.saveBookId(res.id);
@@ -889,10 +904,10 @@ quis nostrud exercitation ullamco.`;
           this.showMessage('💾 Changes saved');
         }
 
-        console.log('💾 Saved');
       },
       error: (err) => {
         console.error('❌ SAVE ERROR:', err);
+        this.showMessage('The book could not be saved. Your edits are still open; please try again.');
       },
     });
   }
