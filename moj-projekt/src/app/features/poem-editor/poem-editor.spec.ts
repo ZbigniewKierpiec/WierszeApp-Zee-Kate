@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EMPTY, of, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, EMPTY, of, Subject, throwError } from 'rxjs';
 import { AuthService } from '../../services/auth-service';
 import { EditorApiService } from '../../services/editor-api';
 import { ExportService } from '../../services/export-service';
@@ -15,13 +15,17 @@ describe('PoemEditor', () => {
     saveBook: ReturnType<typeof vi.fn>;
   };
   let snackBar: { open: ReturnType<typeof vi.fn> };
+  let exportService: { exportElement: ReturnType<typeof vi.fn> };
+  let queryParams: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
 
   beforeEach(async () => {
+    queryParams = new BehaviorSubject(convertToParamMap({ page: '0' }));
     api = {
       getBook: vi.fn().mockReturnValue(EMPTY),
       saveBook: vi.fn().mockReturnValue(of({})),
     };
     snackBar = { open: vi.fn() };
+    exportService = { exportElement: vi.fn().mockResolvedValue(undefined) };
     vi.stubGlobal('requestAnimationFrame', vi.fn());
 
     await TestBed.configureTestingModule({
@@ -29,13 +33,13 @@ describe('PoemEditor', () => {
       providers: [
         { provide: EditorApiService, useValue: api },
         { provide: AuthService, useValue: { getUser: () => ({ id: 'user-1' }) } },
-        { provide: ExportService, useValue: { exportElement: vi.fn() } },
+        { provide: ExportService, useValue: exportService },
         { provide: MatSnackBar, useValue: snackBar },
         {
           provide: ActivatedRoute,
           useValue: {
             paramMap: of(convertToParamMap({ id: 'book-1' })),
-            queryParamMap: of(convertToParamMap({ page: '0' })),
+            queryParamMap: queryParams.asObservable(),
           },
         },
       ],
@@ -169,5 +173,51 @@ describe('PoemEditor', () => {
     expect(book.pages[0].poemEditor.frameImage).toBe(
       'https://images.example.com/frame.png?size=large',
     );
+  });
+
+  it('exports every book page in order and includes unsaved edits on the active page', async () => {
+    queryParams.next(convertToParamMap({ page: '2' }));
+    fixture.detectChanges();
+    component.currentBook = {
+      id: 'book-1',
+      pages: Array.from({ length: 5 }, (_, index) => ({
+        title: `Page ${index + 1}`,
+        text: `Text ${index + 1}`,
+        poemEditor: {
+          backgroundColor: '#f0e0d0',
+          backgroundImage: index === 1 ? '/assets/bg/paper-background.jpg' : '',
+          frameImage: index === 3 ? '/assets/bg/floral-right.png.png' : '',
+        },
+      })),
+    };
+    component.poemTitle = 'Unsaved active title';
+    component.poemBlocks = [{ type: 'line', text: 'Unsaved active text', textIndex: 0 }];
+    component.backgroundImage = 'url("/assets/bg/paper-background.jpg")';
+    component.frameImage = 'url("/assets/bg/floral-right.png.png")';
+    fixture.detectChanges(false);
+
+    await component.exportPDF();
+
+    const exportSource = exportService.exportElement.mock.calls[0][0] as HTMLElement;
+    const pages = Array.from(exportSource.querySelectorAll<HTMLElement>('.export-page'));
+
+    expect(exportService.exportElement).toHaveBeenCalledWith(
+      exportSource,
+      'poem-editor.pdf',
+    );
+    expect(pages).toHaveLength(5);
+    expect(pages.map((page) => page.querySelector('.poem-title')?.textContent?.trim())).toEqual([
+      'Page 1',
+      'Page 2',
+      'Unsaved active title',
+      'Page 4',
+      'Page 5',
+    ]);
+    expect(pages[2].querySelector('.poem-block')?.textContent?.trim()).toBe(
+      'Unsaved active text',
+    );
+    expect(pages[2].querySelector('.background-image')).toBeTruthy();
+    expect(pages[2].querySelector('.background-frame')).toBeTruthy();
+    expect(api.saveBook).not.toHaveBeenCalled();
   });
 });

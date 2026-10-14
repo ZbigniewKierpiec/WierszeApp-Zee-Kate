@@ -704,6 +704,19 @@
   z-index: -1;
 }
 
+#paged-source .export-page {
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  break-after: page;
+  page-break-after: always;
+}
+
+#paged-source .export-page:last-child {
+  break-after: auto;
+  page-break-after: auto;
+}
+
 .book {
   width: 794px;
 }

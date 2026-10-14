@@ -67,6 +67,8 @@ export class PoemEditor implements OnInit, AfterViewInit {
   @ViewChild('poemContent') poemContent!: ElementRef<HTMLDivElement>;
   @ViewChild('paper')
   paper!: ElementRef<HTMLElement>;
+  @ViewChild('pagedSource')
+  pagedSource!: ElementRef<HTMLElement>;
   activePanel = 'colors';
   activeTitle = false;
   bookId = '';
@@ -389,6 +391,37 @@ export class PoemEditor implements OnInit, AfterViewInit {
 
       textIndex++;
     });
+  }
+
+  exportPoemBlocks(page: any): PoemBlock[] {
+    const poemData = page.poemEditor || {};
+    const showSeparators =
+      this.currentBook?.pages?.[this.pageIndex] === page
+        ? this.showSeparators
+        : !!poemData.showSeparators;
+    let textIndex = 0;
+    let separatorIndex = 0;
+
+    return (page.text || '')
+      .replace(/\r\n/g, '\n')
+      .split('\n')
+      .map((line: string) => {
+        if (!line.trim()) {
+          const block: PoemBlock = showSeparators
+            ? {
+                type: 'separator',
+                text: poemData.separators?.[separatorIndex] || '✧',
+                separatorIndex,
+              }
+            : { type: 'space', text: '' };
+          separatorIndex++;
+          return block;
+        }
+
+        const block: PoemBlock = { type: 'line', text: line, textIndex };
+        textIndex++;
+        return block;
+      });
   }
 
   fitTextToContainer() {
@@ -961,7 +994,13 @@ export class PoemEditor implements OnInit, AfterViewInit {
   //   );
   // }
   async exportPDF() {
-    await this.exportService.exportElement(this.paper.nativeElement, 'poem-editor.pdf');
+    if (!this.currentBook || !this.pagedSource?.nativeElement) {
+      return;
+    }
+
+    this.updateCurrentPage();
+    this.cdr.detectChanges();
+    await this.exportService.exportElement(this.pagedSource.nativeElement, 'poem-editor.pdf');
   }
 
   goBack() {
