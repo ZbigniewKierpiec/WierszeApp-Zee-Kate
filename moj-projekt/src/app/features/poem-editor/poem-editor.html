@@ -32,7 +32,7 @@
         miniMenuVisible = false
       "
     >
-      <div class="paper" [style.background-color]="backgroundColor">
+      <div #paper class="paper" [style.background-color]="backgroundColor">
         <!-- <div
           *ngIf="backgroundImage"
           class="background-frame"
@@ -200,9 +200,11 @@
   </div>
 </div> -->
 
-
 <!-- PAGED SOURCE -->
-<div id="paged-source" style="display: none">
+<div
+  id="paged-source"
+  style="position: absolute; left: 0; top: 0; opacity: 0; pointer-events: none; z-index: -1"
+>
   <div class="book">
     <section
       *ngFor="let page of currentBook?.pages"
@@ -259,3 +261,11 @@
     </section>
   </div>
 </div>
+<div
+  id="paged-preview-host"
+  style="
+    position:absolute;
+    left:-99999px;
+    top:0;
+  "
+></div>

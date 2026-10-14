@@ -595,32 +595,6 @@
 /* 🔥 PDF PREVIEW */
 /* ============================= */
 
-.preview-overlay {
-  position: fixed;
-  inset: 0;
-
-  background: rgba(0, 0, 0, 0.85);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  z-index: 99999;
-}
-
-.preview-book {
-  width: 820px;
-  height: 95vh;
-
-  overflow: auto;
-
-  border-radius: 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* ============================= */
 /* 📄 PAGED */
 /* ============================= */
@@ -648,7 +622,6 @@
   display: block;
 }
 
-.poem-export-page,
 .poem {
   position: relative;
 
@@ -663,18 +636,6 @@
 /* ============================= */
 /* ✍️ EXPORT BOX */
 /* ============================= */
-
-.poem-export-box,
-.poem-inner {
-  position: absolute;
-
-  padding: 60px;
-  box-sizing: border-box;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
 
 /* ============================= */
 /* 📝 EXPORT TEXT */
@@ -724,139 +685,8 @@
     inset: 0;
   }
 }
-.paged-source-hidden {
-  position: fixed;
-
-  left: -99999px;
-  top: 0;
-
-  width: 794px;
-  height: 1123px;
-
-  overflow: hidden;
-
-  pointer-events: none;
-}
-.poem-export-box,
-.poem-inner {
-  min-height: 100%;
-}
 .poem-content {
   width: 100%;
-}
-.poem-export-page {
-  position: relative;
-
-  width: 794px;
-  height: 1123px;
-
-  overflow: hidden;
-
-  background: white;
-}
-
-.poem-export-inner {
-  position: absolute;
-
-  padding: 80px;
-  box-sizing: border-box;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.poem-export-inner.full-page {
-  inset: 0;
-
-  width: 100% !important;
-  height: 100% !important;
-
-  transform: none !important;
-}
-
-.paged-source-hidden {
-  position: fixed;
-  left: -99999px;
-  top: 0;
-}
-
-.poem-export-page {
-  position: relative;
-
-  width: 794px;
-  height: 1123px;
-
-  background: white;
-
-  overflow: hidden;
-}
-
-.export-bg {
-  position: absolute;
-  inset: 0;
-
-  background-size: cover;
-  background-position: center;
-}
-
-.export-content {
-  position: relative;
-
-  z-index: 2;
-
-  padding: 120px 100px;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 18px;
-}
-
-.export-title {
-  font-size: 34px;
-  margin-bottom: 40px;
-  white-space: pre-wrap;
-}
-
-.export-line {
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-size: 22px;
-  line-height: 1.7;
-}
-
-.export-space {
-  height: 20px;
-}
-
-.export-separator {
-  text-align: center;
-  font-size: 26px;
-  margin: 16px 0;
-}
-/* =========================================
-   PDF PREVIEW
-========================================= */
-
-.preview-overlay {
-  position: fixed;
-  inset: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(0, 0, 0, 0.88);
-
-  z-index: 99999;
-}
-
-.preview-book {
-  width: 820px;
-  height: 95vh;
-
-  overflow: auto;
 }
 
 /* =========================================
@@ -898,196 +728,11 @@
   background: white;
 }
 
-/* =========================================
-   EXPORT PAGE
-========================================= */
-
-.poem-export-page {
-  position: relative;
-
-  width: 794px;
-  min-height: 1123px;
-
-  overflow: hidden;
-
-  background: white;
-
-  break-after: page;
-}
-
-/* =========================================
-   EXPORT BACKGROUND
-========================================= */
-
-.export-bg {
-  position: absolute;
-  inset: 0;
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  z-index: 1;
-}
-
-/* =========================================
-   EXPORT CONTENT
-========================================= */
-
-.export-content {
-  position: relative;
-
-  z-index: 2;
-
-  padding: 110px 90px;
-
-  box-sizing: border-box;
-
-  display: flex;
-  flex-direction: column;
-}
-
-/* =========================================
-   EXPORT TITLE
-========================================= */
-
-.export-title {
-  font-size: 42px;
-
-  margin-bottom: 60px;
-
-  white-space: pre-wrap;
-
-  color: #111;
-}
-
-/* =========================================
-   EXPORT TEXT
-========================================= */
-
-.export-line {
-  font-size: 28px;
-
-  line-height: 1.7;
-
-  margin-bottom: 18px;
-
-  white-space: pre-wrap;
-
-  word-break: break-word;
-  overflow-wrap: break-word;
-
-  color: #111;
-}
-
-/* =========================================
-   EXPORT SPACE
-========================================= */
-
-.export-space {
-  height: 30px;
-}
-
-/* =========================================
-   EXPORT SEPARATOR
-========================================= */
-
-.export-separator {
-  text-align: center;
-
-  margin: 24px 0;
-
-  font-size: 30px;
-}
 ////////////////////////////
 .pagedjs_page {
   background: transparent !important;
 }
 
-.background-frame,
-.export-bg {
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-}
-
-.preview-toolbar {
-  position: absolute;
-  top: 0px;
-  left: 20px;
-  z-index: 99999;
-}
-
-.preview-toolbar button {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.preview-footer {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-
-  display: flex;
-  align-items: center;
-  gap: 14px;
-
-  padding: 10px;
-  border-radius: 18px;
-
-  background: rgba(20, 20, 20, 0.85);
-  backdrop-filter: blur(16px);
-
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-
-  z-index: 99999;
-}
-
-.preview-footer button {
-  border: none;
-  cursor: pointer;
-
-  padding: 12px 20px;
-
-  border-radius: 12px;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  transition: all 0.2s ease;
-}
-
-/* Prev / Next */
-.preview-footer button:not(.back-btn) {
-  background: #ffffff;
-  color: #111;
-}
-
-.preview-footer button:not(.back-btn):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.25);
-}
-
-/* Back */
-.preview-footer .back-btn {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-
-  color: white;
-
-  min-width: 200px;
-}
-
-.preview-footer .back-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
-}
-
-.preview-footer button:active {
-  transform: scale(0.97);
-}
 ////////////////////
 .background-image {
   position: absolute;
@@ -1119,11 +764,3 @@
   page-break-after: always;
 }
 ///////////////////////////////////////////
-
-
-.preview-book {
-  width: 820px;
-  height: 95vh;
-
-  overflow: hidden;
-}

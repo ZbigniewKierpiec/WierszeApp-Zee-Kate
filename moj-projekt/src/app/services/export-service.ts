@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 
 @Injectable({
   providedIn: 'root',
@@ -23,14 +21,6 @@ export class ExportService {
 
     await this.pagedPreviewer.preview(clonedSource, [], host);
   }
-
-
-
-
-
-
-
-
 
   fixLayout(hostId: string, currentPage: number) {
     const host = document.getElementById(hostId);
@@ -82,11 +72,15 @@ export class ExportService {
 
   async exportPDF(hostId: string, fileName: string) {
     const host = document.getElementById(hostId);
-
     if (!host) return;
 
-    const pages = host.querySelectorAll('.pagedjs_page');
+    const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+      import('html2canvas'),
+      import('jspdf'),
+    ]);
 
+    // const pages = host.querySelectorAll('.pagedjs_page');
+    const pages = host.querySelectorAll('section.poem');
     pages.forEach((p: any) => {
       p.style.display = 'block';
     });
@@ -156,5 +150,68 @@ export class ExportService {
     }
 
     pdf.save(fileName);
+  }
+
+  async exportElement(element: HTMLElement, fileName: string) {
+    const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+      import('html2canvas'),
+      import('jspdf'),
+    ]);
+    const clone = element.cloneNode(true) as HTMLElement;
+
+    clone.style.position = 'fixed';
+    clone.style.left = '0';
+    clone.style.top = '0';
+    clone.style.zIndex = '999999';
+    clone.style.visibility = 'visible';
+
+    document.body.appendChild(clone);
+
+    try {
+      clone.querySelectorAll('.poem').forEach((el: any) => {
+        el.style.position = 'relative';
+        el.style.top = '0';
+        el.style.left = '0';
+        el.style.transform = 'none';
+        el.style.width = '100%';
+        el.style.height = '100%';
+      });
+
+      clone.querySelectorAll('.poem-content').forEach((el: any) => {
+        el.style.display = 'flex';
+        el.style.visibility = 'visible';
+        el.style.opacity = '1';
+      });
+
+      clone.querySelectorAll('.poem-title,.poem-block').forEach((el: any) => {
+        el.style.visibility = 'visible';
+        el.style.opacity = '1';
+        el.style.color = '#000';
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const canvas = await html2canvas(clone, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
+        logging: false,
+      });
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 1);
+
+      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+
+      pdf.save(fileName);
+    } finally {
+      clone.remove();
+    }
   }
 }

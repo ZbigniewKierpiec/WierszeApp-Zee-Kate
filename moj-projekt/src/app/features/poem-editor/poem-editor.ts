@@ -21,6 +21,8 @@ import { StylePanel } from './panels/style-panel/style-panel';
 import { EditorApiService } from '../../services/editor-api';
 import { AuthService } from '../../services/auth-service';
 import { ExportService } from '../../services/export-service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { finalize } from 'rxjs';
 
 type PoemBlock =
   | {
@@ -37,6 +39,12 @@ type PoemBlock =
       text: string;
       separatorIndex: number;
     };
+
+type BookSave = {
+  bookId: string;
+  payload: any;
+  snapshot: string;
+};
 
 @Component({
   selector: 'app-poem-editor',
@@ -57,12 +65,13 @@ type PoemBlock =
 export class PoemEditor implements OnInit, AfterViewInit {
   @ViewChild('poemBox') poemBox!: ElementRef<HTMLDivElement>;
   @ViewChild('poemContent') poemContent!: ElementRef<HTMLDivElement>;
-
+  @ViewChild('paper')
+  paper!: ElementRef<HTMLElement>;
   activePanel = 'colors';
   activeTitle = false;
   bookId = '';
   pageIndex = 0;
-backgroundColor = '';
+  backgroundColor = '';
   backgroundImage = '';
   frameImage = '';
   contentBox = {
@@ -120,6 +129,9 @@ backgroundColor = '';
   activeTextIndex: number | null = null;
   activeSeparatorIndex: number | null = null;
   currentBook: any = null;
+  private activeSave: BookSave | null = null;
+  private pendingSave: BookSave | null = null;
+  private readonly lastSavedSnapshots = new Map<string, string>();
   editorTabs = [
     { id: 'text', label: 'Tekst', icon: 'T' },
     { id: 'fonts', label: 'Czcionka', icon: 'Aa' },
@@ -145,6 +157,7 @@ backgroundColor = '';
     private auth: AuthService,
     private cd: ChangeDetectorRef,
     private exportService: ExportService,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -166,12 +179,19 @@ backgroundColor = '';
   loadBook() {
     const user = this.auth.getUser();
 
-    if (!user?.id || !this.bookId) return;
+    if (!user?.id) {
+      this.snackBar.open('Log in to open this book page.', 'OK', {
+        duration: 3500,
+        verticalPosition: 'top',
+      });
+      return;
+    }
+
+    if (!this.bookId) return;
 
     this.api.getBook(this.bookId, user.id).subscribe({
       next: (book: any) => {
         const page = book.pages?.[this.pageIndex];
-        console.log('BOOK PAGES FROM API:', book.pages.length);
         this.currentBook = book;
 
         if (!page) return;
@@ -227,9 +247,9 @@ backgroundColor = '';
         // BACKGROUND
         this.backgroundColor = poemData.backgroundColor || '';
 
-        this.backgroundImage = poemData.backgroundImage ? `url("${poemData.backgroundImage}")` : '';
+        this.backgroundImage = this.imageForDisplay(poemData.backgroundImage);
 
-        this.frameImage = poemData.frameImage ? `url("${poemData.frameImage}")` : '';
+        this.frameImage = this.imageForDisplay(poemData.frameImage);
 
         // BOX
         if (poemData.contentBox) {
@@ -264,6 +284,10 @@ backgroundColor = '';
 
       error: (err) => {
         console.error('❌ LOAD POEM ERROR', err);
+        this.snackBar.open('Could not load this book page. Please try again.', 'OK', {
+          duration: 3500,
+          verticalPosition: 'top',
+        });
       },
     });
   }
@@ -639,8 +663,6 @@ backgroundColor = '';
   // }
 
   onBackgroundChange(bg: any) {
-    console.log('BG:', bg);
-
     if (bg.color) {
       this.backgroundColor = bg.color;
     }
@@ -751,7 +773,6 @@ backgroundColor = '';
     }
 
     const page = this.currentBook.pages[this.pageIndex];
-
     // 🔥 SHARED ONLY
     page.title = this.poemTitle;
 
@@ -797,10 +818,18 @@ backgroundColor = '';
       backgroundColor: this.backgroundColor,
 
       backgroundImage: this.backgroundImage
-        ? this.backgroundImage.replace(/^url\("(.*)"\)$/, '$1')
+        ? this.backgroundImage
+            .replace(/^url\(["']?/, '')
+            .replace(/["']?\)$/, '')
+            .replace(/^assets\//, '/assets/')
         : '',
 
-      frameImage: this.frameImage ? this.frameImage.replace(/^url\("(.*)"\)$/, '$1') : '',
+      frameImage: this.frameImage
+        ? this.frameImage
+            .replace(/^url\(["']?/, '')
+            .replace(/["']?\)$/, '')
+            .replace(/^assets\//, '/assets/')
+        : '',
       // BOX
       contentBox: this.contentBox,
 
@@ -820,46 +849,120 @@ backgroundColor = '';
     };
   }
 
+  private imageForDisplay(image: string | null | undefined): string {
+    if (!image) {
+      return '';
+    }
+
+    const imageUrl = image.trim();
+    if (!imageUrl) {
+      return '';
+    }
+
+    if (/^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(imageUrl)) {
+      return `url("${imageUrl}")`;
+    }
+
+    const localPath = imageUrl.startsWith('/')
+      ? imageUrl
+      : `/${imageUrl.replace(/^\.\/+/, '')}`;
+    return `url("${localPath}")`;
+  }
+
   savePoem() {
-    if (!this.currentBook) return;
+    if (!this.currentBook) {
+      this.snackBar.open('This book page is not ready to save.', 'OK', {
+        duration: 3500,
+        verticalPosition: 'top',
+      });
+      return;
+    }
 
     this.updateCurrentPage();
 
-    this.api.saveBook(this.currentBook).subscribe({
-      next: () => {
-        console.log('✅ POEM SAVED');
-      },
+    const snapshot = JSON.stringify(this.currentBook);
+    const save: BookSave = {
+      bookId: this.currentBook.id || this.bookId,
+      payload: JSON.parse(snapshot),
+      snapshot,
+    };
 
-      error: (err) => {
-        console.error('❌ SAVE ERROR', err);
-      },
-    });
+    if (this.activeSave?.snapshot === snapshot) {
+      this.pendingSave = null;
+      return;
+    }
+
+    if (this.pendingSave?.snapshot === snapshot) {
+      this.flushPendingSave();
+      return;
+    }
+
+    if (!this.activeSave && this.lastSavedSnapshots.get(save.bookId) === snapshot) {
+      this.pendingSave = null;
+      return;
+    }
+
+    this.pendingSave = save;
+    this.flushPendingSave();
   }
 
+  private flushPendingSave(): void {
+    if (this.activeSave || !this.pendingSave) {
+      return;
+    }
 
+    const save = this.pendingSave;
+    this.pendingSave = null;
+    this.activeSave = save;
+    let succeeded = false;
 
-async exportPDF() {
-  console.log('🔥 EXPORT START');
+    this.api
+      .saveBook(save.payload)
+      .pipe(
+        finalize(() => {
+          this.activeSave = null;
 
-  this.savePoem();
+          if (!succeeded && !this.pendingSave) {
+            this.pendingSave = save;
+          }
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  try {
-    await this.exportService.exportPDF(
-      'paged-source',
-      'poem-editor.pdf'
-    );
-
-    console.log('✅ PDF DONE');
-  } catch (err) {
-    console.error('❌ EXPORT PDF ERROR:', err);
+          if (succeeded || this.pendingSave !== save) {
+            this.flushPendingSave();
+          }
+        }),
+      )
+      .subscribe({
+        next: () => {
+          succeeded = true;
+          this.lastSavedSnapshots.set(save.bookId, save.snapshot);
+          this.snackBar.open('Changes saved.', 'OK', {
+            duration: 2500,
+            verticalPosition: 'top',
+          });
+        },
+        error: (err) => {
+          console.error('❌ SAVE ERROR', err);
+          this.snackBar.open('Changes could not be saved. Please try again.', 'OK', {
+            duration: 3500,
+            verticalPosition: 'top',
+          });
+        },
+      });
   }
-}
 
+  // async exportPDF() {
+  //   this.savePoem();
 
+  //   await new Promise(resolve => setTimeout(resolve, 300));
 
-
+  //   await this.exportService.exportElement(
+  //     this.paper.nativeElement,
+  //     'poem-editor.pdf'
+  //   );
+  // }
+  async exportPDF() {
+    await this.exportService.exportElement(this.paper.nativeElement, 'poem-editor.pdf');
+  }
 
   goBack() {
     this.router.navigate(['/editor']);
