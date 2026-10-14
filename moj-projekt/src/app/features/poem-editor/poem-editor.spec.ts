@@ -184,9 +184,13 @@ describe('PoemEditor', () => {
         title: `Page ${index + 1}`,
         text: `Text ${index + 1}`,
         poemEditor: {
-          backgroundColor: '#f0e0d0',
-          backgroundImage: index === 1 ? '/assets/bg/paper-background.jpg' : '',
-          frameImage: index === 3 ? '/assets/bg/floral-right.png.png' : '',
+          backgroundColor: ['#f0e0d0', '#e0f0d0', '#d0e0f0', '#f0d0e0', '#e0d0f0'][index],
+          backgroundImage: [0, 2, 4].includes(index)
+            ? `/assets/bg/background-${index + 1}.jpg`
+            : '',
+          frameImage: [2, 3].includes(index) ? '/assets/bg/floral-right.png.png' : '',
+          poemColor: index === 0 ? '#112233' : '#334455',
+          textColors: index === 0 ? ['#abcdef'] : [],
         },
       })),
     };
@@ -194,6 +198,7 @@ describe('PoemEditor', () => {
     component.poemBlocks = [{ type: 'line', text: 'Unsaved active text', textIndex: 0 }];
     component.backgroundImage = 'url("/assets/bg/paper-background.jpg")';
     component.frameImage = 'url("/assets/bg/floral-right.png.png")';
+    component.textColors = ['#cc0011'];
     fixture.detectChanges(false);
 
     await component.exportPDF();
@@ -216,8 +221,37 @@ describe('PoemEditor', () => {
     expect(pages[2].querySelector('.poem-block')?.textContent?.trim()).toBe(
       'Unsaved active text',
     );
-    expect(pages[2].querySelector('.background-image')).toBeTruthy();
-    expect(pages[2].querySelector('.background-frame')).toBeTruthy();
+    expect(pages[0].querySelector<HTMLElement>('.poem-block')?.style.color).toBe(
+      'rgb(171, 205, 239)',
+    );
+    expect(pages[2].querySelector<HTMLElement>('.poem-block')?.style.color).toBe(
+      'rgb(204, 0, 17)',
+    );
+    expect(pages[1].style.backgroundColor).toBe('rgb(224, 240, 208)');
+    expect(pages[1].querySelector('.export-background')).toBeNull();
+    expect(pages[1].querySelector('.export-frame')).toBeNull();
+    expect(pages[2].querySelector<HTMLElement>('.export-background')?.style.zIndex).toBe('0');
+    expect(pages[2].querySelector<HTMLElement>('.export-frame')?.style.zIndex).toBe('1');
+    expect(pages[2].querySelector<HTMLElement>('.export-poem')?.style.zIndex).toBe('2');
+    expect(pages[2].querySelector<HTMLElement>('.export-poem')?.style.transform).toBe('none');
+    expect(pages[2].querySelector<HTMLElement>('.export-poem')?.style.top).toBe('15%');
+    expect(pages[2].querySelector<HTMLElement>('.export-poem')?.style.left).toBe('14%');
+    expect(pages[1].querySelector<HTMLElement>('.export-poem')?.style.top).toBe('-80px');
+    expect(pages[1].querySelector<HTMLElement>('.export-poem')?.style.left).toBe('-80px');
+    expect(pages[3].querySelector<HTMLElement>('.export-poem')?.style.top).toBe('0%');
+    expect(pages[3].querySelector<HTMLElement>('.export-poem')?.style.left).toBe('0%');
+    expect(
+      Array.from(pages[2].children).map((layer) =>
+        layer.classList.contains('export-background')
+          ? 'background'
+          : layer.classList.contains('export-frame')
+            ? 'frame'
+            : 'content',
+      ),
+    ).toEqual(['background', 'frame', 'content']);
+    expect(pages[4].querySelector('.export-background')?.getAttribute('style')).toContain(
+      'background-5.jpg',
+    );
     expect(api.saveBook).not.toHaveBeenCalled();
   });
 });

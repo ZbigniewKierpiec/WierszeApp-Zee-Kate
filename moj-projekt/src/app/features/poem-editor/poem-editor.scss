@@ -708,8 +708,32 @@
   position: relative;
   box-sizing: border-box;
   overflow: hidden;
+  isolation: isolate;
   break-after: page;
   page-break-after: always;
+}
+
+#paged-source .export-page .export-background,
+#paged-source .export-page .export-frame {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+#paged-source .export-page .export-background {
+  z-index: 0;
+}
+
+#paged-source .export-page .export-frame {
+  z-index: 1;
+}
+
+#paged-source .export-page .export-poem {
+  position: absolute;
+  z-index: 2;
 }
 
 #paged-source .export-page:last-child {

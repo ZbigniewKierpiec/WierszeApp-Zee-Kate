@@ -217,26 +217,32 @@
       <!-- BACKGROUND -->
       <div
         *ngIf="page.poemEditor?.backgroundImage"
-        class="background-image"
+        class="background-image export-background"
         [style.background-image]="'url(' + page.poemEditor.backgroundImage + ')'"
+        [style.z-index]="0"
       ></div>
 
       <!-- FRAME -->
       <div
         *ngIf="page.poemEditor?.frameImage"
-        class="background-frame"
+        class="background-frame export-frame"
         [style.background-image]="'url(' + page.poemEditor.frameImage + ')'"
+        [style.z-index]="1"
       ></div>
 
       <div
-        class="poem"
+        class="poem export-poem"
         [class.full-page]="!page.poemEditor?.backgroundImage && !page.poemEditor?.frameImage"
         [style.width.%]="page.poemEditor?.backgroundImage ? (page.poemEditor?.contentBox?.width || 72) : 100"
         [style.height.%]="page.poemEditor?.backgroundImage ? (page.poemEditor?.contentBox?.height || 70) : 100"
-        [style.top.%]="page.poemEditor?.backgroundImage ? 50 + (page.poemEditor?.contentBox?.offsetY || 0) : 50"
-        [style.left.%]="50"
-        [style.transform]="'translate(-50%, -50%)'"
-        [style.z-index]="3"
+        [style.top]="page.poemEditor?.backgroundImage
+          ? (50 + (page.poemEditor?.contentBox?.offsetY || 0) - ((page.poemEditor?.contentBox?.height || 70) / 2)) + '%'
+          : page.poemEditor?.frameImage ? '0%' : '-80px'"
+        [style.left]="page.poemEditor?.backgroundImage
+          ? (50 - ((page.poemEditor?.contentBox?.width || 72) / 2)) + '%'
+          : page.poemEditor?.frameImage ? '0%' : '-80px'"
+        [style.transform]="'none'"
+        [style.z-index]="2"
       >
         <div
           class="poem-content"
